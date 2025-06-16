@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart School Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        .role-circle {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .role-circle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col items-center justify-center">
+    <!-- Heading Section -->
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-blue-900">🎓 PROBAHO COACHING CENTER</h1>
+        <p class="text-lg text-gray-600 mt-2">Try hands-on demonstration of Smart School with sample data</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex flex-col lg:flex-row items-center justify-center w-full max-w-7xl gap-12">
+        <!-- Central Graphic and Roles -->
+        <div class="relative">
+            <!-- Central Image (Placeholder) -->
+            <div class="bg-gray-200 m-24 rounded-lg w-80 h-56 flex items-center justify-center">
+                <!-- <span class="text-gray-500">Dashboard Image</span> -->
+                <img src="https://i.ibb.co/WpjPDnGf/probaho-mockup-1.png" alt="Dashboard Image preview">
+            </div>
+
+            <!-- Role Circles (Positioned in a circular layout) -->
+            <div class="absolute inset-0 flex items-center justify-center">
+                <!-- Wrapper for circular layout -->
+                <div class="relative w-[820px] h-[480px]">
+                    <!-- SUPER ADMIN -->
+                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2">
+                        <div
+                            class="role-circle bg-purple-100 rounded-full w-28 h-28 flex flex-col items-center justify-center text-center p-2 hover:scale-110 transition-transform duration-300">
+                            <span class="text-purple-700 font-semibold text-sm">SUPER ADMIN</span>
+                            <p class="text-xs text-gray-600">Full control</p>
+                        </div>
+                    </div>
+
+                    <!-- ADMIN -->
+                    <div
+                        class="role-circle absolute top-[15%] left-[10%] bg-blue-100 rounded-full w-28 h-28 flex flex-col items-center justify-center text-center p-2">
+                        <span class="text-blue-700 font-semibold text-sm">ADMIN</span>
+                        <p class="text-xs text-gray-600">Day-to-day tasks</p>
+                    </div>
+
+                    <!-- LIBRARIAN -->
+                    <div
+                        class="role-circle absolute top-[40%] left-0 bg-green-100 rounded-full w-28 h-28 flex flex-col items-center justify-center text-center p-2">
+                        <span class="text-green-700 font-semibold text-sm">LIBRARIAN</span>
+                        <p class="text-xs text-gray-600">Library management</p>
+                    </div>
+
+                    <!-- STUDENT -->
+                    <div
+                        class="role-circle absolute bottom-[15%] left-[10%] bg-lime-100 rounded-full w-28 h-28 flex flex-col items-center justify-center text-center p-2">
+                        <span class="text-lime-700 font-semibold text-sm">STUDENT</span>
+                        <p class="text-xs text-gray-600">School activities</p>
+                    </div>
+
+                    <!-- TEACHER -->
+                    <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2">
+                        <div
+                            class="role-circle bg-gray-300 rounded-full w-28 h-28 flex flex-col items-center justify-center text-center p-2 hover:scale-110 transition-transform duration-300">
+                            <span class="text-gray-700 font-semibold text-sm">TEACHER</span>
+                            <p class="text-xs text-gray-600">Academic tasks</p>
+                        </div>
+                    </div>
+
+                    <!-- ACCOUNTANT -->
+                    <div
+                        class="role-circle absolute bottom-[15%] right-[10%] bg-orange-100 rounded-full w-28 h-28 flex flex-col items-center justify-center text-center p-2">
+                        <span class="text-orange-700 font-semibold text-sm">ACCOUNTANT</span>
+                        <p class="text-xs text-gray-600">Fees & expenses</p>
+                    </div>
+
+                    <!-- PARENT -->
+                    <div
+                        class="role-circle absolute top-[40%] right-0 bg-red-100 rounded-full w-28 h-28 flex flex-col items-center justify-center text-center p-2">
+                        <span class="text-red-700 font-semibold text-sm">PARENT</span>
+                        <p class="text-xs text-gray-600">Academic updates</p>
+                    </div>
+
+                    <!-- RECEPTIONIST -->
+                    <div
+                        class="role-circle absolute top-[15%] right-[10%] bg-teal-100 rounded-full w-28 h-28 flex flex-col items-center justify-center text-center p-2">
+                        <span class="text-teal-700 font-semibold text-sm">RECEPTIONIST</span>
+                        <p class="text-xs text-gray-600">Front office</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Login Buttons -->
+        <div class="flex flex-col gap-4">
+            <a href="/admin#" target="_blank"
+                class="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700">🟣 SUPER ADMIN
+                LOGIN</a>
+            <a href="#" target="_blank"
+                class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700">🟢 STUDENT
+                LOGIN</a>
+            <a href="#" target="_blank"
+                class="bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700">🔴 PARENT LOGIN</a>
+            <a href="#" target="_blank"
+                class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700">🔵 ADMIN LOGIN</a>
+            <a href="#" target="_blank"
+                class="bg-gray-800 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-900">⚫ TEACHER LOGIN</a>
+            <a href="#" target="_blank"
+                class="bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-700">🟠 ACCOUNTANT
+                LOGIN</a>
+            <a href="#" target="_blank"
+                class="bg-teal-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-700">🔵 RECEPTIONIST
+                LOGIN</a>
+            <a href="#" target="_blank"
+                class="bg-lime-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-lime-700">🟢 LIBRARIAN
+                LOGIN</a>
+            <!-- <a href="#" class="bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600">🔵 FRONT SITE</a>
+            <a href="#" class="bg-red-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-600">🔴 ANDROID APP</a> -->
+        </div>
+    </div>
+</body>
+
+</html>

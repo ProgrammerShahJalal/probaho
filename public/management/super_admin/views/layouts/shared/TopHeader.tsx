@@ -13,7 +13,8 @@ const TopHeader: React.FC<Props> = (props: Props) => {
                 >
                     <div className="logo-wrapper">
                         <a href="#/">
-                            <img
+                        PROBAHO
+                            {/* <img
                             style={{
                                 width: '100%',
                                 height: 'auto',
@@ -28,7 +29,7 @@ const TopHeader: React.FC<Props> = (props: Props) => {
                             }}
                                src="https://i.ibb.co.com/23gQkKMV/ireadwhite.png"
                                 className="image-light"
-                            />
+                            /> */}
                         </a>
                     </div>
                 </div>
