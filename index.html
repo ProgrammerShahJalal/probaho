@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart School Demo</title>
+    <style>
+        body { font-family: sans-serif; margin: 0; background-color: #f4f7f6; color: #333; }
+        header { text-align: center; padding: 20px; background-color: #007bff; color: white; }
+        header h1 { margin: 0; font-size: 2.5em; }
+        header p { margin: 5px 0 0; font-size: 1.2em; }
+        main { display: flex; padding: 20px; }
+        #central-graphic { flex: 3; text-align: center; padding-right: 20px; }
+        #central-graphic img { max-width: 100%; height: auto; margin-bottom: 20px; }
+        .roles-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        .role { background-color: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .role img { width: 50px; height: 50px; margin-bottom: 10px; }
+        .role h2 { font-size: 1em; margin: 0 0 5px; color: #007bff; }
+        .role p { font-size: 0.8em; margin: 0; color: #555; }
+        #login-buttons { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        #login-buttons button { padding: 15px; border: none; border-radius: 5px; font-size: 1em; cursor: pointer; text-align: left; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>TRY SMART SCHOOL DEMO</h1>
+        <p>Try hands-on demonstration of Smart School with sample data</p>
+    </header>
+    <main>
+        <section id="central-graphic">
+            <img src="placeholder-dashboard.png" alt="Dashboard Preview">
+            <div class="roles-container">
+                <div class="role">
+                    <img src="placeholder-icon.png" alt="Super Admin Icon">
+                    <h2>SUPER ADMIN</h2>
+                    <p>Take full control with all features</p>
+                </div>
+                <div class="role">
+                    <img src="placeholder-icon.png" alt="Admin Icon">
+                    <h2>ADMIN</h2>
+                    <p>Manage day-to-day activities with almost all features</p>
+                </div>
+                <div class="role">
+                    <img src="placeholder-icon.png" alt="Receptionist Icon">
+                    <h2>RECEPTIONIST</h2>
+                    <p>Manage all front office related activities</p>
+                </div>
+                <div class="role">
+                    <img src="placeholder-icon.png" alt="Librarian Icon">
+                    <h2>LIBRARIAN</h2>
+                    <p>Systematic management of whole library including books issue/return</p>
+                </div>
+                <div class="role">
+                    <img src="placeholder-icon.png" alt="Parent Icon">
+                    <h2>PARENT</h2>
+                    <p>Get child all academic updates, communication with school administration</p>
+                </div>
+                <div class="role">
+                    <img src="placeholder-icon.png" alt="Student Icon">
+                    <h2>STUDENT</h2>
+                    <p>Collaborate with school activities including exams, marks, class routine, communicates with teacher</p>
+                </div>
+                <div class="role">
+                    <img src="placeholder-icon.png" alt="Accountant Icon">
+                    <h2>ACCOUNTANT</h2>
+                    <p>Trace student fees and expenses all at one place</p>
+                </div>
+                <div class="role">
+                    <img src="placeholder-icon.png" alt="Teacher Icon">
+                    <h2>TEACHER</h2>
+                    <p>Manage student & academic activities</p>
+                </div>
+            </div>
+        </section>
+        <aside id="login-buttons">
+            <button style="background-color: #800080; color: white;">SUPER ADMIN LOGIN</button> <!-- Purple -->
+            <button style="background-color: #008000; color: white;">STUDENT LOGIN</button> <!-- Green -->
+            <button style="background-color: #FF0000; color: white;">PARENT LOGIN</button> <!-- Red -->
+            <button style="background-color: #0000FF; color: white;">ADMIN LOGIN</button> <!-- Blue -->
+            <button style="background-color: #000000; color: white;">TEACHER LOGIN</button> <!-- Black -->
+            <button style="background-color: #FFA500; color: white;">ACCOUNTANT LOGIN</button> <!-- Orange -->
+            <button style="background-color: #0000FF; color: white;">RECEPTIONIST LOGIN</button> <!-- Blue -->
+            <button style="background-color: #008000; color: white;">LIBRARIAN LOGIN</button> <!-- Green -->
+            <button style="background-color: #0000FF; color: white;">FRONT SITE</button> <!-- Blue -->
+            <button style="background-color: #FF0000; color: white;">ANDROID APP</button> <!-- Red -->
+        </aside>
+    </main>
+</body>
+</html>
