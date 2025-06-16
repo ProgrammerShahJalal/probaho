@@ -1,0 +1,56 @@
+@hostname = http://127.0.0.1:5001/api/v1/blog-tags
+
+# all
+###
+GET {{hostname}}?orderByCol=id&orderByAsc=true&show_active_data=true&paginate=10&select_fields=   HTTP/1.1
+
+# get
+###
+GET {{hostname}}/1 HTTP/1.1
+
+# store
+###
+POST  {{hostname}}/store HTTP/1.1
+content-type: application/json
+
+{
+    "title": "blog tag"
+}
+
+
+# update
+###
+POST {{hostname}}/update HTTP/1.1 
+content-type: application/json
+
+{
+    "id": 2,
+    "title": "blog tags 2 upated"
+}
+
+# soft delete
+###
+POST  {{hostname}}/soft-delete HTTP/1.1
+content-type: application/json
+
+{
+    "id": 1
+}
+
+# restore
+###
+POST  {{hostname}}/restore HTTP/1.1
+content-type: application/json
+
+{
+    "id": 1
+}
+
+# destroy
+###
+POST  {{hostname}}/destroy?d=0 HTTP/1.1
+content-type: application/json
+
+{
+    "id": 1
+}

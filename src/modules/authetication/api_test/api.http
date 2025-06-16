@@ -1,0 +1,64 @@
+@hostname = http://127.0.0.1:5011/api/v1/auth
+
+
+# all
+###
+GET {{hostname}}?orderByCol=id&orderByAsc=true&show_active_data=true&paginate=10&select_fields=   HTTP/1.1
+
+# get
+###
+GET {{hostname}}/1 HTTP/1.1
+
+
+# login
+###
+POST {{hostname}}/login HTTP/1.1
+content-type: application/json
+
+{
+    "email": "mostafiz@gmail.com",
+    "password": "12345678"
+}
+
+# register
+###
+POST {{hostname}}/register HTTP/1.1
+content-type: application/json
+
+{
+    "first_name": "Shah",
+    "last_name": "Jalal",
+    "email": "shah.jalal.ju.bd@gmail.com",
+    "phone_number": "01394322124",
+    "photo": "avatar.png",
+    "password": "12345678"
+}
+# update
+###
+POST {{hostname}}/update HTTP/1.1
+content-type: application/json
+
+{
+    "id": 3,
+    "role_serial": 1
+}
+
+# auth user
+###
+GET {{hostname}}/info HTTP/1.1
+content-type: application/json
+# Cookie: key = value
+
+# forget mail
+###
+POST {{hostname}}/forget HTTP/1.1
+content-type: application/json
+
+{}
+
+# logout
+###
+POST {{hostname}}/logout HTTP/1.1
+content-type: application/json
+
+{}

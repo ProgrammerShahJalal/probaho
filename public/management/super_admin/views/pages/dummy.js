@@ -1,0 +1,60 @@
+const projectPayment = [
+    {
+        id: 1,
+        project_name: 'Project Alpha',
+        customer_id: 'C001',
+        payment_type: 'Credit Card',
+        amount: 1000,
+        date: '2024-06-01',
+    },
+    {
+        id: 2,
+        project_name: 'Project Beta',
+        customer_id: 'C002',
+        payment_type: 'PayPal',
+        amount: 1500,
+        date: '2024-06-05',
+    },
+    {
+        id: 3,
+        project_name: 'Project Gamma',
+        customer_id: 'C003',
+        payment_type: 'Bank Transfer',
+        amount: 2000,
+        date: '2024-06-10',
+    },
+    {
+        id: 4,
+        project_name: 'Project Delta',
+        customer_id: 'C004',
+        payment_type: 'Credit Card',
+        amount: 2500,
+        date: '2024-06-15',
+    },
+    {
+        id: 5,
+        project_name: 'Project Epsilon',
+        customer_id: 'C005',
+        payment_type: 'PayPal',
+        amount: 3000,
+        date: '2024-06-20',
+    },
+    {
+        id: 6,
+        project_name: 'Project Zeta',
+        customer_id: 'C006',
+        payment_type: 'Bank Transfer',
+        amount: 3500,
+        date: '2024-06-25',
+    },
+    {
+        id: 7,
+        project_name: 'Project Eta',
+        customer_id: 'C007',
+        payment_type: 'Credit Card',
+        amount: 4000,
+        date: '2024-06-30',
+    },
+];
+
+export { projectPayment };

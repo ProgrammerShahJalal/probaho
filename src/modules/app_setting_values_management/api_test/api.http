@@ -1,0 +1,67 @@
+@hostname = http://127.0.0.1:5011/api/v1/app-setting-values
+
+# all
+###
+GET {{hostname}}?orderByCol=id&orderByAsc=true&show_active_data=true&paginate=10&select_fields=   HTTP/1.1
+
+# get
+###
+GET {{hostname}}/1 HTTP/1.1
+# get by title
+###
+GET {{hostname}}/title/FAQ HTTP/1.1
+
+# query by title
+###
+GET {{hostname}}?title=Site%20Name&orderByCol=id&orderByAsc=true&show_active_data=true&paginate=10
+
+
+# store
+###
+POST  {{hostname}}/store HTTP/1.1
+content-type: application/json
+
+{
+    "title": "Engineering",
+    "description": "Do it.",
+    "type": "text"
+}
+
+
+# update
+###
+POST {{hostname}}/update HTTP/1.1 
+content-type: application/json
+
+{
+    "id": 1,
+    "title": "setting upated",
+    "description": "description updated"
+}
+
+# soft delete
+###
+POST  {{hostname}}/soft-delete HTTP/1.1
+content-type: application/json
+
+{
+    "id": 1
+}
+
+# restore
+###
+POST  {{hostname}}/restore HTTP/1.1
+content-type: application/json
+
+{
+    "id": 1
+}
+
+# destroy
+###
+POST  {{hostname}}/destroy?d=0 HTTP/1.1
+content-type: application/json
+
+{
+    "id": 1
+}

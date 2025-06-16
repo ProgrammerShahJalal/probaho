@@ -1,0 +1,11 @@
+
+npx sequelize-cli model:generate --name user_admin --attributes first_name:string,last_name:string,email:string  --underscored true --migrations-path src/modules/user_management/user_admin/models/migrations --models-path src/modules/user_management/user_admin/models 
+
+npx sequelize-cli db:migrate --config src/configs/db.json --migrations-path src/modules/user_management/user_admin/models/migrations
+
+npx sequelize-cli db:migrate:undo --name 20240419173220-user_admin.js --config src/configs/db.json --migrations-path src/modules/user_management/user_admin/models
+
+npx sequelize-cli seed:generate --name user_admin --config src/configs/db.json --seeders-path src/modules/user_management/user_admin/models/seeders
+
+npx sequelize-cli db:seed:all --config src/configs/db.json --seeders-path src/modules/auth_management/authetication/models/seeders
+ 

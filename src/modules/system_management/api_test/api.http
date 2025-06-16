@@ -1,0 +1,57 @@
+@hostname = http://127.0.0.1:5001/api/v1/contact-messages
+
+# all
+###
+GET {{hostname}}?orderByCol=id&orderByAsc=true&show_active_data=true&paginate=10&field[0]=id   HTTP/1.1
+
+# get
+###
+GET {{hostname}}/1 HTTP/1.1
+
+# store
+###
+POST  {{hostname}}/store HTTP/1.1
+content-type: application/json
+
+{
+    "full_name": "user6",
+    "email": "user4@gmail.com"
+}
+
+
+# update
+###
+POST {{hostname}}/update HTTP/1.1 
+content-type: application/json
+
+{
+    "id": 1,
+    "full_name": "user1update"
+}
+
+# soft delete
+###
+POST  {{hostname}}/soft-delete HTTP/1.1
+content-type: application/json
+
+{
+    "id": 2
+}
+
+# restore
+###
+POST  {{hostname}}/restore HTTP/1.1
+content-type: application/json
+
+{
+    "id": 2
+}
+
+# destroy
+###
+POST  {{hostname}}/destroy?d=0 HTTP/1.1
+content-type: application/json
+
+{
+    "id": 1
+}

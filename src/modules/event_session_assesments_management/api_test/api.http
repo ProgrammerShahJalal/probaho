@@ -1,0 +1,67 @@
+@hostname = http://127.0.0.1:5011/api/v1/event-session-assesments
+
+# all
+###
+GET {{hostname}}?orderByCol=id&orderByAsc=true&show_active_data=true&paginate=10&select_fields=   HTTP/1.1
+
+# get
+###
+GET {{hostname}}/5 HTTP/1.1
+
+# get by eventId
+###
+GET {{hostname}}/event/3 HTTP/1.1
+
+# store
+###
+POST  {{hostname}}/store HTTP/1.1
+content-type: application/json
+
+{
+    "event_id": "2",
+    "event_session_id": "1",
+    "title": "Assesments on PY",
+    "description": "This is assesment on PY",
+    "mark": "60",
+    "pass_mark": "30",
+    "start": "2:00PM",
+    "end": "3:00PM"
+}
+
+
+# update
+###
+POST {{hostname}}/update HTTP/1.1 
+content-type: application/json
+
+{
+    "id": 1,
+    "event_session_id": "1"
+}
+
+# soft delete
+###
+POST  {{hostname}}/soft-delete HTTP/1.1
+content-type: application/json
+
+{
+    "id": 1
+}
+
+# restore
+###
+POST  {{hostname}}/restore HTTP/1.1
+content-type: application/json
+
+{
+    "id": 1
+}
+
+# destroy
+###
+POST  {{hostname}}/destroy?d=0 HTTP/1.1
+content-type: application/json
+
+{
+    "id": 1
+}

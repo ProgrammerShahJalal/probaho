@@ -1,0 +1,58 @@
+{
+    "extends": [
+        "eslint:recommended",
+        // "plugin:react/recommended", // This line is only needed if you're using React
+        "plugin:prettier/recommended"
+    ],
+    "plugins": [
+        "prettier",
+        "import",
+        "@typescript-eslint"
+    ],
+    "settings": {
+        "import/resolver": {
+            "node": {
+                "extensions": [
+                    ".js",
+                    ".jsx",
+                    ".ts",
+                    ".tsx"
+                ]
+            }
+        },
+        "indent": {
+            "EnterBlock": true
+        }
+    },
+    "rules": {
+        "prettier/prettier": [
+            "error",
+            {
+                "endOfLine": "auto"
+            }
+        ],
+        "import/no-duplicates": "error",
+        "no-unused-vars": "off",
+        "no-unreachable": "warn",
+        "indent": [
+            "error",
+            4
+        ],
+        "no-tabs": [
+            "error"
+        ]
+    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 2021,
+        "sourceType": "module"
+    },
+    "env": {
+        "browser": true,
+        "node": true,
+        "es6": true
+    },
+    "globals": {
+        "MyGlobalVariable": "writable" // or "readonly"
+    }
+}

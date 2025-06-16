@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="author" content="pixelstrap" />
+    <link rel="developer-icon" href="https://i.ibb.co.com/SF946Fd/ireadwhitefav.png" type="image/x-icon" />
+    <link rel="developer-shortcut icon" href="https://i.ibb.co.com/SF946Fd/ireadwhitefav.png"
+        type="image/x-icon" />
+
+    <!-- ckeditor rich text -->
+    <!-- <script src="https://cdn.ckeditor.com/4.25.0-lts/standard/ckeditor.js"></script> -->
+    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.0/ckeditor5.css" />
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+
+    <link rel="icon" href="https://i.ibb.co.com/SF946Fd/ireadwhitefav.png" type="image/x-icon" />
+    <link rel="shortcut icon" href="https://i.ibb.co.com/SF946Fd/ireadwhitefav.png" type="image/x-icon" />
+    <title>Management - IREAD</title>
+
+    <!--Google font-->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,500,600,700" rel="stylesheet" />
+
+    <link rel="stylesheet" href="/assets/dashboard/fonts/google_icon/google_icons.css" />
+    <script src="/assets/dashboard/js/plugins/sweetalert.js"></script>
+    <link rel="stylesheet" href="/assets/dashboard/styles/style.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/dashboard_uni/fontawesome.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/dashboard_uni/icofont.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/dashboard_uni/themify.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/dashboard_uni/flag-icon.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/dashboard_uni/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/dashboard_uni/style.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/dashboard_uni/responsive.css" />
+
+    <link rel="stylesheet" type="text/css" href="/assets/dashboard_uni/custom.css" />
+
+    <script src="/assets/dashboard_uni/jquery-3.2.1.min.js"></script>
+    <script src="/assets/dashboard_uni/bootstrap.bundle.min.js"></script>
+
+    <!-- <script src="/management_build/super_admin/super_admin.js" defer></script> -->
+    <script src="../../management_build/super_admin/super_admin.js" defer></script>
+</head>
+
+<body main-theme-layout="main-theme-layout-4">
+    <div class="loader-wrapper">
+        <div class="loader bg-white">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+            <h4>IREAD <span>&#x263A;</span></h4>
+        </div>
+    </div>
+
+    <div id="dashboard">
+        <div id="app"></div>
+        <div id="filter-root"></div>
+    </div>
+    <style>
+        .cke_notifications_area {
+            display: none !important;
+        }
+    </style>
+
+    <!-- Load jQuery before formBuilder -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+
+    <!-- Load FormBuilder only once -->
+    <script src="https://formbuilder.online/assets/js/form-builder.min.js" defer></script>
+    <script src="https://formbuilder.online/assets/js/form-render.min.js" defer></script>
+
+
+
+    <form action="/api/v1/auth/logout" enctype="multipart/form-data" method="POST" id="logout_form"></form>
+
+    <script src="https://unpkg.com/chartist@1.3.0/dist/index.umd.js"></script>
+    <script src="https://unpkg.com/chartist-plugin-tooltips-updated@1.0.0/dist/chartist-plugin-tooltip.min.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/chartist@1.3.0/dist/index.css" />
+    <link rel="stylesheet"
+        href="https://unpkg.com/chartist-plugin-tooltips-updated@1.0.0/dist/chartist-plugin-tooltip.css" />
+
+    <script defer src="/assets/dashboard_uni/sidebar-menu.js"></script>
+    <script defer src="/assets/dashboard_uni/script.js"></script>
+
+
+</body>
+
+</html>

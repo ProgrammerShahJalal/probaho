@@ -1,0 +1,75 @@
+@hostname = http://127.0.0.1:5001/api/v1/donations
+
+# all
+###
+GET {{hostname}}/all?orderByCol=id&orderByAsc=true&show_active_data=true&paginate=10&select_fields=   HTTP/1.1
+
+# get
+###
+GET {{hostname}}/2 HTTP/1.1
+
+# get
+###
+GET {{hostname}}/all HTTP/1.1
+
+# store
+###
+POST  {{hostname}}/create-checkout-session HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Quantam Engineering",
+    "email": "jamela@gmail.com",
+    "phone": "short description 1",
+    "occupation": "long long description 1",
+    "amount": "2423535"
+}
+###
+POST  {{hostname}}/store HTTP/1.1
+content-type: application/json
+
+{
+    "title": "Quantam Engineering",
+    "author_id": "1",
+    "short_description": "short description 1",
+    "full_description": "long long description 1"
+}
+
+
+# update
+###
+POST {{hostname}}/update HTTP/1.1 
+content-type: application/json
+
+{
+    "id": 1,
+    "title": "author 3 upated",
+    "description": "description updated"
+}
+
+# soft delete
+###
+POST  {{hostname}}/soft-delete HTTP/1.1
+content-type: application/json
+
+{
+    "id": 1
+}
+
+# restore
+###
+POST  {{hostname}}/restore HTTP/1.1
+content-type: application/json
+
+{
+    "id": 1
+}
+
+# destroy
+###
+POST  {{hostname}}/destroy?d=0 HTTP/1.1
+content-type: application/json
+
+{
+    "id": 1
+}
