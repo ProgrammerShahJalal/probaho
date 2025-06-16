@@ -30,7 +30,7 @@ const SideBar: React.FC<Props> = (props: Props) => {
                 {/* BLOG  */}
                 <MenuDropDown
                     section_title="Management"
-                    group_title="Blog"
+                    group_title="Branch"
                     icon="fa fa-book"
                 >
                     <MenuDropDownItem
@@ -49,7 +49,7 @@ const SideBar: React.FC<Props> = (props: Props) => {
                     />
                 </MenuDropDown>
                 {/* EVENT  */}
-                <MenuDropDown group_title="Event" icon="fa fa-calendar">
+                <MenuDropDown group_title="Class" icon="fa fa-calendar">
                     <MenuDropDownItem
                         label="Event Category"
                         to="/event-categories"
@@ -128,14 +128,14 @@ const SideBar: React.FC<Props> = (props: Props) => {
                 </MenuDropDown> */}
 
                 {/* Users  */}
-                <MenuDropDown group_title="User" icon="icon-user">
+                {/* <MenuDropDown group_title="User" icon="icon-user">
                     <MenuDropDownItem label="Users" to="/auth" />
                     <MenuDropDownItem label="User Roles" to="/user-roles" />
                     <MenuDropDownItem
                         label="User Login Histories"
                         to="/user-login-histories"
                     />
-                </MenuDropDown>
+                </MenuDropDown> */}
                 {/* App Settings  */}
                 <MenuDropDown group_title="App Settings" icon="icon-settings">
                     {/* <MenuDropDownItem label="App Setting Keys" to="/app-settings" /> */}
