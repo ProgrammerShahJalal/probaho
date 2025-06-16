@@ -2,6 +2,7 @@ import Fastify, { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify'
 import AutoLoad from '@fastify/autoload';
 import view from '@fastify/view';
 import path from 'path';
+import fastifyStatic from '@fastify/static'; // It's good practice to import directly
 import { Sequelize } from 'sequelize';
 import { FastifyCookieOptions } from '@fastify/cookie';
 import get_recursive_route_files_by_directory from '../helpers/get_recursive_route_files_by_directory';
@@ -55,7 +56,7 @@ class FastifyApp {
                         '.map',
                         '.ttf',
                         '.woff',
-                        '.woff2',
+                        '.woff2', '.html', // Added .html
                     ].includes(extension)
                 ) {
                     return;
@@ -155,9 +156,11 @@ class FastifyApp {
         });
 
         console.log('setting up static folder');
-        this.fastify.register(require('@fastify/static'), {
-            root: path.resolve(path.join(__dirname), '../../public'),
+        // Use the imported module directly for better type safety if possible
+        this.fastify.register(fastifyStatic, {
+            root: path.resolve(path.join(__dirname), '../../')), // Adjusted to project root
             prefix: '/',
+            // index: 'index.html' // This is usually default, but can be explicit
         });
 
         console.log('setting up view engine');
