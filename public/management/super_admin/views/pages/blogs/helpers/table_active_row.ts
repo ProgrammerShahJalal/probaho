@@ -15,6 +15,15 @@ function active_row(toggle_icon, e) {
 
         if (parent) {
             parent.classList.toggle('active');
+            if (toggle_icon.current) {
+                if (parent.classList.contains('active')) {
+                    toggle_icon.current.classList.remove('icon-settings');
+                    toggle_icon.current.classList.add('icon-minus');
+                } else {
+                    toggle_icon.current.classList.remove('icon-minus');
+                    toggle_icon.current.classList.add('icon-settings');
+                }
+            }
         }
     }
 }

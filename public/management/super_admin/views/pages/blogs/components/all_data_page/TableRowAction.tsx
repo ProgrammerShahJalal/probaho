@@ -16,7 +16,7 @@ const TableRowAction: React.FC<Props> = ({ item }: Props) => {
         <>
               <span
                 role="button"
-                className="icon"
+                className="icon-settings"
                 ref={toggle_icon}
                 onClick={(e) => active_row(toggle_icon, e)}
             />
