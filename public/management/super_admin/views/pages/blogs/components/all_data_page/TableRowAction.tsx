@@ -24,12 +24,12 @@ const TableRowAction: React.FC<Props> = ({ item }: Props) => {
                 <ul>
                     <li>
                         <Link to={`/${setup.route_prefix}/details/${item.id}`}>
-                            <span className="icon-eye"></span> Show
+                            <span className="icon-eye text-secondary"></span> Show
                         </Link>
                     </li>
                     <li>
                         <Link to={`/${setup.route_prefix}/edit/${item.id}`}>
-                         <span className="icon-pencil"></span> Edit
+                         <span className="icon-pencil text-info"></span> Edit
                         </Link>
                     </li>
                     <li>

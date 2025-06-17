@@ -27,7 +27,7 @@ const DestroyButton: React.FC<Props> = (props: Props) => {
                 onClick={(e) => handle_delete(e)}
                 href={`/${setup.route_prefix}/destroy/${props.item.id}`}
             >
-                <span className="icon-trash"></span> Destroy
+                <span className="icon-trash text-danger"></span> Destroy
             </a>
         </>
     );

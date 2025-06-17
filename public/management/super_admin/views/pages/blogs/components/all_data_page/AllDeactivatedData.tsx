@@ -31,14 +31,14 @@ const AllDeactivatedData: React.FC<Props> = (props: Props) => {
                     <span className="material-symbols-outlined fill">
                         delete
                     </span>
-                    <div className="text">Recycle bin</div>
+                    <div className="text">Trasted</div>
                 </a>
             ) : (
                 <a href="#" onClick={(e) => handle_recycle_data(true, e)}>
                     <span className="material-symbols-outlined fill">
                         inactive_order
                     </span>
-                    <div className="text">Active data</div>
+                    <div className="text text-white">Active data</div>
                 </a>
             )}
         </>
