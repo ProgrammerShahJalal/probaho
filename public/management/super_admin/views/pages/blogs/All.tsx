@@ -87,7 +87,7 @@ const All: React.FC<Props> = (props: Props) => {
                                         <TableHeading
                                             label={`Publish Date`}
                                             col_name={`publish_date`}
-                                            sort={false}
+                                            sort={true}
                                         />
                                         {/* <TableHeading
                                             label={`Status`}
