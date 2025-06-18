@@ -32,6 +32,11 @@ async function validate(req: Request) {
         .isEmpty()
         .withMessage('the show_active_data field is required')
         .run(req);
+    await query('show_trash_data')
+        .not()
+        .isEmpty()
+        .withMessage('the show_trash_data field is required')
+        .run(req);
 
     await query('paginate')
         .not()
