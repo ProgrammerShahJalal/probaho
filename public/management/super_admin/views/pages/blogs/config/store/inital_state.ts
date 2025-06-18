@@ -25,6 +25,7 @@ export const initialState = {
     orderByCol: 'id',
     orderByAsc: false,
     show_active_data: true, // show all active data
+    show_trash_data: false, // if true then fetch soft deleted data
     only_latest_data: false, // if true then first fectch from cache then update
 
     /* selected data */

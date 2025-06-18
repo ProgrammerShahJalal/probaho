@@ -21,7 +21,7 @@ async function validate(req: Request) {
     return result;
 }
 
-async function soft_delete(
+async function inactive(
     fastify_instance: FastifyInstance,
     req: FastifyRequest,
 ): Promise<responseObject> {
@@ -44,10 +44,9 @@ async function soft_delete(
         });
 
         if (data) {
+            data.status = 'deactive'; 
             data.is_published = 'draft';
             await data.save();
-
-            await data.destroy(); // ✅ Triggers Sequelize to set deleted_at
             return response(200, 'data soft deleted', data);
         } else {
         throw new custom_error(
@@ -67,4 +66,4 @@ async function soft_delete(
 }
 }
 
-export default soft_delete;
+export default inactive;

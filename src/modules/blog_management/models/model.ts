@@ -51,6 +51,7 @@ class DataModel extends Model<Infer, InferCreation> {
 
     declare created_at?: CreationOptional<Date>;
     declare updated_at?: CreationOptional<Date>;
+    declare deleted_at?: CreationOptional<Date>;
 }
 
 function init(sequelize: Sequelize) {
@@ -117,12 +118,14 @@ function init(sequelize: Sequelize) {
 
             created_at: DataTypes.DATE,
             updated_at: DataTypes.DATE,
+            deleted_at: DataTypes.DATE,
         },
         {
             tableName: tableName,
             modelName: modelName,
             sequelize, // passing the `sequelize` instance is required
             underscored: true,
+            paranoid: true,
         },
     );
 

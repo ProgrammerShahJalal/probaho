@@ -34,33 +34,50 @@ async function restore(
     /** initializations */
     // let models = await db();
     let models = Models.get();
-    let body = req.body as { [key: string]: any };
+    let body = req.body as { [key: string]: any }; // Existing code uses 'body'
 
     try {
-        let data = await models[modelName].findOne({
+        // Find the blog post, including soft-deleted ones
+        let blogPost = await models[modelName].findOne({
             where: {
-                id: body.id,
+                id: body.id, // Using 'body.id' as per existing code
             },
+            paranoid: false, // Important: find even if soft-deleted
         });
 
-        if (data) {
-            data.status = 'active';
-            data.is_published = 'publish';
-            await data.save();
-            return response(205, 'data restored', data);
+        if (blogPost) {
+            // Check if the blog post was actually soft-deleted
+            if (blogPost.getDataValue('deleted_at') === null) {
+                throw new custom_error(
+                    'Blog post is not in trash',
+                    400,
+                    'This blog post has not been trashed.',
+                );
+            }
+
+            await blogPost.restore(); // Clears deleted_at
+
+            // After restoring, update status and is_published
+            await blogPost.update({
+                status: 'active',
+                is_published: 'draft', // Restored items go to draft by default
+            });
+
+            return response(200, 'Blog post restored successfully', blogPost);
         } else {
             throw new custom_error(
-                'data not found',
+                'Blog post not found',
                 404,
-                'operation not possible',
+                'Operation not possible: Record not found',
             );
         }
     } catch (error: any) {
-        let uid = await error_trace(models, error, req.url, req.body);
+        let uid = await error_trace(models, error, req.url, body); // Using 'body' as per existing code
         if (error instanceof custom_error) {
             error.uid = uid;
         } else {
-            throw new custom_error('server error', 500, error.message, uid);
+            // It's good practice to specify a message for the generic server error
+            throw new custom_error('Server error while restoring blog post', 500, error.message, uid);
         }
         throw error;
     }

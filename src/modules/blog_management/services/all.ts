@@ -63,6 +63,7 @@ async function all(
     let role = query_param.role || null;
     let orderByAsc = query_param.orderByAsc || 'true';
     let show_active_data = query_param.show_active_data || 'true';
+    let fetch_soft_deleted = query_param.fetch_soft_deleted === 'true';
     let paginate = parseInt((req.query as any).paginate) || 10;
     let select_fields: string[] = [];
     let exclude_fields: string[] = ['password'];
@@ -80,13 +81,25 @@ async function all(
 
     let query: FindAndCountOptions = {
         order: [[orderByCol, orderByAsc == 'true' ? 'ASC' : 'DESC']],
-        where: {
-            status: show_active_data == 'true' ? 'active' : 'deactive',
-        },
+        where: {},
         // include: [models.Project],
     };
- 
+
     query.attributes = select_fields;
+
+    // Base conditions for soft deletion and status
+    if (fetch_soft_deleted) {
+        query.where = {
+            ...query.where,
+            deleted_at: { [Op.ne]: null },
+        };
+    } else {
+        query.where = {
+            ...query.where,
+            deleted_at: null,
+            status: show_active_data == 'true' ? 'active' : 'deactive',
+        };
+    }
 
     // Add date range filtering if both start and end dates are provided
     if (start_date && end_date) {

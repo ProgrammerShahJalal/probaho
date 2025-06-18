@@ -1,4 +1,3 @@
-import db from '../models/db';
 import { FastifyInstance, FastifyRequest } from 'fastify';
 import { body, validationResult } from 'express-validator';
 import { responseObject, Request } from '../../../common_types/object';
@@ -17,11 +16,10 @@ async function validate(req: Request) {
         .run(req);
 
     let result = await validationResult(req);
-
     return result;
 }
 
-async function soft_delete(
+async function trash(
     fastify_instance: FastifyInstance,
     req: FastifyRequest,
 ): Promise<responseObject> {
@@ -33,38 +31,41 @@ async function soft_delete(
 
     /** initializations */
     let models = Models.get();
-
-    let body = req.body as { [key: string]: any };
+    let bodyParams = req.body as { [key: string]: any };
 
     try {
-        let data = await models[modelName].findOne({
+        let blogPost = await models[modelName].findOne({
             where: {
-                id: body.id,
+                id: bodyParams.id,
             },
         });
 
-        if (data) {
-            data.is_published = 'draft';
-            await data.save();
+        if (blogPost) {
+            // Update status and is_published before trashing
+            await blogPost.update({
+                is_published: 'draft',
+                status: 'deactive', // Or consider a 'trashed' status if it exists
+            });
 
-            await data.destroy(); // ✅ Triggers Sequelize to set deleted_at
-            return response(200, 'data soft deleted', data);
+            await blogPost.destroy(); // Soft delete (sets deleted_at)
+
+            return response(200, 'Blog post moved to trash successfully', blogPost);
         } else {
-        throw new custom_error(
-            'data not found',
-            404,
-            'operation not possible',
-        );
+            throw new custom_error(
+                'Blog post not found',
+                404,
+                'Operation not possible: Record not found',
+            );
+        }
+    } catch (error: any) {
+        let uid = await error_trace(models, error, req.url, bodyParams);
+        if (error instanceof custom_error) {
+            error.uid = uid;
+        } else {
+            throw new custom_error('Server error while trashing blog post', 500, error.message, uid);
+        }
+        throw error;
     }
-} catch (error: any) {
-    let uid = await error_trace(models, error, req.url, req.body);
-    if (error instanceof custom_error) {
-        error.uid = uid;
-    } else {
-        throw new custom_error('server error', 500, error.message, uid);
-    }
-    throw error;
-}
 }
 
-export default soft_delete;
+export default trash;
