@@ -81,7 +81,7 @@ async function all(
         select_fields = query_param.select_fields.replace(/\s/g, '').split(',');
         select_fields = [...select_fields, 'id', 'status'];
     } else {
-        select_fields = ['id', 'title', 'author_id', 'short_description', 'full_description', 'cover_image', 'slug', 'seo_title', 'seo_keyword', 'seo_description', 'status','created_at',];
+        select_fields = ['id', 'title', 'author_id', 'short_description', 'full_description', 'cover_image', 'slug', 'seo_title', 'seo_keyword', 'seo_description', 'status', 'created_at',];
     }
 
     let query: FindAndCountOptions = {
@@ -91,14 +91,17 @@ async function all(
     };
 
     query.attributes = select_fields;
-
+    (query as any).paranoid = true; // Enable soft deletion by default
     // Base conditions for soft deletion and status
     if (show_trash_data) {
+        // If showing trash, ignore status filter and only show deleted items
         query.where = {
             ...query.where,
             deleted_at: { [Op.ne]: null },
         };
+        (query as any).paranoid = false;
     } else {
+        // If not showing trash, only show non-deleted items and filter by status
         query.where = {
             ...query.where,
             deleted_at: null,
@@ -114,7 +117,7 @@ async function all(
                 [Op.between]: [start_date, end_date]
             }
         };
-    } 
+    }
     // Optional: handle cases where only one date is provided
     else if (start_date) {
         query.where = {
@@ -123,7 +126,7 @@ async function all(
                 [Op.gte]: start_date
             }
         };
-    } 
+    }
     else if (end_date) {
         query.where = {
             ...query.where,

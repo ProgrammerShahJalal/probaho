@@ -25,6 +25,7 @@ const Footer: React.FC<Props> = (props: Props) => {
         ) {
             e.preventDefault();
             dispatch(storeSlice.actions.set_show_active_data(type));
+            dispatch(storeSlice.actions.set_show_trash_data(false)); // Ensure trash is off when showing active/inactive
             dispatch(storeSlice.actions.set_only_latest_data(true));
             dispatch(storeSlice.actions.set_page(1));
             dispatch(all({}) as any);
