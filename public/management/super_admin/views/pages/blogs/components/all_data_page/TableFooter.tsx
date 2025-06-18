@@ -55,7 +55,7 @@ const Footer: React.FC<Props> = (props: Props) => {
                         </Link>
                     </li>
                     <li>
-                        <a href="#" onClick={(e) => handle_recycle_data(!state.show_active_data, e)}>
+                        <a href="#" onClick={(e) => handle_recycle_data(true, e)}>
                             <span className="material-symbols-outlined fill text-success">
                                 visibility
                             </span>

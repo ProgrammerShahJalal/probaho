@@ -32,7 +32,7 @@ const RestoreButton: React.FC<Props> = (props: Props) => {
                 onClick={(e) => handle_delete(e)}
                 href={`/${setup.route_prefix}/delete/${props.item.id}`}
             >
-             <span className="icon-undo"></span> Restore
+             <span className="icon-reload text-success"></span> <span className="text text-white">Restore</span>
             </a>
         </>
     );

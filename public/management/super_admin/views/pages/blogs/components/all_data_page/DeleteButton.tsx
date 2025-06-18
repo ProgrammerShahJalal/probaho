@@ -32,7 +32,7 @@ const DeleteButton: React.FC<Props> = (props: Props) => {
                 onClick={(e) => handle_delete(e)}
                 href={`/${setup.route_prefix}/delete/${props.item.id}`}
             >
-                <span className="icon-na text-warning"></span>Soft Delete
+                <span className="icon-na text-warning"></span> <span className="text text-white">Soft Delete</span>
             </a>
         </>
     );
