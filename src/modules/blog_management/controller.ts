@@ -14,6 +14,8 @@ import restore from './services/restore';
 import destroy from './services/destroy';
 import data_import from './services/import';
 import slug from './services/slug';
+import trash from './services/trash';
+import inactive from './services/inactive';
 
 // Helper function to handle service errors
 function handleServiceError(error: any, res: FastifyReply) {
@@ -91,6 +93,23 @@ export default function (fastify: FastifyInstance) {
                 return res.code(data.status).send(data);
             } catch (error: any) {
                 return handleServiceError(error, res);
+            }
+        },
+        inactive: async function (req: FastifyRequest, res: FastifyReply) {
+            try {
+                let data = await inactive(fastify, req);
+                return res.code(data.status).send(data);
+            } catch (error: any) {
+                return handleServiceError(error, res);
+            }
+        },
+
+        trash: async function (req: FastifyRequest, res: FastifyReply) {
+            try {
+                let data = await trash(fastify, req); // Ensure 'trash' service is called
+                return res.code(data.status).send(data);
+            } catch (error: any) {
+                return handleServiceError(error, res); // Use existing error handler
             }
         },
 

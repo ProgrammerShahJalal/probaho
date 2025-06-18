@@ -6,6 +6,7 @@ import active_row from '../../helpers/table_active_row';
 import DeleteButton from './DeleteButton';
 import DestroyButton from './DestroyButton';
 import RestoreButton from './RestoreButton';
+import InactiveButton from './InactiveButton';
 export interface Props {
     item: anyObject;
 }
@@ -34,6 +35,9 @@ const TableRowAction: React.FC<Props> = ({ item }: Props) => {
                          <span className="text text-white">Edit</span>
                         </Link>
                     </li>
+                    <li>
+                        <InactiveButton item={item} />
+                        </li>
                     <li>
                         <DeleteButton item={item} />
                     </li>

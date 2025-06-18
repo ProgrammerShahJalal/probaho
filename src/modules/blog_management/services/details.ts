@@ -39,7 +39,8 @@ async function details(
                     model: models.BlogCommentModel,
                     as: 'blog_comments',
                 },
-            ]
+            ],
+            paranoid: false, // Add this line
         });
 
         if (data) {

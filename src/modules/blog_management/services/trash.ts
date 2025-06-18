@@ -1,4 +1,3 @@
-import db from '../models/db';
 import { FastifyInstance, FastifyRequest } from 'fastify';
 import { body, validationResult } from 'express-validator';
 import { responseObject, Request } from '../../../common_types/object';
@@ -17,11 +16,10 @@ async function validate(req: Request) {
         .run(req);
 
     let result = await validationResult(req);
-
     return result;
 }
 
-async function restore(
+async function trash(
     fastify_instance: FastifyInstance,
     req: FastifyRequest,
 ): Promise<responseObject> {
@@ -32,38 +30,26 @@ async function restore(
     }
 
     /** initializations */
-    // let models = await db();
     let models = Models.get();
-    let body = req.body as { [key: string]: any }; // Existing code uses 'body'
+    let bodyParams = req.body as { [key: string]: any };
 
     try {
-        // Find the blog post, including soft-deleted ones
         let blogPost = await models[modelName].findOne({
             where: {
-                id: body.id, // Using 'body.id' as per existing code
+                id: bodyParams.id,
             },
-            paranoid: false, // Important: find even if soft-deleted
         });
 
         if (blogPost) {
-            // Check if the blog post was actually soft-deleted
-            if (blogPost.getDataValue('deleted_at') === null) {
-                throw new custom_error(
-                    'Blog post is not in trash',
-                    400,
-                    'This blog post has not been trashed.',
-                );
-            }
-
-            await blogPost.restore(); // Clears deleted_at
-
-            // After restoring, update status and is_published
+            // Update status and is_published before trashing
             await blogPost.update({
-                status: 'active',
-                is_published: 'draft', // Restored items go to draft by default
+                is_published: 'draft',
+                status: 'deactive', // Or consider a 'trashed' status if it exists
             });
 
-            return response(200, 'Blog post restored successfully', blogPost);
+            await blogPost.destroy(); // Soft delete (sets deleted_at)
+
+            return response(200, 'Blog post moved to trash successfully', blogPost);
         } else {
             throw new custom_error(
                 'Blog post not found',
@@ -72,15 +58,14 @@ async function restore(
             );
         }
     } catch (error: any) {
-        let uid = await error_trace(models, error, req.url, body); // Using 'body' as per existing code
+        let uid = await error_trace(models, error, req.url, bodyParams);
         if (error instanceof custom_error) {
             error.uid = uid;
         } else {
-            // It's good practice to specify a message for the generic server error
-            throw new custom_error('Server error while restoring blog post', 500, error.message, uid);
+            throw new custom_error('Server error while trashing blog post', 500, error.message, uid);
         }
         throw error;
     }
 }
 
-export default restore;
+export default trash;

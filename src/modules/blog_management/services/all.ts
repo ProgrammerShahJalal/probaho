@@ -81,10 +81,26 @@ async function all(
     let query: FindAndCountOptions = {
         order: [[orderByCol, orderByAsc == 'true' ? 'ASC' : 'DESC']],
         where: {
-            status: show_active_data == 'true' ? 'active' : 'deactive',
+            // status: show_active_data == 'true' ? 'active' : 'deactive', // Will be replaced by deleted_at logic
         },
         // include: [models.Project],
     };
+
+    if (show_active_data == 'false') { // User wants Recycle Bin (trashed items)
+        query.paranoid = false; // Include soft-deleted records for this query
+        query.where = {
+            ...query.where, // Preserve other where clauses like date range or search
+            deleted_at: {
+                [Op.ne]: null, // Fetch only records where deleted_at is not null
+            },
+        };
+    } else { // User wants Active data (status='active' AND deleted_at IS NULL)
+        query.where = {
+            ...query.where, // Preserve other potential where clauses from earlier in the function
+            status: 'active', // Add this condition
+        };
+        // `deleted_at IS NULL` is handled by default paranoid model behavior
+    }
  
     query.attributes = select_fields;
 
