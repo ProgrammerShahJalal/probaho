@@ -63,7 +63,7 @@ async function all(
     let role = query_param.role || null;
     let orderByAsc = query_param.orderByAsc || 'true';
     let show_active_data = query_param.show_active_data || 'true';
-    let fetch_soft_deleted = query_param.fetch_soft_deleted === 'true';
+    let show_trash_data = query_param.show_trash_data === 'true' ? true : false;
     let paginate = parseInt((req.query as any).paginate) || 10;
     let select_fields: string[] = [];
     let exclude_fields: string[] = ['password'];
@@ -88,7 +88,7 @@ async function all(
     query.attributes = select_fields;
 
     // Base conditions for soft deletion and status
-    if (fetch_soft_deleted) {
+    if (show_trash_data) {
         query.where = {
             ...query.where,
             deleted_at: { [Op.ne]: null },
