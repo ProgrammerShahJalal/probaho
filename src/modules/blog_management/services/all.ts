@@ -63,6 +63,7 @@ async function all(
     let role = query_param.role || null;
     let orderByAsc = query_param.orderByAsc || 'true';
     let show_active_data = query_param.show_active_data || 'true';
+    let fetch_soft_deleted = query_param.fetch_soft_deleted === 'true';
     let paginate = parseInt((req.query as any).paginate) || 10;
     let select_fields: string[] = [];
     let exclude_fields: string[] = ['password'];
@@ -80,29 +81,25 @@ async function all(
 
     let query: FindAndCountOptions = {
         order: [[orderByCol, orderByAsc == 'true' ? 'ASC' : 'DESC']],
-        where: {
-            // status: show_active_data == 'true' ? 'active' : 'deactive', // Will be replaced by deleted_at logic
-        },
+        where: {},
         // include: [models.Project],
     };
 
-    if (show_active_data == 'false') { // User wants Recycle Bin (trashed items)
-        query.paranoid = false; // Include soft-deleted records for this query
-        query.where = {
-            ...query.where, // Preserve other where clauses like date range or search
-            deleted_at: {
-                [Op.ne]: null, // Fetch only records where deleted_at is not null
-            },
-        };
-    } else { // User wants Active data (status='active' AND deleted_at IS NULL)
-        query.where = {
-            ...query.where, // Preserve other potential where clauses from earlier in the function
-            status: 'active', // Add this condition
-        };
-        // `deleted_at IS NULL` is handled by default paranoid model behavior
-    }
- 
     query.attributes = select_fields;
+
+    // Base conditions for soft deletion and status
+    if (fetch_soft_deleted) {
+        query.where = {
+            ...query.where,
+            deleted_at: { [Op.ne]: null },
+        };
+    } else {
+        query.where = {
+            ...query.where,
+            deleted_at: null,
+            status: show_active_data == 'true' ? 'active' : 'deactive',
+        };
+    }
 
     // Add date range filtering if both start and end dates are provided
     if (start_date && end_date) {
