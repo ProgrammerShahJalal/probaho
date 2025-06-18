@@ -31,7 +31,7 @@ const AllDeactivatedData: React.FC<Props> = (props: Props) => {
                 <span className="material-symbols-outlined fill text-danger">
                     delete
                 </span>
-                <div className="text text-white">Trasted</div>
+                <div className="text text-white">Trashed</div>
             </a>
         </>
     );
