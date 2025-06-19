@@ -14,7 +14,7 @@ type Infer = InferAttributes<DataModel>;
 type InferCreation = InferCreationAttributes<DataModel>;
 
 type status = 'active' | 'deactive';
-type role = 'admin' | 'student' | 'parent';
+type role = 'branch' | 'branch_admin' | 'student' | 'teacher' | 'staff';
 
 
 class DataModel extends Model<Infer, InferCreation> {
@@ -36,7 +36,7 @@ function init(sequelize: Sequelize) {
                 primaryKey: true,
             },
             title: {
-                type: DataTypes.ENUM('admin', 'student', 'parent'),
+                type: DataTypes.ENUM('branch', 'branch_admin', 'student', 'teacher', 'staff'),
                 defaultValue: 'student',
             },
             serial: {

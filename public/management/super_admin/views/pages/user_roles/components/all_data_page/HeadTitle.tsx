@@ -13,7 +13,7 @@ const HeadTitle: React.FC<Props> = (props: Props) => {
     );
 
     return (
-        <div className="title no_move" id="users_drag">
+        <div id="users_drag">
             <h5>
                 {props.title ? props.title : setup.all_page_title}
 
