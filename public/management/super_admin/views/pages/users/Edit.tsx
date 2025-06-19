@@ -65,20 +65,21 @@ const Edit: React.FC<Props> = (props: Props) => {
                                     <h5 className="mb-4">Input Data</h5>
                                     <div className="form_auto_fit">
                                         {[
-                                            'first_name',
-                                            'last_name',
+                                            'name',
                                             'phone_number',
                                             'role',
                                             'is_verified',
+                                            'is_approved',
                                             'is_blocked',
                                             'photo',
+                                            'join_date',
+                                            'base_salary',
                                         ].map((i) => (
                                             <div
                                                 key={i}
                                                 className="form-group form-vertical"
                                             >
-                                                {i === 'first_name' ||
-                                                i === 'last_name' ||
+                                                {i === 'name' || i=== 'join_date' || i === 'base_salary'  ||
                                                 i === 'phone_number' ? (
                                                     <Input
                                                         name={i}

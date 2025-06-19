@@ -19,6 +19,9 @@ module.exports = async function (fastify: FastifyInstance) {
                 .post(`/register`, controllerInstance.register)
                 .post(`/update`, controllerInstance.update)
                 .post(`/soft-delete`, { preHandler: auth_middleware }, controllerInstance.delete)
+                .post(`${prefix}/inactive`, controllerInstance.inactive)
+                .post(`${prefix}/active`, controllerInstance.active)
+                .post(`${prefix}/trash`, controllerInstance.trash)
                 .post(`/restore`, { preHandler: auth_middleware }, controllerInstance.restore)
                 .post(`/forget`, controllerInstance.forget)
                 .get(`/:id`, controllerInstance.find);

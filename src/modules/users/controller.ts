@@ -12,6 +12,9 @@ import details from './services/details';
 import destroy from './services/destroy';
 import soft_delete from './services/soft_delete';
 import restore from './services/restore';
+import active from './services/active';
+import trash from './services/trash';
+import inactive from './services/inactive';
 const { serialize, parse } = require('@fastify/cookie');
 
 // Helper function to handle service errors
@@ -122,6 +125,31 @@ export default function (fastify: FastifyInstance) {
                 return res.code(data.status).send(data);
             } catch (error: any) {
                 return handleServiceError(error, res);
+            }
+        },
+        inactive: async function (req: FastifyRequest, res: FastifyReply) {
+            try {
+                let data = await inactive(fastify, req);
+                return res.code(data.status).send(data);
+            } catch (error: any) {
+                return handleServiceError(error, res);
+            }
+        },
+        active: async function (req: FastifyRequest, res: FastifyReply) {
+            try {
+                let data = await active(fastify, req);
+                return res.code(data.status).send(data);
+            } catch (error: any) {
+                return handleServiceError(error, res);
+            }
+        },
+
+        trash: async function (req: FastifyRequest, res: FastifyReply) {
+            try {
+                let data = await trash(fastify, req); // Ensure 'trash' service is called
+                return res.code(data.status).send(data);
+            } catch (error: any) {
+                return handleServiceError(error, res); // Use existing error handler
             }
         },
 

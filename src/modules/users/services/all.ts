@@ -64,6 +64,7 @@ async function all(
     // let role = query_param.role || null;
     let orderByAsc = query_param.orderByAsc || 'true';
     let show_active_data = query_param.show_active_data || 'true';
+    let show_trash_data = query_param.show_trash_data === 'true' ? true : false;
     let paginate = parseInt((req.query as any).paginate) || 10;
     let select_fields: string[] = [];
     let exclude_fields: string[] = ['password'];
@@ -82,15 +83,28 @@ async function all(
 
     let query: FindAndCountOptions = {
         order: [[orderByCol, orderByAsc == 'true' ? 'ASC' : 'DESC']],
-        where: {
-            status: show_active_data == 'true' ? 'active' : 'deactive',
-            id: { [Op.ne]: authUser?.id },
-        },
+        where: {},
         include: [{ model: models.UserRolesModel, as: "role" }]
-
     };
 
     query.attributes = select_fields;
+    (query as any).paranoid = true; // Enable soft deletion by default
+    // Base conditions for soft deletion and status
+    if (show_trash_data) {
+        // Only show deleted items, do not filter by status
+        query.where = {
+            deleted_at: { [Op.ne]: null },
+            id: { [Op.ne]: authUser?.id },
+        };
+        (query as any).paranoid = false;
+    } else {
+        // Only show non-deleted items and filter by status
+        query.where = {
+            deleted_at: null,
+            status: show_active_data == 'true' ? 'active' : 'deactive',
+            id: { [Op.ne]: authUser?.id },
+        };
+    }
 
 
 // Add date range filtering if both start and end dates are provided
@@ -126,14 +140,13 @@ else if (end_date) {
             [Op.or]: [
                 { id: { [Op.like]: `%${search_key}%` } },
                 { uid: { [Op.like]: `%${search_key}%` } },
-                { first_name: { [Op.like]: `%${search_key}%` } },
-                { last_name: { [Op.like]: `%${search_key}%` } },
+                { name: { [Op.like]: `%${search_key}%` } },
                 { email: { [Op.like]: `%${search_key}%` } },
                 { phone_number: { [Op.like]: `%${search_key}%` } },
             ],
         };
     }
-    console.log('auth user ', (req as any).user)
+
 
     try {
         let data = await (fastify_instance as anyObject).paginate(

@@ -44,7 +44,7 @@ const All: React.FC<Props> = () => {
 
         dispatch(
             storeSlice.actions.set_select_fields(
-                'id,uid,role_serial,first_name,last_name,email,phone_number,photo,is_verified,is_blocked,status',
+                'id,uid,role_serial,name,email,phone_number,photo,is_verified,is_blocked, is_approved,status',
             ),
         );
         dispatch(all({}));
@@ -112,13 +112,8 @@ const All: React.FC<Props> = () => {
                                             sort
                                         />
                                         <TableHeading
-                                            label="First Name"
-                                            col_name="first_name"
-                                            sort
-                                        />
-                                        <TableHeading
-                                            label="Last Name"
-                                            col_name="last_name"
+                                            label="Name"
+                                            col_name="name"
                                             sort
                                         />
                                         <TableHeading
@@ -129,6 +124,11 @@ const All: React.FC<Props> = () => {
                                         <TableHeading
                                             label="Is Verified"
                                             col_name="is_verified"
+                                            sort
+                                        />
+                                        <TableHeading
+                                            label="Is Approved"
+                                            col_name="is_approved"
                                             sort
                                         />
                                         <TableHeading
@@ -182,20 +182,15 @@ const All: React.FC<Props> = () => {
                                                             quick_view(i)
                                                         }
                                                     >
-                                                        {i.first_name}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <span
-                                                        className="quick_view_trigger"
-                                                        onClick={() =>
-                                                            quick_view(i)
-                                                        }
-                                                    >
-                                                        {i.last_name}
+                                                        {i.name}
                                                     </span>
                                                 </td>
                                                 <td>{i.email}</td>
+                                                <td>
+                                                    {i.is_verified === '1'
+                                                        ? 'Yes'
+                                                        : 'No'}
+                                                </td>
                                                 <td>
                                                     {i.is_verified === '1'
                                                         ? 'Yes'

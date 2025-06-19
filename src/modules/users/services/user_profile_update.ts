@@ -34,8 +34,8 @@ async function validate(req: Request) {
     return result;
 }
 
-async function generateUniqueSlug(models: any, firstName: string, lastName: string): Promise<string> {
-    let baseSlug = `${firstName}-${lastName}`
+async function generateUniqueSlug(models: any, name: string): Promise<string> {
+    let baseSlug = `${name}`
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric with hyphens
         .replace(/^-+|-+$/g, ''); // Trim hyphens
@@ -75,7 +75,7 @@ async function user_profile_update(fastify_instance: FastifyInstance, req: Fasti
      
 
              // Generate a unique slug
-        const slug = await generateUniqueSlug(models, body.first_name, body.last_name) || data.slug;
+        const slug = await generateUniqueSlug(models, body.name) || data.slug;
 
             let image_path = data.photo || 'avatar.png';
             if (body['photo']?.ext) {
@@ -88,8 +88,7 @@ async function user_profile_update(fastify_instance: FastifyInstance, req: Fasti
 
              // Update user data
         await data.update({
-            first_name: body.first_name || data.first_name,
-            last_name: body.last_name || data.last_name,
+            name: body.name || data.name,
             role_serial: body.role || data.role_serial,
             phone_number: body.phone_number || data.phone_number,
             photo: image_path || data.photo,
@@ -97,6 +96,11 @@ async function user_profile_update(fastify_instance: FastifyInstance, req: Fasti
             slug: slug || data.slug,
             is_verified: body.is_verified !== undefined ? body.is_verified : data.is_verified,
             is_blocked: body.is_blocked !== undefined ? body.is_blocked : data.is_blocked,
+            is_approved: body.is_approved !== undefined ? body.is_approved : data.is_approved,
+            user_infos: body.user_infos || data.user_infos,
+            user_documents: body.user_documents || data.user_documents,
+            join_date: body.join_date ? moment(body.join_date).toDate() : data.join_date,
+            base_salary: body.base_salary || data.base_salary,
         });
             await data.save();
 

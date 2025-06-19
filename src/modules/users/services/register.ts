@@ -11,29 +11,16 @@ import {Request} from '../../../common_types/object';
 async function validate(req: Request) {
     const fields = [
         {
-            name: 'first_name',
+            name: 'name',
             rules: [
-                body('first_name')
+                body('name')
                     .notEmpty()
-                    .withMessage('The <b>first name</b> field is required')
+                    .withMessage('The <b>name</b> field is required')
                     .trim()
-                    .isLength({ min: 2, max: 50 })
-                    .withMessage('First name must be between 2 and 50 characters')
+                    .isLength({ min: 2, max: 100 })
+                    .withMessage('Name must be between 2 and 100 characters')
                     .matches(/^[A-Za-z\s-]+$/)
-                    .withMessage('First name can only contain letters, spaces, and hyphens'),
-            ],
-        },
-        {
-            name: 'last_name',
-            rules: [
-                body('last_name')
-                    .notEmpty()
-                    .withMessage('The <b>last name</b> field is required')
-                    .trim()
-                    .isLength({ min: 2, max: 50 })
-                    .withMessage('Last name must be between 2 and 50 characters')
-                    .matches(/^[A-Za-z\s-]+$/)
-                    .withMessage('Last name can only contain letters, spaces, and hyphens'),
+                    .withMessage('Name can only contain letters, spaces, and hyphens'),
             ],
         },
         {
@@ -91,10 +78,9 @@ async function validate(req: Request) {
 
 async function generateUniqueSlug(
     models: any,
-    firstName: string,
-    lastName: string,
+    name: string,
 ): Promise<string> {
-    let baseSlug = `${firstName}-${lastName}`
+    let baseSlug = `${name}`
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric with hyphens
         .replace(/^-+|-+$/g, ''); // Trim hyphens
@@ -142,8 +128,7 @@ async function register(
         // Generate unique slug
         const slug = await generateUniqueSlug(
             models,
-            body.first_name,
-            body.last_name,
+            body.name,
         );
 
         // Check if a student record exists
@@ -200,15 +185,21 @@ async function register(
         // Create user
         let newUser = await models.UserModel.create({
             uid: uid,
+            branch_id: body.branch_id,
+            class_id: body.class_id,
             role_serial: roleSerial || studentRecord?.serial,
-            first_name: body.first_name,
-            last_name: body.last_name,
+            is_approved: body.is_approved,
+            name: body.name,
             email: body.email,
             phone_number: body.phone_number,
             photo: body.photo || image_path,
             password: hashedPassword,
             slug: slug,
             token: body.token,
+            user_infos: body.user_infos,
+            user_documents: body.user_documents,
+            join_date: body.join_date ? moment(body.join_date).toDate() : null,
+            base_salary: body.base_salary || null,
         });
 
         return response(200, 'User registered successfully', newUser);

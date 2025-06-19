@@ -40,6 +40,7 @@ const fetch_api = async (param, thunkAPI) => {
             orderByCol: state[`orderByCol`],
             orderByAsc: state[`orderByAsc`],
             show_active_data: state[`show_active_data`],
+            show_trash_data: state[`show_trash_data`],
             select_fields: state[`select_fields`],
             role: state[`role`],
         },

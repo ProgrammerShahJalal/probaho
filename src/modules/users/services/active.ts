@@ -21,7 +21,7 @@ async function validate(req: Request) {
     return result;
 }
 
-async function restore(
+async function active(
     fastify_instance: FastifyInstance,
     req: FastifyRequest,
 ): Promise<responseObject> {
@@ -32,8 +32,8 @@ async function restore(
     }
 
     /** initializations */
-    // let models = await db();
     let models = Models.get();
+
     let body = req.body as { [key: string]: any };
 
     try {
@@ -41,28 +41,29 @@ async function restore(
             where: {
                 id: body.id,
             },
+            paranoid: false, // Allow finding soft-deleted records
         });
 
         if (data) {
-            data.status = 'active';
+            data.status = 'active'; 
             await data.save();
-            return response(205, 'data restored', data);
+            return response(200, 'data active', data);
         } else {
-            throw new custom_error(
-                'data not found',
-                404,
-                'operation not possible',
-            );
-        }
-    } catch (error: any) {
-        let uid = await error_trace(models, error, req.url, req.body);
-        if (error instanceof custom_error) {
-            error.uid = uid;
-        } else {
-            throw new custom_error('server error', 500, error.message, uid);
-        }
-        throw error;
+        throw new custom_error(
+            'data not found',
+            404,
+            'operation not possible',
+        );
     }
+} catch (error: any) {
+    let uid = await error_trace(models, error, req.url, req.body);
+    if (error instanceof custom_error) {
+        error.uid = uid;
+    } else {
+        throw new custom_error('server error', 500, error.message, uid);
+    }
+    throw error;
+}
 }
 
-export default restore;
+export default active;

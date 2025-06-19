@@ -38,7 +38,7 @@ import * as AppSettingsModel from "../modules/app_setting_management/models/mode
 import * as AppSettingValuesModel from "../modules/app_setting_values_management/models/model";
 import * as AppSubscribersModel from "../modules/app_subscribers_management/models/model";
 
-import * as UserModel from "../modules/authetication/models/user_model";
+import * as UserModel from "../modules/users/models/user_model";
 import * as UserRolesModel from "../modules/user_roles/models/model";
 import * as UserLoginHistoriesModel from "../modules/user_login_histories/models/model";
 

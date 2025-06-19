@@ -65,6 +65,12 @@ export const store_reducers = {
     ) => {
         state.show_active_data = action.payload;
     },
+    set_show_trash_data: (
+        state: typeof initialState,
+        action: PayloadAction<boolean>,
+    ) => {
+        state.show_trash_data = action.payload;
+    },
     set_select_fields: (
         state: typeof initialState,
         action: PayloadAction<string>,

@@ -17,7 +17,7 @@ export const initialState = {
     /* data filters */
     role: 'all',
     select_fields:
-        'id,uid,role_serial,first_name,last_name,email,phone_number,photo,slug,status',
+        'id,uid,role_serial,name,email,phone_number,photo,slug,status',
     filter_criteria: {} as anyObject,
     all_data_count: 0, // total data in database
     page: 1,
@@ -26,6 +26,7 @@ export const initialState = {
     orderByCol: 'id',
     orderByAsc: false,
     show_active_data: true, // show all active data
+    show_trash_data: false, // if true then fetch soft deleted data
     only_latest_data: false, // if true then first fectch from cache then update
 
     /* selected data */
