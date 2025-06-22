@@ -14,7 +14,7 @@ const DestroyButton: React.FC<Props> = (props: Props) => {
         e.preventDefault();
 
         const confirm = await (window as anyObject).s_confirm(
-            'Delete permanently.',
+            'Warning: This will permanently delete the data and all associated dependencies. Proceed?',
         );
         if (confirm) {
             dispatch(destroy({ id: props.item.id }) as any);
@@ -27,7 +27,7 @@ const DestroyButton: React.FC<Props> = (props: Props) => {
                 onClick={(e) => handle_delete(e)}
                 href={`/${setup.route_prefix}/destroy/${props.item.id}`}
             >
-                Destroy
+                <span className="icon-trash text-danger"></span> <span className="text text-white">Destroy</span>
             </a>
         </>
     );

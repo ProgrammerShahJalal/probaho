@@ -56,11 +56,11 @@ const Details: React.FC<Props> = (props: Props) => {
                                     {[
                                         'uid',
                                         'role_serial',
-                                        'first_name',
-                                        'last_name',
+                                        'name',
                                         'email',
                                         'phone_number',
                                         'is_verified',
+                                        'is_approved',
                                         'is_blocked',
                                     ].map((i) => (
                                         <tr>

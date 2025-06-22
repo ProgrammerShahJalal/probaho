@@ -16,6 +16,7 @@ import data_import from './services/import';
 import slug from './services/slug';
 import trash from './services/trash';
 import inactive from './services/inactive';
+import active from './services/active';
 
 // Helper function to handle service errors
 function handleServiceError(error: any, res: FastifyReply) {
@@ -98,6 +99,14 @@ export default function (fastify: FastifyInstance) {
         inactive: async function (req: FastifyRequest, res: FastifyReply) {
             try {
                 let data = await inactive(fastify, req);
+                return res.code(data.status).send(data);
+            } catch (error: any) {
+                return handleServiceError(error, res);
+            }
+        },
+        active: async function (req: FastifyRequest, res: FastifyReply) {
+            try {
+                let data = await active(fastify, req);
                 return res.code(data.status).send(data);
             } catch (error: any) {
                 return handleServiceError(error, res);

@@ -71,13 +71,14 @@ const Create: React.FC<Props> = (props: Props) => {
                                 <h5 className="mb-4">User Informations</h5>
                                 <div className="form_auto_fit">
                                     {[
-                                        'first_name',
-                                        'last_name',
+                                        'name',
                                         'email',
                                         'phone_number',
                                         'password',
                                         'role',
                                         'photo',
+                                        'join_date',
+                                        'base_salary',
                                     ].map((i) => (
                                         <div
                                             key={i}
@@ -117,7 +118,7 @@ const Create: React.FC<Props> = (props: Props) => {
                                             ) : (
                                                 <Input
                                                     name={i}
-                                                    required={true}
+                                                    required={i !== 'base_salary' && i !== 'join_date'}
                                                 />
                                             )}
                                         </div>

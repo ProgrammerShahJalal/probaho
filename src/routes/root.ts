@@ -1,7 +1,8 @@
 'use strict';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import check_is_admin_and_redirect from '../modules/authetication/services/check_is_admin_and_redirect';
-const authRoutes = require('../modules/authetication/routes');
+import check_is_admin_and_redirect from '../modules/users/services/check_is_admin_and_redirect';
+import check_is_super_admin_and_redirect from '../modules/users/services/check_is_super_admin_and_redirect';
+const authRoutes = require('../modules/users/routes');
 
 module.exports = async function (fastify: FastifyInstance) {
     fastify.register(authRoutes);
@@ -22,7 +23,7 @@ module.exports = async function (fastify: FastifyInstance) {
 
         .get(
             '/super-admin',
-            { preHandler: check_is_admin_and_redirect },
+            { preHandler: check_is_super_admin_and_redirect },
             async (_req: FastifyRequest, reply: FastifyReply) => {
                 return reply.view('dashboard/super_admin.ejs');
             },

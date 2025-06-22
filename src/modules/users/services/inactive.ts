@@ -1,14 +1,10 @@
 import db from '../models/db';
 import { FastifyInstance, FastifyRequest } from 'fastify';
 import { body, validationResult } from 'express-validator';
-import {
-    anyObject,
-    responseObject,
-    Request,
-} from '../../../common_types/object';
+import { responseObject, Request } from '../../../common_types/object';
 import response from '../../../helpers/response';
-import error_trace from '../../../helpers/error_trace';
 import custom_error from '../../../helpers/custom_error';
+import error_trace from '../../../helpers/error_trace';
 import { modelName } from '../models/user_model';
 import Models from '../../../database/models';
 
@@ -25,7 +21,7 @@ async function validate(req: Request) {
     return result;
 }
 
-async function destroy(
+async function inactive(
     fastify_instance: FastifyInstance,
     req: FastifyRequest,
 ): Promise<responseObject> {
@@ -37,6 +33,7 @@ async function destroy(
 
     /** initializations */
     let models = Models.get();
+
     let body = req.body as { [key: string]: any };
 
     try {
@@ -47,24 +44,25 @@ async function destroy(
         });
 
         if (data) {
-            await data.destroy();
-            return response(200, 'data permanently deleted', {});
+            data.status = 'deactive'; 
+            await data.save();
+            return response(200, 'data soft deleted', data);
         } else {
-            throw new custom_error(
-                'data not found',
-                404,
-                'operation not possible',
-            );
-        }
-    } catch (error: unknown) {
-        let uid = await error_trace(models, error, req.url, req.body);
-        if (error instanceof custom_error) {
-            error.uid = uid;
-        } else {
-            throw new custom_error('server error', 500, (error as Error).message, uid);
-        }
-        throw error;
+        throw new custom_error(
+            'data not found',
+            404,
+            'operation not possible',
+        );
     }
+} catch (error: any) {
+    let uid = await error_trace(models, error, req.url, req.body);
+    if (error instanceof custom_error) {
+        error.uid = uid;
+    } else {
+        throw new custom_error('server error', 500, error.message, uid);
+    }
+    throw error;
+}
 }
 
-export default destroy;
+export default inactive;

@@ -35,8 +35,14 @@ const auth_middleware = async (request: FastifyRequest, reply: FastifyReply) => 
     const jwt = require('jsonwebtoken');
     // Get token from cookies
     const cookies = parseCookieString(request.headers.cookie || '');
-    // console.log('cookies', cookies);
-    const token = cookies?.token?.startsWith('Bearer ') ? cookies.token.slice(7) : null;
+    let token = cookies?.token;
+    if (token && token.startsWith('Bearer ')) {
+        token = token.slice(7);
+    } else if (token && token.startsWith('Bearer%20')) {
+        token = token.slice(10); // Remove 'Bearer%20' if present (URL encoded)
+    }
+
+    console.log('Token from cookies:', token);
 
     if (!token) {
         return reply.redirect('/login');

@@ -58,14 +58,9 @@ const QuickView: React.FC<Props> = (props: Props) => {
                                     </th>
                                 </tr>
                                 <tr>
-                                    <th>First Name</th>
+                                    <th>Name</th>
                                     <th>:</th>
-                                    <th>{state.item.first_name}</th>
-                                </tr>
-                                <tr>
-                                    <th>Last Name</th>
-                                    <th>:</th>
-                                    <th>{state.item.last_name}</th>
+                                    <th>{state.item.name}</th>
                                 </tr>
                                 <tr>
                                     <th>Role</th>

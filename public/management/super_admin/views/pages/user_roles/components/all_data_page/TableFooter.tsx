@@ -24,7 +24,7 @@ const Footer: React.FC<Props> = (props: Props) => {
                             <span className="material-symbols-outlined fill">
                                 add
                             </span>
-                            <div className="text">create new</div>
+                            <div className="text text-white">create new</div>
                         </Link>
                     </li>
                     <li>

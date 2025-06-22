@@ -16,8 +16,8 @@ POST {{hostname}}/login HTTP/1.1
 content-type: application/json
 
 {
-    "email": "mostafiz@gmail.com",
-    "password": "12345678"
+    "email": "probaho@gmail.com",
+    "password": "Probaho@34"
 }
 
 # register
@@ -26,12 +26,11 @@ POST {{hostname}}/register HTTP/1.1
 content-type: application/json
 
 {
-    "first_name": "Shah",
-    "last_name": "Jalal",
-    "email": "shah.jalal.ju.bd@gmail.com",
-    "phone_number": "01394322124",
+    "name": "Farabi",
+    "email": "farabi@gmail.com",
+    "phone_number": "01794322124",
     "photo": "avatar.png",
-    "password": "12345678"
+    "password": "Probaho@34"
 }
 # update
 ###
@@ -39,7 +38,7 @@ POST {{hostname}}/update HTTP/1.1
 content-type: application/json
 
 {
-    "id": 3,
+    "id": 1,
     "role_serial": 1
 }
 

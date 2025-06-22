@@ -40,12 +40,13 @@ const HeadRightButtons: React.FC<Props> = (props: Props) => {
                     </span>
                 </a>
             </li> */}
-            <li>
-                <a href="#" onClick={() => show_filter(true)}>
-                    <span className="material-symbols-outlined fill">
+            <li onClick={() => show_filter(true)}>
+                <a href="#">
+                    <span className="material-symbols-outlined fill"> 
                         event_list
                     </span>
-                </a>
+                </a> {" "}
+                <span role="button">Filter</span>
             </li>
         </ul>
     );

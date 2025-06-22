@@ -7,11 +7,19 @@ import DeleteButton from './DeleteButton';
 import DestroyButton from './DestroyButton';
 import RestoreButton from './RestoreButton';
 import InactiveButton from './InactiveButton';
+import ActiveButton from './ActiveButton';
+import { useSelector } from 'react-redux';
+import { initialState } from '../../config/store/inital_state';
+import { RootState } from '../../../../../store';
+
 export interface Props {
     item: anyObject;
 }
 const TableRowAction: React.FC<Props> = ({ item }: Props) => {
     const toggle_icon = useRef<HTMLElement | null>(null);
+    const state: typeof initialState = useSelector(
+        (state: RootState) => state[setup.module_name],
+    );
 
     return (
         <>
@@ -37,16 +45,20 @@ const TableRowAction: React.FC<Props> = ({ item }: Props) => {
                     </li>
                     <li>
                         <InactiveButton item={item} />
-                        </li>
+                        <ActiveButton item={item} />
+                    </li>
                     <li>
                         <DeleteButton item={item} />
                     </li>
                     <li>
                         <DestroyButton item={item} />
                     </li>
-                    <li>
-                        <RestoreButton item={item} />
-                    </li>
+                    {/* Only show RestoreButton if not viewing inactive data */}
+                    {state.show_active_data || state.show_trash_data ? (
+                        <li>
+                            <RestoreButton item={item} />
+                        </li>
+                    ): null}
                 </ul>
             </div>
         </>

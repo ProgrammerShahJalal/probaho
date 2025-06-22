@@ -40,7 +40,7 @@ const ExportSelected: React.FC<Props> = (props: Props) => {
         <>
             <a href="#" onClick={(e) => handle_export(e)}>
                 <span className="material-symbols-outlined fill">download</span>
-                <div className="text">Export ({state.selected.length})</div>
+                <div className="text text-white">Export ({state.selected.length})</div>
             </a>
         </>
     );
