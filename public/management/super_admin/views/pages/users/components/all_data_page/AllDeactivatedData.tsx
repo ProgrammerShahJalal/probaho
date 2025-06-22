@@ -18,6 +18,7 @@ const AllDeactivatedData: React.FC<Props> = (props: Props) => {
         e: React.MouseEvent<HTMLElement, MouseEvent>,
     ) {
         e.preventDefault();
+        dispatch(storeSlice.actions.set_selected([])); // Clear selected items
         dispatch(storeSlice.actions.set_show_trash_data(true));
         dispatch(storeSlice.actions.set_show_active_data(false)); // Ensure active/inactive is off when showing trash
         dispatch(storeSlice.actions.set_only_latest_data(true));
