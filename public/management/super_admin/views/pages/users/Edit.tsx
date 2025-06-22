@@ -12,6 +12,8 @@ import { update } from './config/store/async_actions/update';
 import Input from './components/management_data_page/Input';
 import InputImage from './components/management_data_page/InputImage';
 import UserRolesDropDown from '../user_roles/components/dropdown/DropDown';
+import DateEl from '../../components/DateEl';
+
 export interface Props {}
 
 const Edit: React.FC<Props> = (props: Props) => {
@@ -79,11 +81,16 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                 key={i}
                                                 className="form-group form-vertical"
                                             >
-                                                {i === 'name' || i=== 'join_date' || i === 'base_salary'  ||
-                                                i === 'phone_number' ? (
+                                                {i === 'name' || i === 'base_salary' || i === 'phone_number' ? (
                                                     <Input
                                                         name={i}
                                                         value={get_value(i)}
+                                                    />
+                                                ) : i === 'join_date' ? (
+                                                    <DateEl
+                                                        name={i}
+                                                        value={get_value(i) ? String(get_value(i)).slice(0, 10) : ''}
+                                                        handler={(data) => dispatch(storeSlice.actions.set_item({ ...state.item, [i]: data.value }))}
                                                     />
                                                 ) : i === 'photo' ? (
                                                     <div className="form-group grid_full_width form-vertical">

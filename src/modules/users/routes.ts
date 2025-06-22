@@ -24,7 +24,8 @@ module.exports = async function (fastify: FastifyInstance) {
                 .post(`/trash`, controllerInstance.trash)
                 .post(`/restore`, { preHandler: auth_middleware }, controllerInstance.restore)
                 .post(`/forget`, controllerInstance.forget)
-                .get(`/:id`, controllerInstance.find);
+                .get(`/:id`, controllerInstance.find)
+                .post(`/import`, { preHandler: auth_middleware }, controllerInstance.importUsers);
         },
         { prefix },
     );

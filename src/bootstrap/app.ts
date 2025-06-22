@@ -72,9 +72,9 @@ class FastifyApp {
     private async registerMultipartSupport() {
         async function onFile(part: any) {
             if (part.type === 'file' && part.filename) {
-                const buff = await part.toBuffer();
+                const buff = await part.toBuffer(); // buff is already a Buffer with the file content
                 part.value = {
-                    data: Buffer.from(buff, 'base64'),
+                    data: buff, // Correctly assign the buffer directly
                     name: part.filename,
                     ext: '.' + part.filename.split('.')[1],
                 };

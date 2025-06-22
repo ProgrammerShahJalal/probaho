@@ -21,7 +21,8 @@ async function details(
             where: {
                 id: params.id,
             },
-            include: [{ model: models.UserRolesModel, as: "role" }]
+            include: [{ model: models.UserRolesModel, as: "role" }],
+            paranoid: false, // Add this line
         });
 
         if (data) {

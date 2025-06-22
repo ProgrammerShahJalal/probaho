@@ -12,6 +12,8 @@ const ImportUsersModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) 
     const [uploadProgress, setUploadProgress] = useState<number>(0);
     const [statusMessage, setStatusMessage] = useState<string>('');
     const [isUploading, setIsUploading] = useState<boolean>(false);
+    const [errorList, setErrorList] = useState<string[]>([]);
+    const [responseData, setResponseData] = useState<any>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const routePrefix = setup.api_prefix; // Should be 'auth'
@@ -23,6 +25,8 @@ const ImportUsersModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) 
             setUploadProgress(0);
             setStatusMessage('');
             setIsUploading(false);
+            setErrorList([]);
+            setResponseData(null);
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
@@ -58,9 +62,14 @@ const ImportUsersModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) 
             'email',
             'phone_number',
             'photo',
+            'password',
+            'branch_id',
+            'class_id',
             'is_verified',
             'is_approved',
             'is_blocked',
+            'join_date',
+            'base_salary',
             'status',
         ];
         // Create one empty row to show the structure
@@ -100,9 +109,13 @@ const ImportUsersModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) 
                 // Try to parse JSON response
                 try {
                     const response = JSON.parse(xhr.responseText);
-                    setStatusMessage(response.message || 'Upload successful!'); // Adjust based on actual API response
+                    setStatusMessage(response.message || 'Upload successful!');
+                    setErrorList(response.data?.errors || []);
+                    setResponseData(response.data || null);
                 } catch (e) {
                     setStatusMessage(`Upload successful, but couldn't parse server response. Status: ${xhr.status}`);
+                    setErrorList([]);
+                    setResponseData(null);
                 }
                 setSelectedFile(null); // Clear selection
                 if (fileInputRef.current) {
@@ -112,8 +125,12 @@ const ImportUsersModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) 
                 try {
                     const response = JSON.parse(xhr.responseText);
                     setStatusMessage(response.message || `Upload failed. Status: ${xhr.status} - ${xhr.statusText}`);
+                    setErrorList(response.data?.errors || []);
+                    setResponseData(response.data || null);
                 } catch (e) {
                     setStatusMessage(`Upload failed. Status: ${xhr.status} - ${xhr.statusText}`);
+                    setErrorList([]);
+                    setResponseData(null);
                 }
             }
         };
@@ -130,125 +147,63 @@ const ImportUsersModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) 
         xhr.send(formData);
     };
 
-    // Basic inline styles for the modal
-    const modalStyle: React.CSSProperties = {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 1000,
-    };
-
-    const modalContentStyle: React.CSSProperties = {
-        backgroundColor: '#20232A',
-        padding: '20px 40px', // Increased padding
-        borderRadius: '8px',
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-        width: '500px', // Fixed width
-        textAlign: 'center',
-    };
-
-    const buttonStyle: React.CSSProperties = {
-        padding: '10px 15px',
-        margin: '10px 5px',
-        border: 'none',
-        borderRadius: '4px',
-        cursor: 'pointer',
-    };
-    
-    const primaryButtonStyle: React.CSSProperties = {
-        ...buttonStyle,
-        backgroundColor: '#007bff',
-        color: 'white',
-    };
-
-    const secondaryButtonStyle: React.CSSProperties = {
-        ...buttonStyle,
-        backgroundColor: '#6c757d',
-        color: 'white',
-    };
-    
-    const closeButtonStyle: React.CSSProperties = {
-        position: 'absolute',
-        top: '10px',
-        right: '15px',
-        background: 'none',
-        border: 'none',
-        fontSize: '1.5rem',
-        cursor: 'pointer',
-    };
-
-    const inputStyle: React.CSSProperties = {
-        display: 'block',
-        width: 'calc(100% - 20px)', // Adjust width to account for padding
-        padding: '10px',
-        margin: '20px auto', // Centered with auto margins
-        border: '1px solid #ccc',
-        borderRadius: '4px',
-    };
-
-    const progressBarStyle: React.CSSProperties = {
-        width: '100%',
-        backgroundColor: '#e0e0e0',
-        borderRadius: '4px',
-        marginTop: '10px',
-        height: '20px', // Explicit height
-        overflow: 'hidden', // Ensure inner bar is contained
-    };
-
-    const progressBarInnerStyle: React.CSSProperties = {
-        width: `${uploadProgress}%`,
-        height: '100%', // Fill height of parent
-        backgroundColor: '#4caf50',
-        textAlign: 'center',
-        lineHeight: '20px', // Vertically center text
-        color: 'white',
-        transition: 'width 0.3s ease-in-out',
-    };
-
-
     return (
-        <div style={modalStyle} onClick={onClose}>
-            <div style={modalContentStyle} onClick={(e) => e.stopPropagation()}>
-                <button style={closeButtonStyle} onClick={onClose}>&times;</button>
-                <h2>Import Users</h2>
-                <p>Please check the sample CSV file below to ensure compatibility with the data import.</p>
-                <button style={secondaryButtonStyle} onClick={handleDownloadDemo}>Download Demo CSV</button>
-                <hr style={{ margin: '20px 0' }} />
-                
-                <input 
-                    type="file" 
-                    accept=".csv" 
-                    onChange={handleFileChange} 
-                    ref={fileInputRef}
-                    style={inputStyle} 
-                    disabled={isUploading}
-                />
-
-                {selectedFile && !isUploading && <p>Selected file: {selectedFile.name}</p>}
-
-                <button 
-                    style={primaryButtonStyle}
-                    onClick={handleUpload} 
-                    disabled={!selectedFile || isUploading}
-                >
-                    {isUploading ? `Uploading ${uploadProgress}%...` : 'Upload File'}
-                </button>
-
-                {isUploading && (
-                    <div style={progressBarStyle}>
-                        <div style={progressBarInnerStyle}>
-                            {uploadProgress > 0 && `${uploadProgress}%`}
-                        </div>
+        <div className={`modal fade show`} tabIndex={-1} role="dialog" style={{ display: 'block', background: 'rgba(30, 34, 45, 0.85)' }} onClick={onClose}>
+            <div className="modal-dialog modal-dialog-centered" role="document" onClick={e => e.stopPropagation()}>
+                <div className="modal-content" style={{ background: '#23272f', color: '#fff', borderRadius: 10, boxShadow: '0 8px 32px rgba(0,0,0,0.25)' }}>
+                    <div className="modal-header">
+                        <h5 className="modal-title" style={{ fontSize: '1.1rem' }}>Import Users</h5>
+                        <button type="button" className="btn-close" aria-label="Close" style={{ filter: 'invert(32%) sepia(98%) saturate(7492%) hue-rotate(353deg) brightness(97%) contrast(104%)' }} onClick={onClose}></button>
                     </div>
-                )}
-
-                {statusMessage && <p style={{ marginTop: '15px', color: statusMessage.startsWith('Upload failed') || statusMessage.startsWith('Invalid file') ? 'red' : 'green' }}>{statusMessage}</p>}
+                    <div className="modal-body">
+                        <p className="mb-2" style={{ fontSize: '0.95em' }}>Please check the sample CSV file below to ensure compatibility with the data import.</p>
+                        <button className="btn btn-secondary btn-sm mb-3" onClick={handleDownloadDemo}>Download Demo CSV</button>
+                        <input
+                            type="file"
+                            accept=".csv"
+                            onChange={handleFileChange}
+                            ref={fileInputRef}
+                            className="form-control mb-2"
+                            disabled={isUploading}
+                        />
+                        {selectedFile && !isUploading && <div className="mb-2 small">Selected file: {selectedFile.name}</div>}
+                        {errorList.length > 0 && (
+                            <div className="alert alert-danger small" style={{ maxHeight: 200, overflowY: 'auto' }}>
+                                <strong>Import Errors:</strong>
+                                <ul className="mb-0 ps-3">
+                                    {errorList.map((err, idx) => (
+                                        <li key={idx}>{err}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                        {statusMessage && (
+                            <div
+                                className={`small mt-2 ${
+                                    (typeof responseData?.failed_imports === 'number' && responseData.failed_imports === 0)
+                                        ? 'text-success'
+                                        : (typeof responseData?.failed_imports === 'number' && responseData.failed_imports > 0)
+                                            ? 'text-danger'
+                                            : ''
+                                }`}
+                            >
+                                {statusMessage}
+                            </div>
+                        )}
+                    </div>
+                    <div className="modal-footer">
+                        {errorList.length === 0 && (
+                            <button
+                                className="btn btn-primary btn-sm"
+                                onClick={handleUpload}
+                                disabled={!selectedFile || isUploading}
+                            >
+                                {isUploading ? `Uploading ${uploadProgress}%...` : 'Upload File'}
+                            </button>
+                        )}
+                        <button className="btn btn-outline-secondary btn-sm" onClick={onClose}>Close</button>
+                    </div>
+                </div>
             </div>
         </div>
     );

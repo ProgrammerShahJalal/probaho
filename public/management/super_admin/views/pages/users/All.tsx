@@ -163,7 +163,9 @@ const All: React.FC<Props> = () => {
                                                     <img
                                                         src={
                                                             i.photo
-                                                                ? `/${i.photo}`
+                                                                ? (i.photo.startsWith('http')
+                                                                    ? i.photo
+                                                                    : `/${i.photo}`)
                                                                 : '/assets/dashboard/images/avatar.png'
                                                         }
                                                         alt=""
