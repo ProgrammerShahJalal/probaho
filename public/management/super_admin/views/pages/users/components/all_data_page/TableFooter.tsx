@@ -10,14 +10,19 @@ import AllDeactivatedData from './AllDeactivatedData';
 import ImportUsersModal from './ImportUsersModal';
 import storeSlice from '../../config/store';
 import { all } from '../../config/store/async_actions/all';
+import ActionDropdown from './ActionDropdown';
 
 const route_prefix = setup.route_prefix;
 
 export interface Props { }
 const Footer: React.FC<Props> = (props: Props) => {
-    const state: typeof initialState = useSelector(
-        (state: RootState) => state[setup.module_name],
-    );
+    const {
+        selected,
+        all: allData, // aliasing to avoid conflict with the imported 'all' action creator
+    } = useSelector((state: RootState) => state[setup.module_name]) as typeof initialState;
+
+    const users = (allData as any)?.data || []; // Get the users array
+
     const dispatch = useAppDispatch();
     const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
@@ -26,6 +31,7 @@ const Footer: React.FC<Props> = (props: Props) => {
         e: React.MouseEvent<HTMLElement, MouseEvent>,
     ) {
         e.preventDefault();
+        dispatch(storeSlice.actions.set_selected([])); // Clear selected items
         dispatch(storeSlice.actions.set_show_active_data(type));
         dispatch(storeSlice.actions.set_show_trash_data(false)); // Ensure trash is off when showing active/inactive
         dispatch(storeSlice.actions.set_only_latest_data(true));
@@ -79,6 +85,11 @@ const Footer: React.FC<Props> = (props: Props) => {
                         <li>
                             <AllDeactivatedData />
                         </li>
+                        {selected.length > 0 && ( // Conditionally render if items are selected
+                            <li>
+                                <ActionDropdown selectedItems={selected.map((item: any) => item.id)} users={users} />
+                            </li>
+                        )}
                     </ul>
                 </div>
             </div>
