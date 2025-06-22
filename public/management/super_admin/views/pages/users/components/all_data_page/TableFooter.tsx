@@ -5,6 +5,7 @@ import { initialState } from '../../config/store/inital_state';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../../../../../store';
 import ExportSelected from './ExportSelected';
+import ExportAll from './ExportAll'; 
 import AllDeactivatedData from './AllDeactivatedData';
 import storeSlice from '../../config/store';
 import { all } from '../../config/store/async_actions/all';
@@ -46,6 +47,9 @@ const Footer: React.FC<Props> = (props: Props) => {
                     </li>
                     <li>
                         <ExportSelected />
+                    </li>
+                    <li>
+                        <ExportAll />
                     </li>
                     <li>
                         <Link to={`/${route_prefix}/import`}>
