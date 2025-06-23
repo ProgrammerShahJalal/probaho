@@ -357,8 +357,10 @@ const Edit: React.FC<Props> = (props: Props) => {
                                 <div>
                                     <h5 className="mb-4">User Documents</h5>
                                     {/* Inputs for adding a new document */}
-                                    <div className="form_auto_fit mb-3 p-3 border rounded">
-                                        <h6>Add New Document</h6>
+
+                                    <div className=' mb-3 p-3 border rounded'>
+<h6>Add New Document</h6>
+                                    <div className="form_auto_fit">
                                         <div className="form-group form-vertical">
                                             <label>Document Title</label>
                                             <input type="text" className="form-control" value={docTitle} onChange={(e) => setDocTitle(e.target.value)} />
@@ -377,6 +379,8 @@ const Edit: React.FC<Props> = (props: Props) => {
                                         </div>
                                     </div>
                                     <button type="button" className="btn btn-sm btn-info mt-2" onClick={handleAddDocument}>Add Document</button>
+                                    </div>
+                                    
 
                                     {/* List of added documents */}
                                     {documents.length > 0 && (
