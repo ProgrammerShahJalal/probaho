@@ -359,28 +359,28 @@ const Edit: React.FC<Props> = (props: Props) => {
                                     {/* Inputs for adding a new document */}
 
                                     <div className=' mb-3 p-3 border rounded'>
-<h6>Add New Document</h6>
-                                    <div className="form_auto_fit">
-                                        <div className="form-group form-vertical">
-                                            <label>Document Title</label>
-                                            <input type="text" className="form-control" value={docTitle} onChange={(e) => setDocTitle(e.target.value)} />
+                                        <h6>Add New Document</h6>
+                                        <div className="form_auto_fit">
+                                            <div className="form-group form-vertical">
+                                                <label>Document Title</label>
+                                                <input type="text" className="form-control" value={docTitle} onChange={(e) => setDocTitle(e.target.value)} />
+                                            </div>
+                                            <div className="form-group form-vertical">
+                                                <label>Document File</label>
+                                                <input type="file" id="docFileInput" className="form-control" onChange={(e) => setDocFile(e.target.files ? e.target.files[0] : null)} />
+                                            </div>
+                                            <div className="form-group form-vertical">
+                                                <label>Issue Date</label>
+                                                <input type="date" className="form-control" value={docIssueDate} onChange={(e) => setDocIssueDate(e.target.value)} />
+                                            </div>
+                                            <div className="form-group form-vertical">
+                                                <label>Expire Date</label>
+                                                <input type="date" className="form-control" value={docExpireDate} onChange={(e) => setDocExpireDate(e.target.value)} />
+                                            </div>
                                         </div>
-                                        <div className="form-group form-vertical">
-                                            <label>Document File</label>
-                                            <input type="file" id="docFileInput" className="form-control" onChange={(e) => setDocFile(e.target.files ? e.target.files[0] : null)} />
-                                        </div>
-                                        <div className="form-group form-vertical">
-                                            <label>Issue Date</label>
-                                            <input type="date" className="form-control" value={docIssueDate} onChange={(e) => setDocIssueDate(e.target.value)} />
-                                        </div>
-                                        <div className="form-group form-vertical">
-                                            <label>Expire Date</label>
-                                            <input type="date" className="form-control" value={docExpireDate} onChange={(e) => setDocExpireDate(e.target.value)} />
-                                        </div>
+                                        <button type="button" className="btn btn-sm btn-info mt-2" onClick={handleAddDocument}>Add Document</button>
                                     </div>
-                                    <button type="button" className="btn btn-sm btn-info mt-2" onClick={handleAddDocument}>Add Document</button>
-                                    </div>
-                                    
+
 
                                     {/* List of added documents */}
                                     {documents.length > 0 && (
