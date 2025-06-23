@@ -17,41 +17,18 @@ export interface ActionDropdownProps {
 
 const ActionDropdown: React.FC<ActionDropdownProps> = ({ item, selectedItems, isBulk }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [menuPositionStyle, setMenuPositionStyle] = useState({ top: '100%', bottom: 'auto' as 'auto' | string });
+    // Set menu to always open upwards
+    const menuPositionStyle = { bottom: '100%', top: 'auto' as 'auto' | string };
     const dispatch = useAppDispatch();
     const dropdownRef = useRef<HTMLDivElement>(null); // For click outside
     const triggerRef = useRef<HTMLButtonElement>(null); // For the button itself
-    const menuRef = useRef<HTMLDivElement>(null); // For the menu div
 
     const { show_active_data } = useSelector(
         (state: RootState) => state[setup.module_name],
     );
 
-    const calculateMenuPosition = () => {
-        if (!isOpen || !triggerRef.current || !menuRef.current) return;
-
-        const triggerRect = triggerRef.current.getBoundingClientRect();
-        const menuHeight = menuRef.current.offsetHeight;
-        const spaceBelow = window.innerHeight - triggerRect.bottom;
-        const spaceAbove = triggerRect.top;
-
-        // A little buffer to prevent menu from sticking to the very edge
-        const buffer = 5; 
-
-        if (spaceBelow < (menuHeight + buffer) && spaceAbove > (menuHeight + buffer)) {
-            setMenuPositionStyle({ bottom: '100%', top: 'auto' }); // Open upwards
-        } else {
-            setMenuPositionStyle({ top: '100%', bottom: 'auto' }); // Open downwards (default)
-        }
-    };
-
     const toggleDropdown = () => {
-        const newIsOpen = !isOpen;
-        setIsOpen(newIsOpen);
-        // Reset position to default when opening, recalculation will happen in useEffect
-        if (newIsOpen) {
-            setMenuPositionStyle({ top: '100%', bottom: 'auto' });
-        }
+        setIsOpen(!isOpen);
     };
 
     useEffect(() => {
@@ -67,15 +44,7 @@ const ActionDropdown: React.FC<ActionDropdownProps> = ({ item, selectedItems, is
         };
     }, []);
 
-    useEffect(() => {
-        if (isOpen) {
-            // Use requestAnimationFrame to ensure the menu is rendered and its dimensions are available
-            requestAnimationFrame(() => {
-                calculateMenuPosition();
-            });
-        }
-    }, [isOpen]); // Recalculate when isOpen changes (specifically, when it becomes true)
-
+    // Removed useEffect for calculateMenuPosition as it's no longer needed.
 
     const handleActive = async () => {
         setIsOpen(false);
@@ -259,53 +228,63 @@ const ActionDropdown: React.FC<ActionDropdownProps> = ({ item, selectedItems, is
 
 
     return (
-        <div style={{ position: 'relative', display: 'inline-block' }} ref={dropdownRef}>
+        <div className="dropdown d-inline-block" ref={dropdownRef}>
             <button
-                ref={triggerRef} // Attach triggerRef to the button
+                ref={triggerRef}
+                className={`btn btn-outline-primary btn-sm dropdown-toggle${isOpen ? ' show' : ''}`}
+                type="button"
+                id={isBulk ? 'bulkActionDropdownMenuButton' : 'actionDropdownMenuButton'}
+                data-bs-toggle="dropdown"
+                aria-expanded={isOpen}
                 onClick={toggleDropdown}
-                style={{ padding: '8px 12px', cursor: 'pointer', border: '1px solid #ccc', background: '#f9f9f9', borderRadius: '4px' }}
-                disabled={isBulk && (!selectedItems || selectedItems.length === 0)} // Disable if bulk and no items
+                disabled={isBulk && (!selectedItems || selectedItems.length === 0)}
+                style={{ minWidth: isBulk ? 110 : undefined }}
             >
-                {isBulk ? 'Bulk Actions' : 'Actions'} <span style={{ marginLeft: '5px', fontSize: '0.8em' }}>▼</span>
+                {isBulk ? 'Bulk Actions' : 'Actions'}
             </button>
-            {isOpen && (
-                <div
-                    ref={menuRef} // Attach menuRef to the menu div
-                    style={{
-                        position: 'absolute',
-                        left: 0,
-                        backgroundColor: '#fff',
-                        border: '1px solid #ddd',
-                        borderRadius: '4px',
-                        boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-                        zIndex: 1000,
-                        minWidth: '160px',
-                        // Apply dynamic position and margins
-                        ...menuPositionStyle,
-                        marginTop: menuPositionStyle.bottom === '100%' ? 0 : '2px',
-                        marginBottom: menuPositionStyle.bottom === '100%' ? '2px' : 0,
-                    }}
-                >
-                    <ul style={{ listStyle: 'none', margin: 0, padding: '5px 0' }}>
-                        {actionItems.map((action, index) => (
-                            <li key={index} style={{ padding: '10px 15px', cursor: 'pointer', fontSize: '14px', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}
-                                onClick={(e) => {
-                                    e.stopPropagation(); 
-                                    action.handler();
-                                }}
-                                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f0f0f0')}
-                                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-                            >
-                                {action.iconClass && <span className={action.iconClass} style={{ marginRight: '8px' }}></span>}
-                                {action.label}
-                            </li>
-                        ))}
-                        {actionItems.length === 0 && (
-                            <li style={{ padding: '10px 15px', color: '#888', fontSize: '14px' }}>No actions available</li>
-                        )}
-                    </ul>
-                </div>
-            )}
+            <ul
+                className={`dropdown-menu${isOpen ? ' show' : ''}`}
+                aria-labelledby={isBulk ? 'bulkActionDropdownMenuButton' : 'actionDropdownMenuButton'}
+                style={{ minWidth: 160, zIndex: 1000, fontSize: '14px' }}
+            >
+                {actionItems.map((action, index) => (
+                    <li key={index}>
+                        <button
+                            className={`dropdown-item${action.label === 'Destroy' ? ' text-danger' : ''}`}
+                            type="button"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                action.handler();
+                                setIsOpen(false);
+                            }}
+                        >
+                            {action.iconClass && <span className={action.iconClass} style={{ marginRight: '8px' }}></span>}
+                            {action.label}
+                        </button>
+                    </li>
+                ))}
+                {actionItems.length === 0 && (
+                    <li>
+                        <span className="dropdown-item text-muted">No actions available</span>
+                    </li>
+                )}
+            </ul>
+            <style>{`
+  .dropdown-menu .dropdown-item {
+    color: #fff !important;
+    background: transparent !important;
+    border-radius: 0.375rem !important; /* rounded-md */
+    transition: background 0.2s, color 0.2s;
+  }
+  .dropdown-menu .dropdown-item:hover, .dropdown-menu .dropdown-item:focus {
+    background: #2C2F35 !important; /* dark gray */
+    color: #fff !important;
+    border-radius: 0.375rem !important;
+  }
+  .dropdown-menu .dropdown-item.text-danger:hover, .dropdown-menu .dropdown-item.text-danger:focus {
+    color: #dc3545 !important;
+  }
+`}</style>
         </div>
     );
 };

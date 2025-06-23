@@ -41,7 +41,7 @@ const Footer: React.FC<Props> = (props: Props) => {
 
     return (
         <>
-            <div className="footer">
+            <div className="footer" style={{ position: 'relative', zIndex: 20 }}>
                 <div className="action_btns">
                     <ul>
                         <li>
