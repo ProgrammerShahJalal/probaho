@@ -87,7 +87,7 @@ const Footer: React.FC<Props> = (props: Props) => {
                         </li>
                         {selected.length > 0 && ( // Conditionally render if items are selected
                             <li>
-                                <ActionDropdown selectedItems={selected.map((item: any) => item.id)} users={users} />
+                                <ActionDropdown selectedItems={selected} isBulk={true} />
                             </li>
                         )}
                     </ul>
