@@ -122,6 +122,11 @@ const All: React.FC<Props> = () => {
                                             sort
                                         />
                                         <TableHeading
+                                            label="Status"
+                                            col_name="status"
+                                            sort
+                                        />
+                                        {/* <TableHeading
                                             label="Is Verified"
                                             col_name="is_verified"
                                             sort
@@ -135,7 +140,7 @@ const All: React.FC<Props> = () => {
                                             label="Is Blocked"
                                             col_name="is_blocked"
                                             sort
-                                        />
+                                        /> */}
                                     </tr>
                                 </thead>
                                 <tbody id="all_list">
@@ -188,7 +193,8 @@ const All: React.FC<Props> = () => {
                                                     </span>
                                                 </td>
                                                 <td>{i.email}</td>
-                                                <td>
+                                                <td>{i.status}</td>
+                                                {/* <td>
                                                     {i.is_verified === '1'
                                                         ? 'Yes'
                                                         : 'No'}
@@ -202,7 +208,7 @@ const All: React.FC<Props> = () => {
                                                     {i.is_blocked === '1'
                                                         ? 'Yes'
                                                         : 'No'}
-                                                </td>
+                                                </td> */}
                                             </tr>
                                         ),
                                     )}

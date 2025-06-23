@@ -46,7 +46,9 @@ const QuickView: React.FC<Props> = (props: Props) => {
                                         <img
                                             src={
                                                 state.item.photo
-                                                    ? `/${state.item.photo}`
+                                                    ? (state.item.photo.startsWith('http')
+                                                        ? state.item.photo
+                                                        : `/${state.item.photo}`)
                                                     : '/assets/dashboard/images/avatar.png'
                                             }
                                             alt=""
@@ -77,7 +79,7 @@ const QuickView: React.FC<Props> = (props: Props) => {
                                     <th>:</th>
                                     <th>{state.item.phone_number}</th>
                                 </tr>
-                                
+
                             </tbody>
                         </table>
                     </div>

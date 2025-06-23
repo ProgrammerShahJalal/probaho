@@ -9,7 +9,7 @@ import { details } from './config/store/async_actions/details';
 import { initialState } from './config/store/inital_state';
 import { Link, useParams } from 'react-router-dom';
 import storeSlice from './config/store';
-export interface Props {}
+export interface Props { }
 
 const Details: React.FC<Props> = (props: Props) => {
     const state: typeof initialState = useSelector(
@@ -46,7 +46,9 @@ const Details: React.FC<Props> = (props: Props) => {
                                 <img
                                     src={
                                         state.item.photo
-                                            ? `/${state.item.photo}`
+                                            ? (state.item.photo.startsWith('http')
+                                                ? state.item.photo
+                                                : `/${state.item.photo}`)
                                             : '/assets/dashboard/images/avatar.png'
                                     }
                                 />
@@ -69,7 +71,7 @@ const Details: React.FC<Props> = (props: Props) => {
                                             <td>{get_value(i)}</td>
                                         </tr>
                                     ))}
-                                    
+
                                 </tbody>
                             </table>
                         </div>

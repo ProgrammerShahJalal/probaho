@@ -41,7 +41,7 @@ const Footer: React.FC<Props> = (props: Props) => {
 
     return (
         <>
-            <div className="footer">
+            <div className="footer" style={{ position: 'relative', zIndex: 20 }}>
                 <div className="action_btns">
                     <ul>
                         <li>
@@ -87,7 +87,7 @@ const Footer: React.FC<Props> = (props: Props) => {
                         </li>
                         {selected.length > 0 && ( // Conditionally render if items are selected
                             <li>
-                                <ActionDropdown selectedItems={selected.map((item: any) => item.id)} users={users} />
+                                <ActionDropdown selectedItems={selected} isBulk={true} />
                             </li>
                         )}
                     </ul>
