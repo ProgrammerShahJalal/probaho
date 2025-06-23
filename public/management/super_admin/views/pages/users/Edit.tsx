@@ -16,6 +16,14 @@ import DateEl from '../../components/DateEl';
 import TextEditor from './components/management_data_page/TextEditor';
 
 export interface Props { }
+interface Document {
+    id?: string; // Optional: for existing documents
+    title: string;
+    file: File | string; // File object for new/updated files, string (URL/path) for existing
+    fileName?: string; // To display the name of an existing file
+    issueDate: string;
+    expireDate: string;
+}
 
 const Edit: React.FC<Props> = (props: Props) => {
     const state: typeof initialState = useSelector(
@@ -24,19 +32,109 @@ const Edit: React.FC<Props> = (props: Props) => {
 
     const dispatch = useAppDispatch();
     const params = useParams();
+    // State for managing documents
+    const [documents, setDocuments] = useState<Document[]>([]);
+    const [docTitle, setDocTitle] = useState('');
+    const [docFile, setDocFile] = useState<File | null>(null);
+    const [docIssueDate, setDocIssueDate] = useState('');
+    const [docExpireDate, setDocExpireDate] = useState('');
 
     useEffect(() => {
         dispatch(storeSlice.actions.set_item({}));
         dispatch(details({ id: params.id }) as any);
-    }, []);
+    }, [dispatch, params.id]);
+
+    useEffect(() => {
+        // Initialize documents from state.item.user_documents
+        if (state.item?.user_documents) {
+            try {
+                const parsedDocuments = JSON.parse(state.item.user_documents);
+                if (Array.isArray(parsedDocuments)) {
+                    setDocuments(parsedDocuments.map(doc => ({
+                        ...doc,
+                        fileName: typeof doc.file === 'string' ? doc.file.split('/').pop() : undefined,
+                    })));
+                }
+            } catch (error) {
+                console.error("Failed to parse user_documents JSON:", error);
+                setDocuments([]);
+            }
+        } else {
+            setDocuments([]);
+        }
+    }, [state.item?.user_documents]);
+
 
     async function handle_submit(e) {
         e.preventDefault();
-        let form_data = new FormData(e.target);
-        form_data.append('user_infos', state.item.user_infos || '');
-        form_data.append('user_documents', state.item.user_documents || '');
+        const form = e.target as HTMLFormElement;
+        let form_data = new FormData(form);
+
+        // Append user_infos directly from state or an empty string if not present
+        form_data.append('user_infos', state.item?.user_infos || '');
+
+        const processedDocuments = documents.map((doc, index) => {
+            let fileIdentifier = doc.file; // Could be a URL string or a File object
+
+            if (doc.file instanceof File) {
+                form_data.append(`document_file_${index}`, doc.file);
+                // For backend processing, send the original file name or a reference
+                fileIdentifier = doc.file.name;
+            }
+
+            return {
+                title: doc.title,
+                file: fileIdentifier, // Send filename or existing URL/path
+                fileName: doc.fileName || (doc.file instanceof File ? doc.file.name : undefined),
+                issueDate: doc.issueDate,
+                expireDate: doc.expireDate,
+                id: doc.id // Keep id if present
+            };
+        });
+
+        form_data.append('user_documents', JSON.stringify(processedDocuments));
+
+        // Remove the default user_documents if it was part of form elements to avoid duplication
+        if (form_data.has('user_documents_text_editor')) { // Assuming a name for the old text editor if it was a form field
+            form_data.delete('user_documents_text_editor');
+        }
+
+        // Append other fields that might not be automatically picked up if they are not standard inputs
+        // For example, if 'id' is not part of the form elements but is needed by the backend
+        if (!form_data.has('id') && state.item?.id) {
+            form_data.append('id', state.item.id.toString());
+        }
+
         const response = await dispatch(update(form_data) as any);
+        // TODO: Handle response, e.g., show success/error message
     }
+
+    const handleAddDocument = () => {
+        if (!docTitle || !docFile || !docIssueDate || !docExpireDate) {
+            alert('Please fill all document fields.');
+            return;
+        }
+        const newDocument: Document = {
+            title: docTitle,
+            file: docFile,
+            fileName: docFile.name,
+            issueDate: docIssueDate,
+            expireDate: docExpireDate,
+            id: `temp-${Date.now()}` // Temporary ID for new documents
+        };
+        setDocuments([...documents, newDocument]);
+        // Reset document input fields
+        setDocTitle('');
+        setDocFile(null);
+        const fileInput = document.getElementById('docFileInput') as HTMLInputElement;
+        if (fileInput) fileInput.value = '';
+        setDocIssueDate('');
+        setDocExpireDate('');
+    };
+
+    const handleRemoveDocument = (docIdToRemove: string) => {
+        setDocuments(documents.filter(doc => doc.id !== docIdToRemove));
+    };
 
     function get_value(key) {
         try {
@@ -237,7 +335,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                             'user_infos',
                                         ].map((i) => (
                                             <div key={i} className="form-group form-vertical">
-                                                
+
                                                 {/* <label>{i.replaceAll('_', ' ')}</label> */}
                                                 <TextEditor
                                                     name={i}
@@ -255,31 +353,52 @@ const Edit: React.FC<Props> = (props: Props) => {
                                         ))}
                                     </div>
                                 </div>
+                                {/* User Documents Section */}
                                 <div>
                                     <h5 className="mb-4">User Documents</h5>
-                                    <div className="form_auto_fit">
-                                        {[
-                                            'user_documents',
-                                        ].map((i) => (
-                                            <div key={i} className="form-group form-vertical">
-                                                
-                                                {/* <label>{i.replaceAll('_', ' ')}</label> */}
-                                                <TextEditor
-                                                    name={i}
-                                                    value={get_value(i)}
-                                                    onChange={(value) =>
-                                                        dispatch(
-                                                            storeSlice.actions.set_item({
-                                                                ...state.item,
-                                                                [i]: value,
-                                                            }),
-                                                        )
-                                                    }
-                                                />
-                                            </div>
-                                        ))}
+                                    {/* Inputs for adding a new document */}
+                                    <div className="form_auto_fit mb-3 p-3 border rounded">
+                                        <h6>Add New Document</h6>
+                                        <div className="form-group form-vertical">
+                                            <label>Document Title</label>
+                                            <input type="text" className="form-control" value={docTitle} onChange={(e) => setDocTitle(e.target.value)} />
+                                        </div>
+                                        <div className="form-group form-vertical">
+                                            <label>Document File</label>
+                                            <input type="file" id="docFileInput" className="form-control" onChange={(e) => setDocFile(e.target.files ? e.target.files[0] : null)} />
+                                        </div>
+                                        <div className="form-group form-vertical">
+                                            <label>Issue Date</label>
+                                            <input type="date" className="form-control" value={docIssueDate} onChange={(e) => setDocIssueDate(e.target.value)} />
+                                        </div>
+                                        <div className="form-group form-vertical">
+                                            <label>Expire Date</label>
+                                            <input type="date" className="form-control" value={docExpireDate} onChange={(e) => setDocExpireDate(e.target.value)} />
+                                        </div>
                                     </div>
+                                    <button type="button" className="btn btn-sm btn-info mt-2" onClick={handleAddDocument}>Add Document</button>
+
+                                    {/* List of added documents */}
+                                    {documents.length > 0 && (
+                                        <div className="mt-4">
+                                            <h6>Uploaded Documents</h6>
+                                            <ul className="list-group">
+                                                {documents.map((doc, index) => (
+                                                    <li key={doc.id || `doc-${index}`} className="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <strong>{doc.title}</strong><br />
+                                                            <small>File: {doc.fileName || (doc.file instanceof File ? doc.file.name : 'No file selected/retained')}</small><br />
+                                                            <small>Issue Date: {doc.issueDate}</small><br />
+                                                            <small>Expire Date: {doc.expireDate}</small>
+                                                        </div>
+                                                        <button type="button" className="btn btn-danger btn-sm" onClick={() => handleRemoveDocument(doc.id!)}>Remove</button>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
                                 </div>
+                                {/* End of User Documents Section */}
 
                                 <div className="form-group form-vertical">
                                     <label></label>
