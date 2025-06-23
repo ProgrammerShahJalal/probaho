@@ -11,6 +11,7 @@ import { anyObject } from '../../../common_types/object';
 import UserRolesDropDown from '../user_roles/components/dropdown/DropDown';
 import { initialState } from './config/store/inital_state';
 import { useSelector } from 'react-redux';
+import DateEl from '../../components/DateEl';
 
 export interface Props {}
 
@@ -115,10 +116,25 @@ const Create: React.FC<Props> = (props: Props) => {
                                                         )}
                                                     />
                                                 </div>
+                                            ) : i === 'join_date' ? (
+                                                <DateEl
+                                                    label='Join Date'
+                                                    name={i}
+                                                    value={data[i] || ''}
+                                                    handler={(d) =>
+                                                        setData((prev) => ({
+                                                            ...prev,
+                                                            [i]: d.value,
+                                                        }))
+                                                    }
+                                                />
                                             ) : (
                                                 <Input
                                                     name={i}
-                                                    required={i !== 'base_salary' && i !== 'join_date'}
+                                                    required={
+                                                        i !== 'base_salary' &&
+                                                        i !== 'join_date'
+                                                    }
                                                 />
                                             )}
                                         </div>

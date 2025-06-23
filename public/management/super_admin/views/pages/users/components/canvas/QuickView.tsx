@@ -79,7 +79,21 @@ const QuickView: React.FC<Props> = (props: Props) => {
                                     <th>:</th>
                                     <th>{state.item.phone_number}</th>
                                 </tr>
-
+                                <tr>
+                                    <th>Is Verified</th>
+                                    <th>:</th>
+                                    <th>{state.item.is_approved === '1'? 'Yes' : 'No'}</th>
+                                </tr>
+                                <tr>
+                                    <th>Is Approved</th>
+                                    <th>:</th>
+                                    <th>{state.item.is_verified === '1'? 'Yes' : 'No'}</th>
+                                </tr>
+                                <tr>
+                                    <th>Is Blocked</th>
+                                    <th>:</th>
+                                    <th>{state.item.is_blocked === '1'? 'Yes' : 'No'}</th>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

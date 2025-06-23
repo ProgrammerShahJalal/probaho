@@ -13,8 +13,9 @@ import Input from './components/management_data_page/Input';
 import InputImage from './components/management_data_page/InputImage';
 import UserRolesDropDown from '../user_roles/components/dropdown/DropDown';
 import DateEl from '../../components/DateEl';
+import TextEditor from './components/management_data_page/TextEditor';
 
-export interface Props {}
+export interface Props { }
 
 const Edit: React.FC<Props> = (props: Props) => {
     const state: typeof initialState = useSelector(
@@ -32,6 +33,8 @@ const Edit: React.FC<Props> = (props: Props) => {
     async function handle_submit(e) {
         e.preventDefault();
         let form_data = new FormData(e.target);
+        form_data.append('user_infos', JSON.stringify(state.item.user_infos.getData() || {}));
+        form_data.append('user_documents', JSON.stringify(state.item.user_documents.getData() || {}));
         const response = await dispatch(update(form_data) as any);
     }
 
@@ -44,6 +47,13 @@ const Edit: React.FC<Props> = (props: Props) => {
         }
         return '';
     }
+
+    // Prevent 'e' and other non-numeric characters in number input
+    const handleNumberKeyDown = (e) => {
+        if (e.key === 'e' || e.key === 'E' || e.key === '+' || e.key === '-') {
+            e.preventDefault();
+        }
+    };
 
     return (
         <>
@@ -77,17 +87,42 @@ const Edit: React.FC<Props> = (props: Props) => {
                                             'join_date',
                                             'base_salary',
                                         ].map((i) => (
-                                            <div
-                                                key={i}
-                                                className="form-group form-vertical"
-                                            >
-                                                {i === 'name' || i === 'base_salary' || i === 'phone_number' ? (
-                                                    <Input
-                                                        name={i}
-                                                        value={get_value(i)}
-                                                    />
+                                            <div key={i} className="form-group form-vertical">
+                                                {i === 'base_salary' ? (
+                                                    <>
+                                                        <Input
+                                                            type='number'
+                                                            name={i}
+                                                            value={get_value(i)}
+                                                            onChange={(e) => {
+                                                                const value = e.target.value;
+                                                                dispatch(storeSlice.actions.set_item({
+                                                                    ...state.item,
+                                                                    [i]: value,
+                                                                }));
+                                                                let el = document.querySelector('input[name="base_salary_in_text"]');
+                                                                if (el) {
+                                                                    (el as HTMLInputElement).value = value ? (window as any).convertAmount(value).bn + ' টাকা মাত্র' : '';
+                                                                }
+                                                            }}
+                                                            onKeyDown={handleNumberKeyDown}
+                                                        />
+                                                        <div className="form-group form-vertical mt-2">
+                                                            <input
+                                                                type="text"
+                                                                name="base_salary_in_text"
+                                                                id="base_salary_in_text"
+                                                                readOnly
+                                                                className="form-control mt-1"
+                                                                placeholder="Base salary in words"
+                                                            />
+                                                        </div>
+                                                    </>
+                                                ) : i === 'name' || i === 'phone_number' ? (
+                                                    <Input name={i} value={get_value(i)} />
                                                 ) : i === 'join_date' ? (
                                                     <DateEl
+                                                        label="Join Date"
                                                         name={i}
                                                         value={get_value(i) ? String(get_value(i)).slice(0, 10) : ''}
                                                         handler={(data) => dispatch(storeSlice.actions.set_item({ ...state.item, [i]: data.value }))}
@@ -97,9 +132,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                         <InputImage
                                                             label="Photo"
                                                             name="photo"
-                                                            defalut_preview={get_value(
-                                                                'photo',
-                                                            )}
+                                                            defalut_preview={get_value('photo')}
                                                         />
                                                     </div>
                                                 ) : i === 'role' ? (
@@ -115,12 +148,12 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                                     'role',
                                                                 )
                                                                     ? [
-                                                                          {
-                                                                              id: get_value(
-                                                                                  'role',
-                                                                              ),
-                                                                          },
-                                                                      ]
+                                                                        {
+                                                                            id: get_value(
+                                                                                'role',
+                                                                            ),
+                                                                        },
+                                                                    ]
                                                                     : []
                                                             }
                                                             get_selected_data={(
@@ -193,6 +226,56 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                         </div>
                                                     </div>
                                                 )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div>
+                                    <h5 className="mb-4">User Informations</h5>
+                                    <div className="form_auto_fit">
+                                        {[
+                                            'user_infos',
+                                        ].map((i) => (
+                                            <div key={i} className="form-group form-vertical">
+                                                
+                                                {/* <label>{i.replaceAll('_', ' ')}</label> */}
+                                                <TextEditor
+                                                    name={i}
+                                                    value={get_value(i)}
+                                                    onChange={(value) =>
+                                                        dispatch(
+                                                            storeSlice.actions.set_item({
+                                                                ...state.item,
+                                                                [i]: value,
+                                                            }),
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div>
+                                    <h5 className="mb-4">User Documents</h5>
+                                    <div className="form_auto_fit">
+                                        {[
+                                            'user_documents',
+                                        ].map((i) => (
+                                            <div key={i} className="form-group form-vertical">
+                                                
+                                                {/* <label>{i.replaceAll('_', ' ')}</label> */}
+                                                <TextEditor
+                                                    name={i}
+                                                    value={get_value(i)}
+                                                    onChange={(value) =>
+                                                        dispatch(
+                                                            storeSlice.actions.set_item({
+                                                                ...state.item,
+                                                                [i]: value,
+                                                            }),
+                                                        )
+                                                    }
+                                                />
                                             </div>
                                         ))}
                                     </div>

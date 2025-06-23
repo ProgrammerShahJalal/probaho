@@ -99,7 +99,7 @@ async function user_profile_update(fastify_instance: FastifyInstance, req: Fasti
             is_approved: body.is_approved !== undefined ? body.is_approved : data.is_approved,
             user_infos: body.user_infos || data.user_infos,
             user_documents: body.user_documents || data.user_documents,
-            join_date: body.join_date ? moment(body.join_date).toDate() : data.join_date,
+            join_date: body.join_date ? moment(body.join_date, 'YYYY-MM-DD').toDate() : data.join_date,
             base_salary: body.base_salary || data.base_salary,
         });
             await data.save();

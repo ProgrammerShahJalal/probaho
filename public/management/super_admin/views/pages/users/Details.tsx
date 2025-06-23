@@ -9,6 +9,8 @@ import { details } from './config/store/async_actions/details';
 import { initialState } from './config/store/inital_state';
 import { Link, useParams } from 'react-router-dom';
 import storeSlice from './config/store';
+import moment from 'moment/moment';
+
 export interface Props { }
 
 const Details: React.FC<Props> = (props: Props) => {
@@ -64,11 +66,18 @@ const Details: React.FC<Props> = (props: Props) => {
                                         'is_verified',
                                         'is_approved',
                                         'is_blocked',
+                                        'join_date',
                                     ].map((i) => (
-                                        <tr>
+                                        <tr key={i}>
                                             <td>{i.replaceAll('_', ' ')}</td>
                                             <td>:</td>
-                                            <td>{get_value(i)}</td>
+                                            <td>{
+                                                ['is_verified', 'is_approved', 'is_blocked'].includes(i)
+                                                    ? get_value(i) === '1' ? 'Yes' : 'No'
+                                                    : i === 'join_date' && get_value(i)
+                                                        ? moment.utc(get_value(i)).local().format('DD MMMM YYYY')
+                                                        : get_value(i)
+                                            }</td>
                                         </tr>
                                     ))}
 

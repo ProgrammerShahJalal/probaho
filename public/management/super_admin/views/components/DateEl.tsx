@@ -34,10 +34,11 @@ const DateEl: React.FC<Props> = ({ value, name, label, handler }: Props) => {
 
     function date_handler() {
         if (date_input?.current?.value) {
+            // Always send the date as a string in YYYY-MM-DD format
             const input_value = date_input.current.value;
             setInput_value(input_value);
             handler({
-                [name]: input_value,
+                [name]: input_value, // string only, no Date object
                 key: name,
                 value: input_value,
             });
@@ -53,9 +54,15 @@ const DateEl: React.FC<Props> = ({ value, name, label, handler }: Props) => {
 
     return (
         <>
+            {label && (
+                <label htmlFor={name} className="form-label text-capitalize mb-1">
+                    {label}
+                </label>
+            )}
             <label
                 htmlFor={name || label}
                 className="text-capitalize d-block date_custom_control"
+                style={{ width: '100%' }}
             >
                 <input
                     type="date"
@@ -68,9 +75,11 @@ const DateEl: React.FC<Props> = ({ value, name, label, handler }: Props) => {
                     className="form-control"
                 />
             </label>
-            <div className="form-control preview">
-                {input_value ? formated_date(input_value) : formated_date(null)}
-            </div>
+            {input_value && (
+                <div className="form-control preview">
+                    {formated_date(input_value)}
+                </div>
+            )}
         </>
     );
 };
