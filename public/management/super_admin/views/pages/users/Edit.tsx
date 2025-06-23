@@ -33,8 +33,8 @@ const Edit: React.FC<Props> = (props: Props) => {
     async function handle_submit(e) {
         e.preventDefault();
         let form_data = new FormData(e.target);
-        form_data.append('user_infos', JSON.stringify(state.item.user_infos.getData() || {}));
-        form_data.append('user_documents', JSON.stringify(state.item.user_documents.getData() || {}));
+        form_data.append('user_infos', state.item.user_infos || '');
+        form_data.append('user_documents', state.item.user_documents || '');
         const response = await dispatch(update(form_data) as any);
     }
 

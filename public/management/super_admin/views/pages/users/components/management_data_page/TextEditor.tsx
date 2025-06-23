@@ -47,7 +47,13 @@ const TextEditor: React.FC<TextEditorProps> = ({ name, value, onChange }) => {
         }
       };
     }
-  }, [editorId, value, onChange]);
+  }, [editorId]);
+
+  useEffect(() => {
+    if (editorRef.current && value !== editorRef.current.getData()) {
+      editorRef.current.setData(value);
+    }
+  }, [value]);
 
   return (
     <div className="form-group form-vertical">
