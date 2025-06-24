@@ -10,13 +10,16 @@ import { Link, useParams } from 'react-router-dom';
 import storeSlice from './config/store';
 import { update } from './config/store/async_actions/update';
 import Input from './components/management_data_page/Input';
-import InputImage from './components/management_data_page/InputImage';
+// import InputImage from './components/management_data_page/InputImage'; // InputImage is used for user photo
+import InputImage from './components/management_data_page/InputImage'; 
+import InputFile from './components/management_data_page/InputFile'; // Import the new InputFile component
 import UserRolesDropDown from '../user_roles/components/dropdown/DropDown';
 import DateEl from '../../components/DateEl';
 import TextEditor from './components/management_data_page/TextEditor';
 
 export interface Props { }
 interface Document {
+    key?: string; // Optional: for React rendering
     id?: string; // Optional: for existing documents
     title: string;
     file: File | string; // File object for new/updated files, string (URL/path) for existing
@@ -32,12 +35,9 @@ const Edit: React.FC<Props> = (props: Props) => {
 
     const dispatch = useAppDispatch();
     const params = useParams();
-    // State for managing documents
+    
+    // State for managing documents - each item will now have its own complete state
     const [documents, setDocuments] = useState<Document[]>([]);
-    const [docTitle, setDocTitle] = useState('');
-    const [docFile, setDocFile] = useState<File | null>(null);
-    const [docIssueDate, setDocIssueDate] = useState('');
-    const [docExpireDate, setDocExpireDate] = useState('');
 
     useEffect(() => {
         dispatch(storeSlice.actions.set_item({}));
@@ -50,9 +50,12 @@ const Edit: React.FC<Props> = (props: Props) => {
             try {
                 const parsedDocuments = JSON.parse(state.item.user_documents);
                 if (Array.isArray(parsedDocuments)) {
-                    setDocuments(parsedDocuments.map(doc => ({
+                    setDocuments(parsedDocuments.map((doc, index) => ({
                         ...doc,
-                        fileName: typeof doc.file === 'string' ? doc.file.split('/').pop() : undefined,
+                        // Ensure a unique key for React rendering, existing id or generate one
+                        key: doc.id || `temp-existing-${index}-${Date.now()}`, 
+                        fileName: typeof doc.file === 'string' ? doc.file.split('/').pop() : (doc.file instanceof File ? doc.file.name : doc.fileName || undefined),
+                        // file itself is already in doc.file
                     })));
                 }
             } catch (error) {
@@ -74,24 +77,31 @@ const Edit: React.FC<Props> = (props: Props) => {
         form_data.append('user_infos', state.item?.user_infos || '');
 
         const processedDocuments = documents.map((doc, index) => {
-            let fileIdentifier = doc.file; // Could be a URL string or a File object
+            let fileDataToSend = doc.file; // This could be a URL string or a File object
 
             if (doc.file instanceof File) {
-                form_data.append(`document_file_${index}`, doc.file);
-                // For backend processing, send the original file name or a reference
-                fileIdentifier = doc.file.name;
+                // If it's a File object, append it to FormData
+                form_data.append(`document_files[${index}]`, doc.file, doc.fileName || doc.file.name);
+                // For the JSON part, we'll send the fileName
+                fileDataToSend = doc.fileName || doc.file.name;
+            }
+            
+            // Ensure fileName is set if file is a string path (for existing files not changed)
+            let currentFileName = doc.fileName;
+            if (typeof doc.file === 'string' && !currentFileName) {
+                currentFileName = doc.file.split('/').pop();
             }
 
+
             return {
+                id: doc.id?.toString().startsWith('temp-') ? undefined : doc.id, // Don't send temp IDs
                 title: doc.title,
-                file: fileIdentifier, // Send filename or existing URL/path
-                fileName: doc.fileName || (doc.file instanceof File ? doc.file.name : undefined),
+                file: fileDataToSend, // This will be string (path or new filename)
+                fileName: currentFileName, // Keep original filename or new one
                 issueDate: doc.issueDate,
                 expireDate: doc.expireDate,
-                id: doc.id // Keep id if present
             };
         });
-
         form_data.append('user_documents', JSON.stringify(processedDocuments));
 
         // Remove the default user_documents if it was part of form elements to avoid duplication
@@ -109,32 +119,51 @@ const Edit: React.FC<Props> = (props: Props) => {
         // TODO: Handle response, e.g., show success/error message
     }
 
-    const handleAddDocument = () => {
-        if (!docTitle || !docFile || !docIssueDate || !docExpireDate) {
-            alert('Please fill all document fields.');
-            return;
-        }
-        const newDocument: Document = {
-            title: docTitle,
-            file: docFile,
-            fileName: docFile.name,
-            issueDate: docIssueDate,
-            expireDate: docExpireDate,
-            id: `temp-${Date.now()}` // Temporary ID for new documents
-        };
-        setDocuments([...documents, newDocument]);
-        // Reset document input fields
-        setDocTitle('');
-        setDocFile(null);
-        const fileInput = document.getElementById('docFileInput') as HTMLInputElement;
-        if (fileInput) fileInput.value = '';
-        setDocIssueDate('');
-        setDocExpireDate('');
+    // Handler to update a specific field of a document
+    const handleDocumentFieldChange = (index: number, field: keyof Document, value: any) => {
+        const updatedDocuments = documents.map((doc, i) => {
+            if (i === index) {
+                return { ...doc, [field]: value };
+            }
+            return doc;
+        });
+        setDocuments(updatedDocuments);
     };
 
-    const handleRemoveDocument = (docIdToRemove: string) => {
-        setDocuments(documents.filter(doc => doc.id !== docIdToRemove));
+    // Handler for file changes in a document
+    const handleDocumentFileChange = (index: number, file: File | null) => {
+        const updatedDocuments = documents.map((doc, i) => {
+            if (i === index) {
+                return { 
+                    ...doc, 
+                    file: file ?? '', // Ensure file is never null, fallback to empty string
+                    fileName: file ? file.name : undefined 
+                };
+            }
+            return doc;
+        });
+        setDocuments(updatedDocuments);
     };
+    
+    const addNewDocumentForm = () => {
+        setDocuments([
+            ...documents,
+            {
+                key: `temp-new-${documents.length}-${Date.now()}`, // Unique key for new form
+                id: `temp-new-${documents.length}-${Date.now()}`, // Temporary ID for new documents
+                title: '',
+                file: '', // Store path or File object
+                fileName: '',
+                issueDate: '',
+                expireDate: '',
+            },
+        ]);
+    };
+
+    const removeDocumentForm = (keyToRemove: string) => {
+        setDocuments(documents.filter(doc => doc.key !== keyToRemove));
+    };
+
 
     function get_value(key) {
         try {
@@ -354,52 +383,74 @@ const Edit: React.FC<Props> = (props: Props) => {
                                     </div>
                                 </div>
                                 {/* User Documents Section */}
-                                <div>
-                                    <h5 className="mb-4">User Documents</h5>
-                                    {/* Inputs for adding a new document */}
-
-                                    <div className=' mb-3 p-3 border rounded'>
-                                        <h6>Add New Document</h6>
-                                        <div className="form_auto_fit">
-                                            <div className="form-group form-vertical">
-                                                <label>Document Title</label>
-                                                <input type="text" className="form-control" value={docTitle} onChange={(e) => setDocTitle(e.target.value)} />
-                                            </div>
-                                            <div className="form-group form-vertical">
-                                                <label>Document File</label>
-                                                <input type="file" id="docFileInput" className="form-control" onChange={(e) => setDocFile(e.target.files ? e.target.files[0] : null)} />
-                                            </div>
-                                            <div className="form-group form-vertical">
-                                                <label>Issue Date</label>
-                                                <input type="date" className="form-control" value={docIssueDate} onChange={(e) => setDocIssueDate(e.target.value)} />
-                                            </div>
-                                            <div className="form-group form-vertical">
-                                                <label>Expire Date</label>
-                                                <input type="date" className="form-control" value={docExpireDate} onChange={(e) => setDocExpireDate(e.target.value)} />
-                                            </div>
-                                        </div>
-                                        <button type="button" className="btn btn-sm btn-info mt-2" onClick={handleAddDocument}>Add Document</button>
+                                <div className="mb-4">
+                                    <div className="d-flex justify-content-between align-items-center mb-3">
+                                        <h5 className="mb-0">User Documents</h5>
+                                        <button type="button" className="btn btn-sm btn-success" onClick={addNewDocumentForm}>
+                                            <span className="material-symbols-outlined fill me-1" style={{ fontSize: '16px', verticalAlign: 'middle' }}>add_circle</span>
+                                            Add Document
+                                        </button>
                                     </div>
 
-
-                                    {/* List of added documents */}
-                                    {documents.length > 0 && (
-                                        <div className="mt-4">
-                                            <h6>Uploaded Documents</h6>
-                                            <ul className="list-group">
-                                                {documents.map((doc, index) => (
-                                                    <li key={doc.id || `doc-${index}`} className="list-group-item d-flex justify-content-between align-items-center">
-                                                        <div>
-                                                            <strong>{doc.title}</strong><br />
-                                                            <small>File: {doc.fileName || (doc.file instanceof File ? doc.file.name : 'No file selected/retained')}</small><br />
-                                                            <small>Issue Date: {doc.issueDate}</small><br />
-                                                            <small>Expire Date: {doc.expireDate}</small>
-                                                        </div>
-                                                        <button type="button" className="btn btn-danger btn-sm" onClick={() => handleRemoveDocument(doc.id!)}>Remove</button>
-                                                    </li>
-                                                ))}
-                                            </ul>
+                                    {documents.map((doc, index) => (
+                                        <div key={doc.key || doc.id || `doc-${index}`} className='mb-3 p-3 border rounded position-relative'>
+                                            {documents.length > 0 && ( // Show remove button only if there's at least one doc form
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-sm btn-danger position-absolute top-0 end-0 mt-2 me-2"
+                                                    onClick={() => removeDocumentForm(doc.key!)}
+                                                    style={{ lineHeight: '1', padding: '0.25rem 0.5rem' }}
+                                                    title="Remove this document entry"
+                                                >
+                                                    <span className="material-symbols-outlined fill" style={{ fontSize: '16px', verticalAlign: 'middle' }}>delete</span>
+                                                </button>
+                                            )}
+                                            {/* <h6 className="mb-3">Document {index + 1}</h6> */}
+                                            <div className="form_auto_fit">
+                                                <div className="form-group form-vertical">
+                                                    <Input
+                                                        label="Document Title"
+                                                        name={`documents[${index}].title`}
+                                                        value={doc.title}
+                                                        onChange={(e) => handleDocumentFieldChange(index, 'title', e.target.value)}
+                                                        placeholder="Enter document title"
+                                                    />
+                                                </div>
+                                                <div className="form-group form-vertical">
+                                                    <InputFile
+                                                        label="Document File"
+                                                        name={`documents[${index}].file`}
+                                                        default_file_name={typeof doc.file === 'string' && doc.file.includes('/') ? doc.file.split('/').pop() : doc.fileName}
+                                                        onChange={(file) => handleDocumentFileChange(index, file)}
+                                                        // `clearFile` might be tricky here if we want to clear individual files
+                                                        // It might be simpler to just replace the file or remove the doc entry
+                                                    />
+                                                    {/* Display existing file name if not a File object yet and not handled by InputFile's default */}
+                                                    {typeof doc.file === 'string' && doc.file && (!(typeof File !== 'undefined' && (doc.file as any) instanceof File)) && !doc.fileName && (
+                                                        <small className="d-block mt-1">Current file: {doc.file.split('/').pop()}</small>
+                                                    )}
+                                                </div>
+                                                <div className="form-group form-vertical">
+                                                    <DateEl
+                                                        label="Issue Date"
+                                                        name={`documents[${index}].issueDate`}
+                                                        value={doc.issueDate}
+                                                        handler={(data) => handleDocumentFieldChange(index, 'issueDate', data.value)}
+                                                    />
+                                                </div>
+                                                <div className="form-group form-vertical">
+                                                    <DateEl
+                                                        label="Expire Date"
+                                                        name={`documents[${index}].expireDate`}
+                                                        value={doc.expireDate}
+                                                        handler={(data) => handleDocumentFieldChange(index, 'expireDate', data.value)}
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
+                                    ))}
+                                    {documents.length === 0 && (
+                                        <p className="text-muted">No documents added. Click "Add Document" to get started.</p>
                                     )}
                                 </div>
                                 {/* End of User Documents Section */}
