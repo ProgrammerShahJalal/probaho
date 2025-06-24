@@ -28,7 +28,7 @@ const Create: React.FC<Props> = (props: Props) => {
         const response = await dispatch(store(form_data) as any);
         if (!Object.prototype.hasOwnProperty.call(response, 'error')) {
             e.target.reset();
-            // init_nominee();
+            setData({}); // Reset data state after successful submission
         }
     }
 
@@ -57,6 +57,22 @@ const Create: React.FC<Props> = (props: Props) => {
             role: selectedRole.id,
         }));
     }, []);
+
+    // Prevent 'e' and other non-numeric characters in number input
+    const handleNumberKeyDown = (e) => {
+        if (e.key === 'e' || e.key === 'E' || e.key === '+' || e.key === '-') {
+            e.preventDefault();
+        }
+    };
+
+    // Update base_salary_in_text when base_salary changes
+    useEffect(() => {
+        const value = data['base_salary'] || '';
+        let el = document.querySelector('input[name="base_salary_in_text"]');
+        if (el) {
+            (el as HTMLInputElement).value = value ? (window as any).convertAmount(value).bn + ' টাকা মাত্র' : '';
+        }
+    }, [data['base_salary']]);
 
     return (
         <>
@@ -128,6 +144,32 @@ const Create: React.FC<Props> = (props: Props) => {
                                                         }))
                                                     }
                                                 />
+                                            ) : i === 'base_salary' ? (
+                                                <>
+                                                    <Input
+                                                        type="number"
+                                                        name={i}
+                                                        value={data[i] || ''}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value;
+                                                            setData((prev) => ({
+                                                                ...prev,
+                                                                [i]: value,
+                                                            }));
+                                                        }}
+                                                        onKeyDown={handleNumberKeyDown}
+                                                    />
+                                                    <div className="form-group form-vertical mt-2">
+                                                        <input
+                                                            type="text"
+                                                            name="base_salary_in_text"
+                                                            id="base_salary_in_text"
+                                                            readOnly
+                                                            className="form-control mt-1"
+                                                            placeholder="Base salary in words"
+                                                        />
+                                                    </div>
+                                                </>
                                             ) : (
                                                 <Input
                                                     name={i}

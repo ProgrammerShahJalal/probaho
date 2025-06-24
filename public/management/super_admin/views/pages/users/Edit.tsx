@@ -11,7 +11,7 @@ import storeSlice from './config/store';
 import { update } from './config/store/async_actions/update';
 import Input from './components/management_data_page/Input';
 // import InputImage from './components/management_data_page/InputImage'; // InputImage is used for user photo
-import InputImage from './components/management_data_page/InputImage'; 
+import InputImage from './components/management_data_page/InputImage';
 import InputFile from './components/management_data_page/InputFile'; // Import the new InputFile component
 import UserRolesDropDown from '../user_roles/components/dropdown/DropDown';
 import DateEl from '../../components/DateEl';
@@ -35,7 +35,7 @@ const Edit: React.FC<Props> = (props: Props) => {
 
     const dispatch = useAppDispatch();
     const params = useParams();
-    
+
     // State for managing documents - each item will now have its own complete state
     const [documents, setDocuments] = useState<Document[]>([]);
 
@@ -53,7 +53,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                     setDocuments(parsedDocuments.map((doc, index) => ({
                         ...doc,
                         // Ensure a unique key for React rendering, existing id or generate one
-                        key: doc.id || `temp-existing-${index}-${Date.now()}`, 
+                        key: doc.id || `temp-existing-${index}-${Date.now()}`,
                         fileName: typeof doc.file === 'string' ? doc.file.split('/').pop() : (doc.file instanceof File ? doc.file.name : doc.fileName || undefined),
                         // file itself is already in doc.file
                     })));
@@ -85,7 +85,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                 // For the JSON part, we'll send the fileName
                 fileDataToSend = doc.fileName || doc.file.name;
             }
-            
+
             // Ensure fileName is set if file is a string path (for existing files not changed)
             let currentFileName = doc.fileName;
             if (typeof doc.file === 'string' && !currentFileName) {
@@ -134,17 +134,17 @@ const Edit: React.FC<Props> = (props: Props) => {
     const handleDocumentFileChange = (index: number, file: File | null) => {
         const updatedDocuments = documents.map((doc, i) => {
             if (i === index) {
-                return { 
-                    ...doc, 
+                return {
+                    ...doc,
                     file: file ?? '', // Ensure file is never null, fallback to empty string
-                    fileName: file ? file.name : undefined 
+                    fileName: file ? file.name : undefined
                 };
             }
             return doc;
         });
         setDocuments(updatedDocuments);
     };
-    
+
     const addNewDocumentForm = () => {
         setDocuments([
             ...documents,
@@ -181,6 +181,15 @@ const Edit: React.FC<Props> = (props: Props) => {
             e.preventDefault();
         }
     };
+
+    // Add useEffect to set initial value
+    useEffect(() => {
+        const value = get_value('base_salary'); // Get the initial base_salary value
+        let el = document.querySelector('input[name="base_salary_in_text"]');
+        if (el && value) {
+            (el as HTMLInputElement).value = (window as any).convertAmount(value).bn + ' টাকা মাত্র';
+        }
+    }, [get_value('base_salary')]); // Run when base_salary value changes
 
     return (
         <>
@@ -357,23 +366,23 @@ const Edit: React.FC<Props> = (props: Props) => {
                                         ))}
                                     </div>
                                 </div>
-                                
+
                                 {/* User Documents Section */}
                                 <div className="mb-4">
                                     {/* Sticky Header for User Documents */}
-                                    <div 
-                                        style={{ 
-                                            position: 'sticky', 
+                                    <div
+                                        style={{
+                                            position: 'sticky',
                                             top: 0, // Adjust this if there's a global sticky header above
                                             backgroundColor: '#2c2f36', // Match your page's background. Adjust if needed.
                                             zIndex: 10, // Ensure it's above other content but below modals
                                             paddingTop: '10px', // Optional: for spacing if top:0
-                                            paddingBottom: '10px', 
-                                            display: 'flex', 
-                                            justifyContent: 'space-between', 
+                                            paddingBottom: '10px',
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
                                             alignItems: 'center',
                                             // Add a slight border or shadow to distinguish from content if background is same
-                                            borderBottom: '1px solid #444' 
+                                            borderBottom: '1px solid #444'
                                         }}
                                         className="mb-3" // Keep existing margin for spacing below header
                                     >
@@ -447,7 +456,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                 </div>
                                 {/* End of User Documents Section */}
 
-<div>
+                                <div>
                                     <h5 className="mb-4">User Information</h5>
                                     <div className="form_auto_fit">
                                         {[
