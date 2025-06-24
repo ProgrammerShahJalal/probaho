@@ -5,6 +5,7 @@ import storeSlice from '../../config/store';
 import { initialState } from '../../config/store/inital_state';
 import { useSelector } from 'react-redux';
 import setup from '../../config/setup';
+import moment from 'moment/moment';
 export interface Props { }
 
 const modalRoot = document.getElementById('filter-root');
@@ -93,6 +94,16 @@ const QuickView: React.FC<Props> = (props: Props) => {
                                     <th>Is Blocked</th>
                                     <th>:</th>
                                     <th>{state.item.is_blocked === '1'? 'Yes' : 'No'}</th>
+                                </tr>
+                                <tr>
+                                    <th>Join Date</th>
+                                    <th>:</th>
+                                    <th>{state.item.join_date? moment.utc(state.item.join_date).local().format('DD MMMM YYYY') : 'N/A'}</th>
+                                </tr>
+                                <tr>
+                                    <th>Base Salary</th>
+                                    <th>:</th>
+                                    <th>{state.item.base_salary? state.item.base_salary : 'N/A'}</th>
                                 </tr>
                             </tbody>
                         </table>

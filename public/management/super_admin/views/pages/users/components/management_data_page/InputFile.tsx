@@ -141,17 +141,7 @@ const InputFile: React.FC<Props> = ({
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 accept="image/*,application/pdf" // More specific accept
-                style={{
-                    width: '100%',
-                    padding: '10px',
-                    height: '40px',
-                    borderRadius: '6px',
-                    border: '1px solid #444',
-                    backgroundColor: '#2c2f36',
-                    color: '#fff',
-                    display: 'block',
-                    marginBottom: '5px',
-                }}
+                
             />
             {selectedFileName && (
                 <div style={{ marginTop: '5px', color: '#aaa', fontSize: '0.9em' }}>

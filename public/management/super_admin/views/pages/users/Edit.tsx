@@ -357,40 +357,33 @@ const Edit: React.FC<Props> = (props: Props) => {
                                         ))}
                                     </div>
                                 </div>
-                                <div>
-                                    <h5 className="mb-4">User Informations</h5>
-                                    <div className="form_auto_fit">
-                                        {[
-                                            'user_infos',
-                                        ].map((i) => (
-                                            <div key={i} className="form-group form-vertical">
-
-                                                {/* <label>{i.replaceAll('_', ' ')}</label> */}
-                                                <TextEditor
-                                                    name={i}
-                                                    value={get_value(i)}
-                                                    onChange={(value) =>
-                                                        dispatch(
-                                                            storeSlice.actions.set_item({
-                                                                ...state.item,
-                                                                [i]: value,
-                                                            }),
-                                                        )
-                                                    }
-                                                />
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
+                                
                                 {/* User Documents Section */}
                                 <div className="mb-4">
-                                    <div className="d-flex justify-content-between align-items-center mb-3">
+                                    {/* Sticky Header for User Documents */}
+                                    <div 
+                                        style={{ 
+                                            position: 'sticky', 
+                                            top: 0, // Adjust this if there's a global sticky header above
+                                            backgroundColor: '#2c2f36', // Match your page's background. Adjust if needed.
+                                            zIndex: 10, // Ensure it's above other content but below modals
+                                            paddingTop: '10px', // Optional: for spacing if top:0
+                                            paddingBottom: '10px', 
+                                            display: 'flex', 
+                                            justifyContent: 'space-between', 
+                                            alignItems: 'center',
+                                            // Add a slight border or shadow to distinguish from content if background is same
+                                            borderBottom: '1px solid #444' 
+                                        }}
+                                        className="mb-3" // Keep existing margin for spacing below header
+                                    >
                                         <h5 className="mb-0">User Documents</h5>
                                         <button type="button" className="btn btn-sm btn-success" onClick={addNewDocumentForm}>
                                             <span className="material-symbols-outlined fill me-1" style={{ fontSize: '16px', verticalAlign: 'middle' }}>add_circle</span>
                                             Add Document
                                         </button>
                                     </div>
+                                    {/* End of Sticky Header */}
 
                                     {documents.map((doc, index) => (
                                         <div key={doc.key || doc.id || `doc-${index}`} className='mb-3 p-3 border rounded position-relative'>
@@ -454,6 +447,31 @@ const Edit: React.FC<Props> = (props: Props) => {
                                 </div>
                                 {/* End of User Documents Section */}
 
+<div>
+                                    <h5 className="mb-4">User Information</h5>
+                                    <div className="form_auto_fit">
+                                        {[
+                                            'user_infos',
+                                        ].map((i) => (
+                                            <div key={i} className="form-group form-vertical">
+
+                                                {/* <label>{i.replaceAll('_', ' ')}</label> */}
+                                                <TextEditor
+                                                    name={i}
+                                                    value={get_value(i)}
+                                                    onChange={(value) =>
+                                                        dispatch(
+                                                            storeSlice.actions.set_item({
+                                                                ...state.item,
+                                                                [i]: value,
+                                                            }),
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
                                 <div className="form-group form-vertical">
                                     <label></label>
                                     <div className="form_elements">

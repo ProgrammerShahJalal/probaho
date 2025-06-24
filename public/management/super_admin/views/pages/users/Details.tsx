@@ -67,6 +67,7 @@ const Details: React.FC<Props> = (props: Props) => {
                                         'is_approved',
                                         'is_blocked',
                                         'join_date',
+                                        'base_salary',
                                     ].map((i) => (
                                         <tr key={i}>
                                             <td>{i.replaceAll('_', ' ')}</td>
@@ -76,13 +77,93 @@ const Details: React.FC<Props> = (props: Props) => {
                                                     ? get_value(i) === '1' ? 'Yes' : 'No'
                                                     : i === 'join_date' && get_value(i)
                                                         ? moment.utc(get_value(i)).local().format('DD MMMM YYYY')
-                                                        : get_value(i)
+                                                        : get_value(i) ? get_value(i) : 'N/A'
                                             }</td>
                                         </tr>
                                     ))}
 
                                 </tbody>
                             </table>
+
+                            {/* User Informations Section */}
+                            {!get_value('user_infos') ? (
+                                <div className="details_section mt-4">
+                                    <h5 className="details_section_title">User Information</h5>
+                                        <p className="text-muted">No information provided.</p>
+                                </div>
+                            ) : (
+                                <div className="details_section mt-4">
+                                    <h5 className="details_section_title">User Informations</h5>
+                                    <div
+                                        className="p-3 border rounded text-dark"
+                                        dangerouslySetInnerHTML={{ __html: get_value('user_infos') }}
+                                    />
+                                </div>
+                            )}
+                            {/* End User Informations Section */}
+
+                            {/* User Documents Section */}
+                            <div className="details_section mt-4">
+                                <h5 className="details_section_title mb-3">User Documents</h5>
+                                {(() => {
+                                    const documentsJson = get_value('user_documents');
+                                    if (!documentsJson) {
+                                        return <p className="text-muted">No documents provided.</p>;
+                                    }
+                                    try {
+                                        const documentsArray = JSON.parse(documentsJson);
+                                        if (!Array.isArray(documentsArray) || documentsArray.length === 0) {
+                                            return <p className="text-muted">No documents found.</p>;
+                                        }
+
+                                        const validDocuments = documentsArray.filter(doc => doc.title && doc.file);
+
+                                        if (validDocuments.length === 0) {
+                                            return <p className="text-muted">No valid document entries found.</p>;
+                                        }
+
+                                        return (
+                                            <ul className="list-group">
+                                                {validDocuments.map((doc, index) => {
+                                                    const filePath = doc.file.startsWith('http') ? doc.file : `/${doc.file}`;
+                                                    const isImage = /\.(jpe?g|png|gif|webp)$/i.test(doc.fileName || doc.file);
+                                                    // const isPdf = /\.(pdf)$/i.test(doc.fileName || doc.file);
+
+                                                    return (
+                                                        <li key={index} className="list-group-item mb-3 border rounded p-3">
+                                                            <div className="d-flex w-100 justify-content-between">
+                                                                <h6 className="mb-1">{doc.title}</h6>
+                                                                <small>
+                                                                    {doc.issueDate && `Issued: ${moment(doc.issueDate).format('DD MMM YYYY')}`}
+                                                                    {doc.issueDate && doc.expireDate && " | "}
+                                                                    {doc.expireDate && `Expires: ${moment(doc.expireDate).format('DD MMM YYYY')}`}
+                                                                </small>
+                                                            </div>
+
+                                                            {isImage && (
+                                                                <img
+                                                                    src={filePath}
+                                                                    alt={doc.title}
+                                                                    style={{ maxHeight: '100px', maxWidth: '150px', marginTop: '10px', borderRadius: '4px', border: '1px solid #ddd' }}
+                                                                />
+                                                            )}
+                                                            <div className="mt-2">
+                                                                <a href={filePath} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-outline-primary">
+                                                                    View/Download {doc.fileName || doc.file.split('/').pop()}
+                                                                </a>
+                                                            </div>
+                                                        </li>
+                                                    );
+                                                })}
+                                            </ul>
+                                        );
+                                    } catch (error) {
+                                        console.error("Error parsing user_documents JSON:", error);
+                                        return <p className="text-danger">Could not load documents due to a formatting error.</p>;
+                                    }
+                                })()}
+                            </div>
+                            {/* End User Documents Section */}
                         </div>
                     )}
 
