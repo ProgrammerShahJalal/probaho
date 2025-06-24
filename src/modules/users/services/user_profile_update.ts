@@ -98,10 +98,46 @@ async function user_profile_update(fastify_instance: FastifyInstance, req: Fasti
             is_blocked: body.is_blocked !== undefined ? body.is_blocked : data.is_blocked,
             is_approved: body.is_approved !== undefined ? body.is_approved : data.is_approved,
             user_infos: body.user_infos || data.user_infos,
-            user_documents: body.user_documents || data.user_documents,
-            join_date: body.join_date ? moment(body.join_date).toDate() : data.join_date,
+            // user_documents: body.user_documents || data.user_documents, // Will be handled separately
+            join_date: body.join_date ? moment(body.join_date, 'YYYY-MM-DD').toDate() : data.join_date,
             base_salary: body.base_salary || data.base_salary,
         });
+
+        // Handle user documents
+        let finalUserDocumentsString = data.user_documents; // Default to existing if no new data
+        if (body.user_documents && typeof body.user_documents === 'string') {
+            try {
+                let userDocumentsArray = JSON.parse(body.user_documents);
+                const processedUserDocuments = [];
+
+                for (let i = 0; i < userDocumentsArray.length; i++) {
+                    const doc = userDocumentsArray[i];
+                    // Corrected fileFieldKey to match frontend FormData key: document_files[index]
+                    const fileFieldKey = `document_files[${i}]`; 
+                    
+                    // Ensure the body property exists and has the expected file structure
+                    if (body[fileFieldKey] && typeof body[fileFieldKey] === 'object' && body[fileFieldKey].name && body[fileFieldKey].data) {
+                        const fileData = body[fileFieldKey];
+                        const documentFileName = `${Date.now()}_${i}_${fileData.name.replace(/\s+/g, '_')}`;
+                        const documentPath = `uploads/user_documents/${documentFileName}`;
+                        
+                        await (fastify_instance as any).upload(fileData, documentPath);
+                        doc.file = documentPath; // Update with the actual path
+                        doc.fileName = fileData.name; // Store original file name
+                    } else if (typeof doc.file === 'string') {
+                        // If it's a string, it's an existing file path, keep it as is
+                        // doc.file = doc.file; // No change needed
+                    }
+                    processedUserDocuments.push(doc);
+                }
+                finalUserDocumentsString = JSON.stringify(processedUserDocuments);
+            } catch (e) {
+                console.error('Error processing user documents:', e);
+                // Decide if to throw error or use default/existing data
+                // For now, retains existing or default if parsing/processing fails
+            }
+        }
+        data.user_documents = finalUserDocumentsString;
             await data.save();
 
 

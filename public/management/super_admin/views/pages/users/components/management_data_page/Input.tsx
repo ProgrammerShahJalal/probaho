@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 export interface Props {
     label?: string;
     name: string;
@@ -8,6 +9,8 @@ export interface Props {
     setter?: (response: unknown) => void;
     referance_data?: object;
     required?: boolean;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void; // Added onKeyDown prop
 }
 
 const Input: React.FC<Props> = ({
@@ -18,9 +21,12 @@ const Input: React.FC<Props> = ({
     value,
     required,
     setter,
+    onChange,
+    onKeyDown, // Destructure onKeyDown
     ...props
 }: Props) => {
     const [showPassword, setShowPassword] = useState(false);
+
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (setter) {
             setter({
@@ -29,7 +35,9 @@ const Input: React.FC<Props> = ({
             });
         }
     };
+
     const isPassword = name === 'password';
+
     return (
         <>
             <label htmlFor={name}>
@@ -51,10 +59,11 @@ const Input: React.FC<Props> = ({
                     name={name}
                     id={name}
                     defaultValue={value ? value : ''}
-                    onChange={handleChange}
+                    onChange={onChange ? onChange : handleChange}
+                    onKeyDown={onKeyDown} // Pass onKeyDown to the input element
                     style={{
                         width: '100%',
-                        paddingRight: isPassword ? '40px' : undefined, // Add space for eye icon
+                        paddingRight: isPassword ? '40px' : undefined,
                         paddingLeft: '10px',
                         height: '40px',
                         borderRadius: '6px',
@@ -126,7 +135,6 @@ const Input: React.FC<Props> = ({
                     </span>
                 )}
             </div>
-
         </>
     );
 };

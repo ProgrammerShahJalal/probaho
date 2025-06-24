@@ -174,13 +174,18 @@ const ActionDropdown: React.FC<ActionDropdownProps> = ({ item, selectedItems, is
             }
             // If mixed (not all active, not all inactive) when show_active_data is true, no bulk actions are shown
             // as per the defined rules.
-        } else { // Viewing Trash
-            if (areAllTrashed) {
+        } else { // Potentially viewing Trash OR an "Inactive" tab that incorrectly sets show_active_data to false
+            if (areAllTrashed) { // This is definitely trash
                 actionItems.push({ label: 'Restore', handler: handleRestore, iconClass: 'icon-reload text-success' });
                 actionItems.push({ label: 'Destroy', handler: handleDestroy, iconClass: 'icon-trash text-danger' });
+            } else if (areAllInactive) { 
+                // This handles the case where show_active_data is false,
+                // but items are 'deactive' and not trashed (e.g., an "Inactive" tab miscategorized by Redux state)
+                actionItems.push({ label: 'Active', handler: handleActive, iconClass: 'icon-eye text-success' });
+                actionItems.push({ label: 'Destroy', handler: handleDestroy, iconClass: 'icon-trash text-danger' });
             }
-            // If items in trash view are not all marked with deleted_at (or equivalent 'deleted' status),
-            // then no bulk actions are shown. This implies data consistency with the view.
+            // If items in this view are not all trashed and not all inactive,
+            // then no bulk actions are shown. This implies data consistency with the view or a mixed state.
         }
 
     } else if (!isBulk && item) {

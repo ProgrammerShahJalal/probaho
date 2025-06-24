@@ -5,6 +5,7 @@ import storeSlice from '../../config/store';
 import { initialState } from '../../config/store/inital_state';
 import { useSelector } from 'react-redux';
 import setup from '../../config/setup';
+import moment from 'moment/moment';
 export interface Props { }
 
 const modalRoot = document.getElementById('filter-root');
@@ -18,6 +19,19 @@ const QuickView: React.FC<Props> = (props: Props) => {
 
     function close_canvas(action: boolean = true) {
         dispatch(storeSlice.actions.set_show_quick_view_canvas(action));
+    }
+
+    // Function to convert base_salary to words
+    function convertSalaryToWords(value) {
+        try {
+            if (value && (window as any).convertAmount) {
+                return `${(window as any).convertAmount(value).bn} টাকা মাত্র`;
+            }
+            return 'N/A';
+        } catch (error) {
+            console.error('Error converting salary to words:', error);
+            return 'N/A';
+        }
     }
 
     if (modalRoot && state.show_quick_view_canvas) {
@@ -79,7 +93,37 @@ const QuickView: React.FC<Props> = (props: Props) => {
                                     <th>:</th>
                                     <th>{state.item.phone_number}</th>
                                 </tr>
-
+                                <tr>
+                                    <th>Is Verified</th>
+                                    <th>:</th>
+                                    <th>{state.item.is_approved === '1' ? 'Yes' : 'No'}</th>
+                                </tr>
+                                <tr>
+                                    <th>Is Approved</th>
+                                    <th>:</th>
+                                    <th>{state.item.is_verified === '1' ? 'Yes' : 'No'}</th>
+                                </tr>
+                                <tr>
+                                    <th>Is Blocked</th>
+                                    <th>:</th>
+                                    <th>{state.item.is_blocked === '1' ? 'Yes' : 'No'}</th>
+                                </tr>
+                                <tr>
+                                    <th>Join Date</th>
+                                    <th>:</th>
+                                    <th>{state.item.join_date ? moment.utc(state.item.join_date).local().format('DD MMMM YYYY') : 'N/A'}</th>
+                                </tr>
+                                <tr>
+                                    <th>Base Salary</th>
+                                    <th>:</th>
+                                    <th>{state.item.base_salary ? state.item.base_salary : 'N/A'}</th>
+                                </tr>
+                                {/* Add row for base_salary in words */}
+                                <tr>
+                                    <td>Base Salary in Words</td>
+                                    <td>:</td>
+                                    <td>{convertSalaryToWords(state.item.base_salary)}</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

@@ -150,7 +150,7 @@ function init(sequelize: Sequelize) {
                 allowNull: true,
             },
             join_date: {
-                type: DataTypes.DATE,
+                type: DataTypes.DATEONLY, // Store only the date, no time or timezone
                 allowNull: true,
             },
             base_salary: {
