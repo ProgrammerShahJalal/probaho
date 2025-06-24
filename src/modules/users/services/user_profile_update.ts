@@ -112,9 +112,11 @@ async function user_profile_update(fastify_instance: FastifyInstance, req: Fasti
 
                 for (let i = 0; i < userDocumentsArray.length; i++) {
                     const doc = userDocumentsArray[i];
-                    const fileFieldKey = `document_file_${i}`;
+                    // Corrected fileFieldKey to match frontend FormData key: document_files[index]
+                    const fileFieldKey = `document_files[${i}]`; 
                     
-                    if (body[fileFieldKey] && body[fileFieldKey].name && body[fileFieldKey].data) {
+                    // Ensure the body property exists and has the expected file structure
+                    if (body[fileFieldKey] && typeof body[fileFieldKey] === 'object' && body[fileFieldKey].name && body[fileFieldKey].data) {
                         const fileData = body[fileFieldKey];
                         const documentFileName = `${Date.now()}_${i}_${fileData.name.replace(/\s+/g, '_')}`;
                         const documentPath = `uploads/user_documents/${documentFileName}`;

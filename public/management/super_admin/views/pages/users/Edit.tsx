@@ -421,14 +421,13 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                         label="Document File"
                                                         name={`documents[${index}].file`}
                                                         default_file_name={typeof doc.file === 'string' && doc.file.includes('/') ? doc.file.split('/').pop() : doc.fileName}
+                                                        default_preview_url={typeof doc.file === 'string' ? doc.file : null} // Pass the file URL as default_preview_url
                                                         onChange={(file) => handleDocumentFileChange(index, file)}
-                                                        // `clearFile` might be tricky here if we want to clear individual files
-                                                        // It might be simpler to just replace the file or remove the doc entry
                                                     />
-                                                    {/* Display existing file name if not a File object yet and not handled by InputFile's default */}
-                                                    {typeof doc.file === 'string' && doc.file && (!(typeof File !== 'undefined' && (doc.file as any) instanceof File)) && !doc.fileName && (
+                                                    {/* Display existing file name if not a File object yet and not handled by InputFile's default - This might be redundant now with InputFile's own display */}
+                                                    {/* {typeof doc.file === 'string' && doc.file && (!(typeof File !== 'undefined' && (doc.file as any) instanceof File)) && !doc.fileName && (
                                                         <small className="d-block mt-1">Current file: {doc.file.split('/').pop()}</small>
-                                                    )}
+                                                    )} */}
                                                 </div>
                                                 <div className="form-group form-vertical">
                                                     <DateEl
