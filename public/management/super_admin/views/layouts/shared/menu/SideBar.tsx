@@ -28,9 +28,9 @@ const SideBar: React.FC<Props> = (props: Props) => {
                 <MenuSingle to="/event-resources" icon="fa fa-folder" label="Event Resources" />
                 <MenuSingle to="/event-faqs" icon="fa fa-comments" label="Event FAQs" /> */}
                 {/* BLOG  */}
-                {/* <MenuDropDown
+                <MenuDropDown
                     section_title="Management"
-                    group_title="Branch"
+                    group_title="Blog"
                     icon="fa fa-book"
                 >
                     <MenuDropDownItem
@@ -47,7 +47,7 @@ const SideBar: React.FC<Props> = (props: Props) => {
                         label="Blog Comment Replies"
                         to="/blog-comment-replies"
                     />
-                </MenuDropDown> */}
+                </MenuDropDown>
                 {/* EVENT  */}
                 {/* <MenuDropDown group_title="Class" icon="fa fa-calendar">
                     <MenuDropDownItem

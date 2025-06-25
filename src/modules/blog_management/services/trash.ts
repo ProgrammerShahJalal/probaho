@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyRequest } from 'fastify';
-import { body, validationResult } from 'express-validator';
+import { validateFields } from '../../common/validateFields';
 import { responseObject, Request } from '../../../common_types/object';
 import response from '../../../helpers/response';
 import custom_error from '../../../helpers/custom_error';
@@ -9,14 +9,7 @@ import Models from '../../../database/models';
 
 /** validation rules */
 async function validate(req: Request) {
-    await body('id')
-        .not()
-        .isEmpty()
-        .withMessage('the id field is required')
-        .run(req);
-
-    let result = await validationResult(req);
-    return result;
+    return await validateFields(req, ['id']);
 }
 
 async function trash(

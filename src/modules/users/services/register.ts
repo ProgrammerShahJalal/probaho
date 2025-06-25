@@ -7,72 +7,49 @@ import Models from '../../../database/models';
 import { body, validationResult } from 'express-validator';
 import {Request} from '../../../common_types/object';
 
+// Field validation rules extracted for reusability and clarity
+const registerFieldValidations = [
+    body('name')
+        .notEmpty()
+        .withMessage('The <b>name</b> field is required')
+        .trim()
+        .isLength({ min: 2, max: 100 })
+        .withMessage('Name must be between 2 and 100 characters')
+        .matches(/^[A-Za-z\s-]+$/)
+        .withMessage('Name can only contain letters, spaces, and hyphens'),
+    body('email')
+        .notEmpty()
+        .withMessage('The <b>email</b> field is required')
+        .trim()
+        .isEmail()
+        .withMessage('Please provide a valid email address')
+        .normalizeEmail()
+        .isLength({ max: 255 })
+        .withMessage('Email must not exceed 255 characters'),
+    body('phone_number')
+        .notEmpty()
+        .withMessage('The <b>phone number</b> field is required')
+        .trim()
+        .matches(/^\+?[\d\s-]{10,15}$/)
+        .withMessage('Please provide a valid phone number (10-15 digits, may include +, spaces, or hyphens)'),
+    body('password')
+        .notEmpty()
+        .withMessage('The <b>password</b> field is required')
+        .isLength({ min: 8, max: 50 })
+        .withMessage('Password must be between 8 and 50 characters')
+        .matches(/[A-Z]/)
+        .withMessage('Password must contain at least one uppercase letter')
+        .matches(/[a-z]/)
+        .withMessage('Password must contain at least one lowercase letter')
+        .matches(/[0-9]/)
+        .withMessage('Password must contain at least one number')
+        .matches(/[!@#$%^&*(),.?":{}|<>]/)
+        .withMessage('Password must contain at least one special character'),
+];
+
 /** validation rules */
 async function validate(req: Request) {
-    const fields = [
-        {
-            name: 'name',
-            rules: [
-                body('name')
-                    .notEmpty()
-                    .withMessage('The <b>name</b> field is required')
-                    .trim()
-                    .isLength({ min: 2, max: 100 })
-                    .withMessage('Name must be between 2 and 100 characters')
-                    .matches(/^[A-Za-z\s-]+$/)
-                    .withMessage('Name can only contain letters, spaces, and hyphens'),
-            ],
-        },
-        {
-            name: 'email',
-            rules: [
-                body('email')
-                    .notEmpty()
-                    .withMessage('The <b>email</b> field is required')
-                    .trim()
-                    .isEmail()
-                    .withMessage('Please provide a valid email address')
-                    .normalizeEmail()
-                    .isLength({ max: 255 })
-                    .withMessage('Email must not exceed 255 characters'),
-            ],
-        },
-        {
-            name: 'phone_number',
-            rules: [
-                body('phone_number')
-                    .notEmpty()
-                    .withMessage('The <b>phone number</b> field is required')
-                    .trim()
-                    .matches(/^\+?[\d\s-]{10,15}$/)
-                    .withMessage('Please provide a valid phone number (10-15 digits, may include +, spaces, or hyphens)'),
-            ],
-        },
-        {
-            name: 'password',
-            rules: [
-                body('password')
-                    .notEmpty()
-                    .withMessage('The <b>password</b> field is required')
-                    .isLength({ min: 8, max: 50 })
-                    .withMessage('Password must be between 8 and 50 characters')
-                    .matches(/[A-Z]/)
-                    .withMessage('Password must contain at least one uppercase letter')
-                    .matches(/[a-z]/)
-                    .withMessage('Password must contain at least one lowercase letter')
-                    .matches(/[0-9]/)
-                    .withMessage('Password must contain at least one number')
-                    .matches(/[!@#$%^&*(),.?":{}|<>]/)
-                    .withMessage('Password must contain at least one special character'),
-            ],
-        },
-    ];
-
-    // Run all validations in parallel
-    await Promise.all(
-        fields.flatMap(field => field.rules.map(rule => rule.run(req)))
-    );
-
+    await Promise.all(registerFieldValidations.map(rule => rule.run(req)));
     return await validationResult(req);
 }
 

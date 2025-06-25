@@ -1,6 +1,6 @@
 import db from '../models/db';
 import { FastifyInstance, FastifyRequest } from 'fastify';
-import { body, validationResult } from 'express-validator';
+import { validateFields } from '../../common/validateFields';
 import {
     anyObject,
     responseObject,
@@ -18,8 +18,7 @@ import Models from '../../../database/models';
 
 /** validation rules */
 async function validate(req: Request) {
-    let field = '';
-    let fields = [
+    const fields = [
         'title',
         'short_description',
         'full_description',
@@ -30,22 +29,7 @@ async function validate(req: Request) {
         'seo_keyword',
         'publish_date',
     ];
-
-    for (let index = 0; index < fields.length; index++) {
-        const field = fields[index];
-        await body(field)
-            .not()
-            .isEmpty()
-            .withMessage(
-                `the <b>${field.replaceAll('_', ' ')}</b> field is required`,
-            )
-            .run(req);
-    }
-
-
-    let result = await validationResult(req);
-
-    return result;
+    return await validateFields(req, fields);
 }
 
 async function store(

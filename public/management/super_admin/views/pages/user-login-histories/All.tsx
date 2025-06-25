@@ -127,7 +127,7 @@ const All: React.FC<Props> = (props: Props) => {
                                                         <SelectItem item={i} />
                                                     </td>
                                                     <td>{i.id}</td>
-                                                    <td>{i.user?.first_name} {i.user?.last_name}</td>
+                                                    <td>{i.user?.name}</td>
                                                     <td>{formateDateTime(i.login_date)}</td>
                                                     <td>{formateDateTime(i.logout_date)}</td>
                                                     <td>

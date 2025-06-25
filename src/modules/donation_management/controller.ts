@@ -1,43 +1,17 @@
 import Stripe from 'stripe';
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import store from './services/store';
-import { responseObject } from '../../common_types/object';
-
+import storeService from './services/store';
+import { controllerHandler } from '../../helpers/controller_handler';
 
 const stripe = new Stripe(`${process.env.STRIPE_SECRET_KEY}`, {
     apiVersion: process.env.STRIPE_API_VERSION as any,
 });
 
-// Helper function to handle service errors
-function handleServiceError(error: any, res: FastifyReply) {
-    // Handle custom_error instances
-    if (error.code && error.name && error.message) {
-        return res.code(error.code).send({
-            status: error.code,
-            message: error.name,
-            data: error.uid ? { uid: error.uid, details: error.message } : { details: error.message }
-        });
-    }
-
-    // Handle unexpected errors
-    console.error('Unexpected error:', error);
-    return res.code(500).send({
-        status: 500,
-        message: 'Internal server error',
-        data: null
-    });
-}
-
 export default function (fastify: FastifyInstance) {
+    const handle = (service) => controllerHandler(service.bind(null, fastify));
+
     return {
-        session: async function (req: FastifyRequest, res: FastifyReply) {
-            try {
-                let data: responseObject = await store(fastify, req);
-                return res.code(data.status).send(data);
-            } catch (error: any) {
-                return handleServiceError(error, res);
-            }
-        },
+        session: async (req: FastifyRequest, res: FastifyReply) => handle(storeService)(req, res),
 
         // Handle Stripe Webhook
         webhook: async function handleStripeWebhook(

@@ -7,18 +7,11 @@ import custom_error from '../../../helpers/custom_error';
 import error_trace from '../../../helpers/error_trace';
 import { modelName } from '../models/model';
 import Models from '../../../database/models';
+import { validateFields } from '../../common/validateFields';
 
 /** validation rules */
 async function validate(req: Request) {
-    await body('id')
-        .not()
-        .isEmpty()
-        .withMessage('the id field is required')
-        .run(req);
-
-    let result = await validationResult(req);
-
-    return result;
+    return await validateFields(req, ['id']);
 }
 
 async function soft_delete(
