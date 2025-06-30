@@ -41,17 +41,17 @@ const check_is_super_admin_and_redirect = async (
         console.log('Decoded JWT:', decoded);
         console.log('User from DB:', user?.id, user?.role_serial, user?.token);
         if (!user || user.token !== decoded.token) {
-            return reply.redirect(`/login`);
+            return reply.redirect(`/super-admin-login`);
         }
 
         // Check if the user is a super admin (role_serial === 1)
         if (user.role_serial !== 1) {
-            return reply.redirect(`/login`);
+            return reply.redirect(`/super-admin-login`);
         }
 
         (request as anyObject).user = decoded;
     } catch (error) {
-        return reply.redirect(`/login`);
+        return reply.redirect(`/super-admin-login`);
     }
 };
 

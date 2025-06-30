@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Login</title>
+    <title>Admin Login</title>
     <link rel="stylesheet" href="/assets/dashboard/fonts/google_icon/google_icons.css" />
     <link rel="stylesheet" href="/assets/dashboard/styles/login/login.css" />
     <script src="/assets/dashboard/js/plugins/axios.js"></script>
@@ -119,11 +119,11 @@
         const login = () => {
             event.preventDefault();
             axios
-                .post('/api/v1/auth/login', new FormData(event.currentTarget))
+                .post('/api/v1/auth/admin-login', new FormData(event.currentTarget))
                 .then((res) => {
                     window.toaster('Login successful!', 'success'); // ✅ Success message
                     setTimeout(() => {
-                        location.href = '/super-admin';
+                        location.href = '/admin';
                     }, 1000); // Delay for user to see the message
                 })
                 .catch((err) => {

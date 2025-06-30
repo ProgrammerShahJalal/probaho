@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Teacher Login</title>
+    <link rel="stylesheet" href="/assets/dashboard/fonts/google_icon/google_icons.css" />
+    <link rel="stylesheet" href="/assets/dashboard/styles/login/login.css" />
+    <script src="/assets/dashboard/js/plugins/axios.js"></script>
+    <script src="/assets/dashboard/js/plugins/sweetalert.js"></script>
+</head>
+
+<body>
+    <div class="main_body">
+        <div id="login">
+            <div class="container">
+                <div class="login_form">
+                    <div class="heading">
+                        <h2>sup LOGIN</h2>
+                    </div>
+                    <div class="bg1"></div>
+                    <div class="bg2"></div>
+                    <div class="bg3"></div>
+                    <div class="form_content">
+                        <form onsubmit="login()" autocomplete="false">
+                            <div class="form_group">
+                                <div class="input_body">
+                                    <span class="icon material-symbols-outlined">
+                                        person
+                                    </span>
+                                    <input type="email" value="" placeholder="email" name="email" id="email" />
+                                </div>
+                                <label for="email">
+                                    <div class="text">Email</div>
+                                </label>
+                            </div>
+                            <div class="form_group">
+                                <div class="input_body">
+                                    <span class="icon material-symbols-outlined">
+                                        key
+                                    </span>
+                                    <input type="password" value="" placeholder="password" name="password"
+                                        id="password" />
+                                </div>
+                                <label for="password">
+                                    <div class="text">password</div>
+                                </label>
+                            </div>
+                            <div class="form_group button_group">
+                                <div class="buttons">
+                                    <button onclick="remove_form_action_classes()" type="reset">
+                                        <div class="text">reset</div>
+                                    </button>
+                                    <button type="submit">
+                                        <div class="text">submit</div>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        axios.interceptors.request.use(
+            function (config) {
+                let form_errors = document.querySelectorAll('.form_error');
+                [...form_errors].forEach((e) => e.remove());
+                let has_errors =
+                    document.querySelectorAll('.form_group_error');
+                [...has_errors].forEach((e) =>
+                    e.classList.remove('form_group_error'),
+                );
+
+                return config;
+            },
+            function (error) {
+                return Promise.reject(error);
+            },
+        );
+        axios.interceptors.response.use(
+            function (response) {
+                return response;
+            },
+            function (error) {
+                if (error.response.data.status === 422) {
+                    let errors = error.response.data.data;
+                    errors.forEach((error) => {
+                        let el = document.querySelector(
+                            `[name="${error.path}"]`,
+                        );
+                        if (el) {
+                            el.parentNode?.parentNode.classList.add(
+                                'form_group_error',
+                            );
+                            el.parentNode?.parentNode.insertAdjacentHTML(
+                                'beforeend',
+                                `
+                        <div class="form_error">
+                            ${error.msg}
+                        </div>
+                        `,
+                            );
+                        }
+                    });
+
+                    window.toaster(
+                        `${error.response.status} - ${error.response.statusText}`,
+                    );
+
+                    console.log(error.response);
+                }
+                return Promise.reject(error);
+            },
+        );
+        const login = () => {
+            event.preventDefault();
+            axios
+                .post('/api/v1/auth/login', new FormData(event.currentTarget))
+                .then((res) => {
+                    window.toaster('Login successful!', 'success'); // ✅ Success message
+                    setTimeout(() => {
+                        location.href = '/super-admin';
+                    }, 1000); // Delay for user to see the message
+                })
+                .catch((err) => {
+                    let { message, data } = err.response.data;
+                    window.toaster(message, 'error');
+                    console.log(data);
+                });
+        };
+
+    </script>
+</body>
+
+</html>
