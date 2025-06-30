@@ -1,5 +1,5 @@
 import { InferCreationAttributes } from "sequelize";
-import Models from "../database/models";
+import Models from "../../database/models";
 
 async function error_trace(
     model: any,
