@@ -28,7 +28,7 @@ function handleServiceError(error: any, res: FastifyReply) {
             data: error.uid ? { uid: error.uid, details: error.message } : { details: error.message }
         });
     }
-8
+
     // Handle unexpected errors
     console.error('Unexpected error:', error);
     return res.code(500).send({
