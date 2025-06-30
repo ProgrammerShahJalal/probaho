@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Accountant Login</title>
+  <link rel="stylesheet" href="/assets/dashboard/fonts/google_icon/google_icons.css" />
+  <link rel="stylesheet" href="/assets/dashboard/styles/login/login.css" />
+  <script src="/assets/dashboard/js/plugins/axios.js"></script>
+  <script src="/assets/dashboard/js/plugins/sweetalert.js"></script>
+</head>
+
+<body>
+  <div class="login_page">
+    <div class="welcome-text">
+      <h2>WELCOME TO</h2>
+      <img width="150" height="150" src="/assets/dashboard/images/logo.png" alt="Logo" />
+      <h2>ACCOUNTANT PANEL</h2>
+    </div>
+    <div id="login">
+      <div class="container">
+        <div class="login_form">
+          <div class="heading">
+            <h2>LOGIN</h2>
+          </div>
+          <div class="bg1"></div>
+          <div class="bg2"></div>
+          <div class="bg3"></div>
+          <div class="form_content">
+            <form onsubmit="login()" autocomplete="false">
+              <div class="form_group">
+                <div class="input_body" style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px;">
+                  <div style="display: flex; align-items: center; gap: 8px; width: 100%;">
+                    <span class="icon material-symbols-outlined">person</span>
+                    <label for="email" style="margin: 0;">
+                      <div class="text">Email</div>
+                    </label>
+                  </div>
+                  <input type="email" value="" placeholder="email" name="email" id="email" style="width: 100%; min-width: 0; outline: none;" />
+                </div>
+
+              </div>
+              <div class="form_group">
+                <div class="input_body" style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px; width: 100%;">
+                  <div style="display: flex; align-items: center; gap: 8px; width: 100%;">
+                    <span class="icon material-symbols-outlined">key</span>
+                    <label for="password" style="margin: 0;">
+                      <div class="text">Password</div>
+                    </label>
+                  </div>
+                  <div style="position: relative; width: 100%;">
+                    <input type="password" value="" placeholder="password" name="password" id="password" style="width: 100%; min-width: 0; padding-right: 36px; outline: none;" />
+                    <span id="togglePassword" class="icon material-symbols-outlined" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); cursor: pointer; user-select: none;">visibility</span>
+                  </div>
+                </div>
+
+              </div>
+              <div class="form_group button_group">
+              <div class="form_group" style="text-align: right; margin-bottom: 8px;">
+                <a href="#" style="color: #007BFF; text-decoration: none; font-size: 0.75em;">Forgot Your Password?</a>
+              </div>
+                <div class="buttons">
+                  <button onclick="remove_form_action_classes()" type="reset">
+                    <div class="text">reset</div>
+                  </button>
+                  <button type="submit">
+                    <div class="text">submit</div>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Password show/hide toggle
+    document.addEventListener('DOMContentLoaded', function () {
+      const passwordInput = document.getElementById('password');
+      const togglePassword = document.getElementById('togglePassword');
+      if (passwordInput && togglePassword) {
+        togglePassword.addEventListener('click', function () {
+          const isPassword = passwordInput.type === 'password';
+          passwordInput.type = isPassword ? 'text' : 'password';
+          togglePassword.textContent = isPassword ? 'visibility_off' : 'visibility';
+        });
+      }
+    });
+    axios.interceptors.request.use(
+      function (config) {
+        let form_errors = document.querySelectorAll('.form_error');
+        [...form_errors].forEach((e) => e.remove());
+        let has_errors = document.querySelectorAll('.form_group_error');
+        [...has_errors].forEach((e) => e.classList.remove('form_group_error'));
+        return config;
+      },
+      function (error) {
+        return Promise.reject(error);
+      },
+    );
+    axios.interceptors.response.use(
+      function (response) {
+        return response;
+      },
+      function (error) {
+        if (error.response.data.status === 422) {
+          let errors = error.response.data.data;
+          errors.forEach((error) => {
+            let el = document.querySelector(`[name="${error.path}"]`);
+            if (el) {
+              el.parentNode?.parentNode.classList.add('form_group_error');
+              el.parentNode?.parentNode.insertAdjacentHTML(
+                'beforeend',
+                `
+                        <div class="form_error">
+                            ${error.msg}
+                        </div>
+                        `,
+              );
+            }
+          });
+          window.toaster(`${error.response.status} - ${error.response.statusText}`);
+          console.log(error.response);
+        }
+        return Promise.reject(error);
+      },
+    );
+    const login = () => {
+      event.preventDefault();
+      axios
+        .post('/api/v1/auth/login', new FormData(event.currentTarget))
+        .then((res) => {
+          window.toaster('Login successful!', 'success');
+          setTimeout(() => {
+            location.href = '/accountant';
+          }, 1000);
+        })
+        .catch((err) => {
+          let { message, data } = err.response.data;
+          window.toaster(message, 'error');
+          console.log(data);
+        });
+    };
+  </script>
+</body>
+
+</html>

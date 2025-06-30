@@ -18,7 +18,7 @@ function parseCookieString(cookieString: string) {
 }
 
 
-const check_is_admin_and_redirect = async (
+const check_is_teacher_and_redirect = async (
     request: FastifyRequest,
     reply: FastifyReply,
 ) => {
@@ -30,7 +30,7 @@ const check_is_admin_and_redirect = async (
     // const token = parseCookieString(request.headers.cookie)?.token;
 
     if (!token || !token.startsWith('Bearer ')) {
-        return reply.redirect(`/admin-login`);
+        return reply.redirect(`/teacher-login`);
     }
 
     try {
@@ -40,18 +40,18 @@ const check_is_admin_and_redirect = async (
         let user = await models.UserModel.findByPk(decoded.id);
 
         if (!user || user.token !== decoded.token) {
-            return reply.redirect(`/admin-login`);
+            return reply.redirect(`/teacher-login`);
         }
 
         // Check if the user is an admin
-        if (decoded.role !== 'admin') {
-            return reply.redirect(`/admin-login`);
+        if (decoded.role !== 'teacher') {
+            return reply.redirect(`/teacher-login`);
         }
 
         (request as anyObject).user = decoded;
     } catch (error) {
-        return reply.redirect(`/admin-login`);
+        return reply.redirect(`/teacher-login`);
     }
 };
 
-export default check_is_admin_and_redirect;
+export default check_is_teacher_and_redirect;
