@@ -293,11 +293,13 @@ export const init = (sequelize: Sequelize): typeof Course => {
     );
     return Course;
 };
-export default init;
-4. Create Database Migration
+export default init;```
+
+**4. Create Database Migration**
 
 Run: npx sequelize-cli migration:generate --name create-courses-table
 Edit the generated migration file (e.g., migrations/YYYYMMDDHHMMSS-create-courses-table.js):
+```typescript
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -315,10 +317,12 @@ module.exports = {
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('courses');
   }
-};
+};```
 Run: npx sequelize-cli db:migrate (or your project's migration script).
-5. Implement Service (src/modules/course_management/services/course.service.ts)
 
+**5. Implement Service (src/modules/course_management/services/course.service.ts)**
+
+```typescript
 // src/modules/course_management/services/course.service.ts
 import { FastifyInstance } from 'fastify';
 import { Course, CourseCreationAttributes } from '../models/model';
@@ -383,9 +387,11 @@ export class CourseService {
             throw new CustomError(error.message || 'Failed to delete course', 500);
         }
     }
-}
-6. Implement Controller (src/modules/course_management/controller.ts)
+}```
 
+**6. Implement Controller (src/modules/course_management/controller.ts)**
+
+```typescript
 // src/modules/course_management/controller.ts
 import { FastifyRequest, FastifyReply, FastifyInstance } from 'fastify';
 import { CourseService } from './services/course.service';
@@ -428,9 +434,11 @@ export class CourseController {
         await this.courseService.delete(parseInt(request.params.id));
         return reply.code(204).send(); // Or successResponse(null, 'Course deleted') with 200
     }
-}
-7. Define Routes (src/modules/course_management/routes.ts)
+}```
 
+**7. Define Routes (src/modules/course_management/routes.ts)**
+
+```typescript
 // src/modules/course_management/routes.ts
 import { FastifyInstance, FastifyPluginOptions } from 'fastify';
 import { CourseController } from './controller';
@@ -463,9 +471,11 @@ export default async function courseRoutes(server: FastifyInstance, options: Fas
     server.get('/courses/:id', { /* schema: getCourseByIdSchema */ }, courseController.getById);
     server.put('/courses/:id', { /* schema: updateCourseSchema */ }, courseController.update);
     server.delete('/courses/:id', { /* schema: deleteCourseSchema */ }, courseController.delete);
-}
+}```
+
 Route Schemas: Using Fastify's schema capabilities for request validation (body, params, querystring) and response serialization is highly recommended. This offloads validation from the controller and provides clear API contracts.
-8. Restart Server & Test
+
+**8. Restart Server & Test**
 
 Restart your development server (npm run server). The new module and its routes should be automatically loaded.
 Test your new endpoints using a tool like Postman, Insomnia, or by writing integration tests (e.g., using Jest and Supertest).
@@ -483,7 +493,7 @@ Once backend API endpoints are created, the frontend (e.g., a React admin panel 
 
 // Example: src/public/management/super_admin/services/api.ts or courseApi.ts
 import axios from 'axios';
-
+```typescript
 const API_BASE_URL = '/api/v1'; // Assuming Fastify serves API under this prefix
 
 const apiClient = axios.create({
@@ -520,10 +530,11 @@ export const courseApiService = {
         return response.data; // Or just status for 204 No Content
     },
 };```
+
 2. Using the API Service in a React Component (or Hook/State Management)
 
 A React component can then use this service to fetch data or perform actions. State management libraries like Redux Toolkit (with RTK Query), Zustand, or React Query are often used to manage API state, caching, and optimistic updates.
-```
+```typescript
 // Example: src/public/management/super_admin/views/courses/CourseListPage.tsx
 import React, { useEffect, useState } from 'react';
 import { courseApiService } from '../../services/courseApi'; // Adjust path as needed
@@ -615,9 +626,10 @@ const CourseListPage: React.FC = () => {
             )}
         </div>
     );
-}; ```
+};
 
-export default CourseListPage;
+export default CourseListPage;```
+
 3. Handling API State and User Feedback
 
 Loading State: Show loading indicators (spinners, skeletons) while API requests are in progress.
