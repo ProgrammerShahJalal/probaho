@@ -2,7 +2,7 @@
 
 import { FastifyError, FastifyReply, FastifyRequest } from 'fastify';
 import fp from 'fastify-plugin';
-import error_trace from '../helpers/error_trace';
+import error_trace from '../common/errors/error_trace';
 
 interface anyObject {
     [key: string]: any;

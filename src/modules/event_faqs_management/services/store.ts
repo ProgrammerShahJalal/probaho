@@ -9,8 +9,8 @@ import {
 import { InferCreationAttributes } from 'sequelize';
 
 import response from '../../../helpers/response';
-import custom_error from '../../../helpers/custom_error';
-import error_trace from '../../../helpers/error_trace';
+import custom_error from '../../../common/errors/custom_error';
+import error_trace from '../../../common/errors/error_trace';
 
 import { modelName } from '../models/model';
 import Models from '../../../database/models';

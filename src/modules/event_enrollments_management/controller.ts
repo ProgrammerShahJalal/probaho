@@ -11,7 +11,7 @@ import restore from './services/restore';
 import destroy from './services/destroy';
 import data_import from './services/import';
 import findByEvent from './services/findByEvent';
-import { handleServiceError } from '../../utils/errorHandler';
+import { handleServiceError } from '../../common/utils/controller_utils';
 
 
 export default function (fastify: FastifyInstance) {

@@ -2,7 +2,7 @@ import Stripe from 'stripe';
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import store from './services/store';
 import { responseObject } from '../../common_types/object';
-import { handleServiceError } from '../../utils/errorHandler';
+import { handleServiceError } from '../../common/utils/controller_utils';
 
 
 const stripe = new Stripe(`${process.env.STRIPE_SECRET_KEY}`, {

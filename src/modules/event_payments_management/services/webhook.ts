@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import Models from '../../../database/models';
 import { modelName } from '../models/model';
-import custom_error from '../../../helpers/custom_error';
+import custom_error from '../../../common/errors/custom_error';
 
 interface WebhookMetadata {
     user_id: string;

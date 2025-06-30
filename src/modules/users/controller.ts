@@ -16,7 +16,7 @@ import active from './services/active';
 import trash from './services/trash';
 import inactive from './services/inactive';
 import import_users from './services/import_users'; // Import the new service
-import { handleServiceError } from '../../utils/errorHandler';
+import { handleServiceError } from '../../common/utils/controller_utils';
 const { serialize, parse } = require('@fastify/cookie');
 
 

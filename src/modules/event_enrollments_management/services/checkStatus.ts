@@ -3,8 +3,8 @@ import Models from '../../../database/models';
 // Assuming modelName export might not be present or standard, directly use inferred model name
 // import { modelName as eventEnrollmentModelName } from '../models/model'; 
 import response from '../../../helpers/response'; // Not directly used for boolean return, but good for consistency if expanded
-import error_trace from '../../../helpers/error_trace';
-import custom_error from '../../../helpers/custom_error';
+import error_trace from '../../../common/errors/error_trace';
+import custom_error from '../../../common/errors/custom_error';
 
 async function checkStatus(
     fastify_instance: FastifyInstance, // fastify_instance might not be strictly needed if not using fastify specific things like log here

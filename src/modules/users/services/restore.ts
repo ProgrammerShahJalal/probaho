@@ -3,8 +3,8 @@ import { FastifyInstance, FastifyRequest } from 'fastify';
 import { body, validationResult } from 'express-validator';
 import { responseObject, Request } from '../../../common_types/object';
 import response from '../../../helpers/response';
-import custom_error from '../../../helpers/custom_error';
-import error_trace from '../../../helpers/error_trace';
+import custom_error from '../../../common/errors/custom_error';
+import error_trace from '../../../common/errors/error_trace';
 import { modelName } from '../models/user_model';
 import Models from '../../../database/models';
 

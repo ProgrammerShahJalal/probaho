@@ -13,7 +13,7 @@ import update from './services/update';
 import restore from './services/restore';
 import destroy from './services/destroy';
 import data_import from './services/import';
-import { handleServiceError } from '../../utils/errorHandler';
+import { handleServiceError } from '../../common/utils/controller_utils';
 // import slug from './services/slug';
 
 

@@ -7,8 +7,8 @@ import {
     Request,
 } from '../../../common_types/object';
 import response from '../../../helpers/response';
-import error_trace from '../../../helpers/error_trace';
-import custom_error from '../../../helpers/custom_error';
+import error_trace from '../../../common/errors/error_trace';
+import custom_error from '../../../common/errors/custom_error';
 import { modelName } from '../models/model';
 
 /** validation rules */

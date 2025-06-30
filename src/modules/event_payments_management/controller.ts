@@ -18,7 +18,7 @@ import payment_refunds from './services/payment_refunds';
 import Models from '../../database/models';
 import { modelName } from './models/model';
 import { handleFailedPayment, handleSuccessfulPayment } from './services/webhook';
-import { handleServiceError } from '../../utils/errorHandler';
+import { handleServiceError } from '../../common/utils/controller_utils';
 
 
 const stripe = new Stripe(`${process.env.STRIPE_SECRET_KEY}`, {
