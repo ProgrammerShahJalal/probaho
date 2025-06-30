@@ -18,31 +18,13 @@ import payment_refunds from './services/payment_refunds';
 import Models from '../../database/models';
 import { modelName } from './models/model';
 import { handleFailedPayment, handleSuccessfulPayment } from './services/webhook';
+import { handleServiceError } from '../../utils/errorHandler';
 
 
 const stripe = new Stripe(`${process.env.STRIPE_SECRET_KEY}`, {
     apiVersion: process.env.STRIPE_API_VERSION as any,
 });
 
-// Helper function to handle service errors
-function handleServiceError(error: any, res: FastifyReply) {
-    // Handle custom_error instances
-    if (error.code && error.name && error.message) {
-        return res.code(error.code).send({
-            status: error.code,
-            message: error.name,
-            data: error.uid ? { uid: error.uid, details: error.message } : { details: error.message }
-        });
-    }
-
-    // Handle unexpected errors
-    console.error('Unexpected error:', error);
-    return res.code(500).send({
-        status: 500,
-        message: 'Internal server error',
-        data: null
-    });
-}
 
 export default function (fastify: FastifyInstance) {
     return {
