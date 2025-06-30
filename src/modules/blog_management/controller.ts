@@ -17,7 +17,7 @@ import slug from './services/slug';
 import trash from './services/trash';
 import inactive from './services/inactive';
 import active from './services/active';
-import { handleServiceError } from '../../utils/errorHandler';
+import { handleServiceError } from '../../common/utils/controller_utils';
 
 
 export default function (fastify: FastifyInstance) {

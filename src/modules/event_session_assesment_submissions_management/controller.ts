@@ -14,7 +14,7 @@ import restore from './services/restore';
 import destroy from './services/destroy';
 import data_import from './services/import';
 import userbasedfinding from './services/userbasedfinding';
-import { handleServiceError } from '../../utils/errorHandler';
+import { handleServiceError } from '../../common/utils/controller_utils';
 
 
 export default function (fastify: FastifyInstance) {
