@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>Super Admin Login</title>
+  <title>Receptionist Login</title>
   <link rel="stylesheet" href="/assets/dashboard/fonts/google_icon/google_icons.css" />
   <link rel="stylesheet" href="/assets/dashboard/styles/login/login.css" />
   <script src="/assets/dashboard/js/plugins/axios.js"></script>
@@ -17,7 +17,7 @@
     <div class="welcome-text">
       <h2>WELCOME TO</h2>
       <img width="150" height="150" src="/assets/dashboard/images/logo.png" alt="Logo" />
-      <h2>SUPER ADMIN PANEL</h2>
+      <h2>RECEPTIONIST PANEL</h2>
     </div>
     <div id="login">
       <div class="container">
@@ -135,7 +135,7 @@
         .then((res) => {
           window.toaster('Login successful!', 'success');
           setTimeout(() => {
-            location.href = '/super-admin';
+            location.href = '/receptionist';
           }, 1000);
         })
         .catch((err) => {
