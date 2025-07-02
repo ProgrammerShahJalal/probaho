@@ -93,18 +93,17 @@ async function forgetPassword(
         try {
             await transporter.sendMail(mailOptions);
             console.log(`Password reset email sent to ${user.email}`);
+            // If email sending is successful, return the generic success message
+            return response(200, 'Request processed', { message: genericMessage });
         } catch (emailError: any) {
             console.error('Error sending password reset email:', emailError);
-            // Log the error, but still return the generic message to the client to avoid info leaks.
-            // Depending on policy, you might want to return a specific error if email sending is critical and fails.
-            // For now, we prioritize not leaking user existence.
             await error_trace(models, emailError, req.url, req.body as any); // Log detailed error internally
-            // Optionally, you could throw a custom error here if you want the user to know sending failed.
-            // throw new custom_error('Failed to send password reset email.', 500, 'Email service error.');
-            // However, for security, often better to stick to generic message.
+            // Return a message indicating email sending failed
+            // It's important not to expose raw error details to the client for security reasons.
+            // This message still protects against email enumeration if the user didn't exist or wasn't a super admin,
+            // as that check happens before this block.
+            return response(500, 'Email Service Error', { message: 'There was an issue sending the password reset email. Please try again later or contact support if the problem persists.' });
         }
-
-        return response(200, 'Request processed', { message: genericMessage });
 
     } catch (error: any) {
         let uid = await error_trace(models, error, req.url, req.body as any);
