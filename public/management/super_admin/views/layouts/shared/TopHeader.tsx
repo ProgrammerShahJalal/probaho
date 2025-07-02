@@ -11,7 +11,7 @@ const TopHeader: React.FC<Props> = (props: Props) => {
                     className="main-header-left flex-1"
                     semilight-bg-color="bg-default-light-colo"
                 >
-                    <div className="logo-wrapper flex justify-center items-center">
+                    {/* <div className="logo-wrapper flex justify-center items-center">
                         <a href="#/">
                             <img
                                 style={{
@@ -32,7 +32,7 @@ const TopHeader: React.FC<Props> = (props: Props) => {
                                 alt="Probaho Logo Light"
                             />
                         </a>
-                    </div>
+                    </div> */}
                 </div>
                 <div
                     className="main-header-right"

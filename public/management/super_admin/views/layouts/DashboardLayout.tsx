@@ -19,14 +19,11 @@ const DashboardLayout: React.FC<Props> = (props: Props) => {
                     <div className="sidebar-user text-center">
                         <div>
                             <img
-                                className="img-50 rounded-circle bg-white"
-                                src="/manager.png"
+                                className="img-80 rounded-circle bg-white"
+                                src="/assets/dashboard/images/logo.png"
                                 alt="super admin"
                             />
                         </div>
-                        <h6 className="mt-3 f-12">
-                            SUPER ADMIN
-                        </h6>
                     </div>
                     <SideBar />
                 </div>
