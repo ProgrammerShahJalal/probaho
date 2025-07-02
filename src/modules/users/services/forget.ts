@@ -25,8 +25,7 @@ async function validate(req: Request) {
     return result;
 }
 
-// Define SUPER_ADMIN_ROLE_SERIAL based on user feedback
-const SUPER_ADMIN_ROLE_SERIAL = 1;
+// const SUPER_ADMIN_ROLE_SERIAL = 1; // No longer needed for role-specific check here
 const FORGET_CODE_EXPIRY_MINUTES = 15; // Token expiry time
 
 async function forgetPassword(
@@ -43,77 +42,77 @@ async function forgetPassword(
     }
 
     const userEmail = requestBody.email;
-    const genericMessage = 'If an account with that email exists and belongs to a super admin, a password reset link has been sent.';
+    // Generic message is always sent to prevent email enumeration
+    const genericSuccessMessage = 'If an account with that email exists, a password reset link has been sent.';
 
     try {
         const user = await models.UserModel.findOne({
             where: { email: userEmail },
         });
-        console.log(`Password reset request for ${userEmail}: User found:`, user);
 
-        // IMPORTANT: Only proceed if user exists and is a super admin.
-        // Otherwise, return a generic message to prevent email enumeration.
-        if (!user || user.role_serial !== SUPER_ADMIN_ROLE_SERIAL) {
-            console.log(`Password reset request for ${userEmail}: User not found or not a Super Admin. Sending generic response.`);
-            return response(200, 'Request received', { message: genericMessage });
+        // If user does not exist, still return a generic success message.
+        if (!user) {
+            console.log(`Password reset request for ${userEmail}: User not found. Sending generic response.`);
+            return response(200, 'Request received', { message: genericSuccessMessage });
         }
 
-        // Generate secure plain token
-        const plainToken = crypto.randomBytes(32).toString('hex');
+        // User exists, proceed to generate token and send email.
+        console.log(`Password reset request for ${userEmail}: User found: ${user.id}`);
 
-        // Set token and expiry: Store PLAIN token directly for this flow
+        const plainToken = crypto.randomBytes(32).toString('hex');
         user.forget_code = plainToken; // Storing plain token
         user.forget_code_expiry = new Date(Date.now() + FORGET_CODE_EXPIRY_MINUTES * 60 * 1000);
         await user.save();
 
-        // Configure nodemailer (Consider moving to a central config if used elsewhere)
-        // Using existing hardcoded credentials as per original file.
-        // TODO: These should ideally be environment variables.
         const transporter = nodemailer.createTransport({
             host: env.MAIL_HOST || 'mail.kalyanprokashoni.com',
             port: parseInt(env.MAIL_PORT || "587"),
-            secure: env.MAIL_SECURE === 'true' || false, // true for 465, false for other ports
+            secure: env.MAIL_SECURE === 'true' || false,
             auth: {
                 user: env.MAIL_USER || 'schoolforget@kalyanprokashoni.com',
                 pass: env.MAIL_PASSWORD || 'RPfIt{GuCvOt',
             },
         });
 
-        const appBaseUrl = env.APP_URL || `http://${req.headers.host}`; // Infer base URL or use env var
-        const resetLink = `${appBaseUrl}/auth/super-admin/reset-password/${plainToken}`;
+        const appBaseUrl = env.APP_URL || `http://${req.headers.host}`;
+        // Use the new generic reset password link
+        const resetLink = `${appBaseUrl}/auth/reset-password/${plainToken}`;
 
         const mailOptions = {
             from: `"${env.MAIL_FROM_NAME || 'Probaha System'}" <${env.MAIL_FROM_ADDRESS || 'schoolforget@kalyanprokashoni.com'}>`,
             to: user.email,
-            subject: 'Super Admin Password Reset Request',
-            text: `Hello ${user.name},\n\nYou requested a password reset for your Super Admin account.\nClick the link below to reset your password. This link is valid for ${FORGET_CODE_EXPIRY_MINUTES} minutes.\n\n${resetLink}\n\nIf you did not request this, please ignore this email.\n\nThanks,\nThe System`,
-            html: `<p>Hello ${user.name},</p><p>You requested a password reset for your Super Admin account.</p><p>Click the link below to reset your password. This link is valid for <b>${FORGET_CODE_EXPIRY_MINUTES} minutes</b>.</p><p><a href="${resetLink}">Reset Password</a></p><p>If you did not request this, please ignore this email.</p><p>Thanks,<br/>The System</p>`,
+            subject: 'Password Reset Request', // Generic subject
+            text: `Hello ${user.name || 'User'},\n\nYou requested a password reset for your account.\nClick the link below to reset your password. This link is valid for ${FORGET_CODE_EXPIRY_MINUTES} minutes.\n\n${resetLink}\n\nIf you did not request this, please ignore this email.\n\nThanks,\nThe Probaha System Team`,
+            html: `<p>Hello ${user.name || 'User'},</p><p>You requested a password reset for your account.</p><p>Click the link below to reset your password. This link is valid for <b>${FORGET_CODE_EXPIRY_MINUTES} minutes</b>.</p><p><a href="${resetLink}">Reset Password</a></p><p>If you did not request this, please ignore this email.</p><p>Thanks,<br/>The Probaha System Team</p>`,
         };
 
         try {
             await transporter.sendMail(mailOptions);
             console.log(`Password reset email sent to ${user.email}`);
-            // If email sending is successful, return the generic success message
-            return response(200, 'Request processed', { message: genericMessage });
         } catch (emailError: any) {
             console.error('Error sending password reset email:', emailError);
-            await error_trace(models, emailError, req.url, req.body as any); // Log detailed error internally
-            // Return a message indicating email sending failed
-            // It's important not to expose raw error details to the client for security reasons.
-            // This message still protects against email enumeration if the user didn't exist or wasn't a super admin,
-            // as that check happens before this block.
-            return response(500, 'Email Service Error', { message: 'There was an issue sending the password reset email. Please try again later or contact support if the problem persists.' });
+            // Log the error but still return the generic success message to the client.
+            // This prevents leaking information about email system failures for valid users.
+            await error_trace(models, emailError, req.url, req.body as anyObject);
+            // Optionally, if email sending is critical and fails, you might want to inform admin or retry,
+            // but client should still get generic message.
         }
+
+        // Always return the generic success message whether email was successfully sent or user found,
+        // to prevent email enumeration and information leakage.
+        return response(200, 'Request processed', { message: genericSuccessMessage });
 
     } catch (error: any) {
         let uid = await error_trace(models, error, req.url, req.body as any);
+        // For internal server errors, log them but respond generically if possible,
+        // or with a non-specific server error message to the client.
+        // Here, we'll let the global error handler manage it if it's a true server fault.
         if (error instanceof custom_error) {
             error.uid = uid;
+            throw error;
         } else {
-            // Ensure a generic server error is thrown if not a custom one
              throw new custom_error('Server error during password reset request.', 500, error.message, uid);
         }
-        throw error; // Re-throw to be caught by global error handler or Fastify's default
     }
 }
 

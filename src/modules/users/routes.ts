@@ -23,9 +23,8 @@ module.exports = async function (fastify: FastifyInstance) {
                 .post(`/active`, controllerInstance.active)
                 .post(`/trash`, controllerInstance.trash)
                 .post(`/restore`, { preHandler: auth_middleware }, controllerInstance.restore)
-                .post(`/forget`, controllerInstance.forget) // Existing generic forget route
-                .post(`/super-admin/forgot-password`, controllerInstance.superAdminForgetPassword) // Route for requesting reset
-                .post(`/super-admin/reset-password`, controllerInstance.superAdminResetPassword)   // Route for submitting new password
+                .post(`/forget`, controllerInstance.forget) // This will now use the generalized forgetPassword service
+                .post(`/reset-password`, controllerInstance.resetPassword) // New generic route for resetting password
                 .get(`/:id`, controllerInstance.find)
                 .post(`/import`, { preHandler: auth_middleware }, controllerInstance.importUsers);
         },

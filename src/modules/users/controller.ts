@@ -36,9 +36,10 @@ export default function (fastify: FastifyInstance) {
             }
         },
 
-        // New method for super admin password reset submission
-        superAdminResetPassword: async function (req: FastifyRequest, res: FastifyReply) {
+        // Renamed and generalized resetPassword method
+        resetPassword: async function (req: FastifyRequest, res: FastifyReply) {
             try {
+                // This now calls the already imported and generalized resetPassword service
                 let data: responseObject = await resetPassword(fastify, req);
                 return res.code(data.status).send(data);
             } catch (error: any) {
@@ -120,18 +121,8 @@ export default function (fastify: FastifyInstance) {
                 // or you might need to adjust if 'forget.ts' only exports 'forgetPassword' now.
                 // For now, assuming 'forget.ts' might still have an old 'forget' or this route is deprecated.
                 // If 'forget.ts' only exports 'forgetPassword', this will call it.
-                let data: responseObject = await forget(fastify, req); 
-                return res.code(data.status).send(data);
-            } catch (error: any) {
-                return handleServiceError(error, res);
-            }
-        },
-
-        // New method for super admin password reset
-        superAdminForgetPassword: async function (req: FastifyRequest, res: FastifyReply) {
-            try {
-                // Ensure forgetPassword (the renamed function from forget.ts) is called
-                let data: responseObject = await forgetPassword(fastify, req);
+                // The `forget` service (default export from forget.ts) is already generalized.
+                let data: responseObject = await forgetPassword(fastify, req); 
                 return res.code(data.status).send(data);
             } catch (error: any) {
                 return handleServiceError(error, res);
