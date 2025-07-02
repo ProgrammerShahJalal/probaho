@@ -83,6 +83,18 @@ async function logout(
         let authUser = (req as anyObject)?.body?.user;
         let decoded = null;
 
+        const roleRedirectMap: { [key: number]: string } = {
+            1: '/super-admin-login', // super_admin
+            2: '/admin-login',       // admin
+            3: '/student-login',     // student
+            4: '/teacher-login',     // teacher
+            5: '/staff-login',       // staff
+            6: '/parent-login',      // parent
+            7: '/librarian-login',   // librarian
+            8: '/accountant-login',  // accountant
+            9: '/receptionist-login',// receptionist
+        };
+
         // Check if token is a JWT (long token) or a simple user token (short token)
         const isJWTToken = token.length > 50 && (token.includes('.') || token.startsWith('Bearer'));
         
@@ -157,10 +169,19 @@ async function logout(
         // Check if logout is from frontend
         if ((req.body as any)?.from === "frontend") {
             console.log('Logout from frontend successful');
+            // For frontend logouts, we might still want to inform it where to go,
+            // or handle redirection client-side based on user role.
+            // For now, returning a success message.
+            // If frontend needs redirect path: return response(200, 'Logout Successfully', { redirectTo: redirectPath });
             return response(200, 'Logout Successfully', {});
         } else {
-            console.log('Logout from admin panel - redirecting');
-            return reply.redirect(`/login`);
+            // Determine redirect path based on user's role_serial
+            let redirectPath = '/login'; // Default redirect path
+            if (user && user.role_serial && roleRedirectMap[user.role_serial]) {
+                redirectPath = roleRedirectMap[user.role_serial];
+            }
+            console.log(`Logout from admin panel/backend - redirecting to: ${redirectPath} for role_serial: ${user?.role_serial}`);
+            return reply.redirect(redirectPath);
         }
 
     } catch (error: any) {
