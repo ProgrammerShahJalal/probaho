@@ -1,7 +1,6 @@
 import { FindAndCountOptions, Model } from 'sequelize';
 import db from '../models/db';
 import { FastifyInstance, FastifyRequest } from 'fastify';
-import response from '../helpers/response';
 var bcrypt = require('bcrypt');
 
 import {
@@ -10,6 +9,7 @@ import {
     Request,
 } from '../../../common_types/object';
 import Models from '../../../database/models';
+import response from '../../../helpers/response';
 
 async function auth_user(
     fastify_instance: FastifyInstance,

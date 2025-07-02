@@ -1,11 +1,11 @@
 import { FastifyInstance, FastifyRequest } from 'fastify';
 import { responseObject } from '../../../common_types/object';
-import response from '../helpers/response';
 import bcrypt from 'bcrypt';
 import moment from 'moment/moment';
 import Models from '../../../database/models';
 import { body, validationResult } from 'express-validator';
 import {Request} from '../../../common_types/object';
+import response from '../../../helpers/response';
 
 /** validation rules */
 async function validate(req: Request) {

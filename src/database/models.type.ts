@@ -41,6 +41,7 @@ import * as AppSubscribersModel from "../modules/app_subscribers_management/mode
 import * as UserModel from "../modules/users/models/user_model";
 import * as UserRolesModel from "../modules/user_roles/models/model";
 import * as UserLoginHistoriesModel from "../modules/user_login_histories/models/model";
+import { Sequelize } from "sequelize";
 
 
 export type model_types = {
@@ -90,3 +91,8 @@ export type model_types = {
     UserLoginHistoriesModel: typeof UserLoginHistoriesModel.DataModel;
 
 }
+
+// This type will be used by Models.get() and includes the Sequelize instance
+export type ModelContainer = model_types & {
+  sequelize: Sequelize | null;
+};

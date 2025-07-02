@@ -48,6 +48,18 @@ module.exports = async function (fastify: FastifyInstance) {
             return reply.view('auth/librarian_login.ejs');
         })
 
+        // Routes for Super Admin Forgot/Reset Password EJS Pages
+        .get('/auth/super-admin/forgot-password-request', async (_req: FastifyRequest, reply: FastifyReply) => {
+            return reply.view('auth/super_admin_forgot_password_request.ejs');
+        })
+        .get('/auth/super-admin/reset-password/:token', async (req: FastifyRequest<{ Params: { token: string } }>, reply: FastifyReply) => {
+            const { token } = req.params;
+            // It's good practice to validate or sanitize the token here if necessary before passing to view,
+            // though EJS rendering itself is generally safe from XSS if token is just alphanumeric.
+            // For now, just passing it through.
+            return reply.view('auth/super_admin_reset_password.ejs', { token });
+        })
+
         .get(
             '/super-admin',
             { preHandler: check_is_super_admin_and_redirect },

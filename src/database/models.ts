@@ -4,12 +4,14 @@ import get_recursive_model_files_by_directory from "../helpers/get_recursive_mod
 import path from "path";
 import { app_config } from "../configs/app.config";
 import { anyObject } from "../common_types/object";
-import { model_types } from "./models.type";
+import { model_types, ModelContainer } from "./models.type"; // Import ModelContainer
 
 class Models {
     public static model_items: anyObject[] = [];
+    private static sequelizeInstance: Sequelize | null = null; // Add static property to store Sequelize instance
 
     public async register_models(sequelize_instance: Sequelize, server: FastifyApp) {
+        Models.sequelizeInstance = sequelize_instance; // Store the instance
         let model_files = await get_recursive_model_files_by_directory('modules', 'model.ts');
 
         console.log('\nDB booting\n');
@@ -62,17 +64,20 @@ class Models {
         }
     }
 
-    public static get() : model_types {
-        const items: Partial<model_types> = {};
+    public static get() : ModelContainer { // Change return type to ModelContainer
+        const modelInstances: Partial<model_types> = {};
 
         for (const key in Models.model_items) {
             if (Object.prototype.hasOwnProperty.call(Models.model_items, key)) {
                 const element = Models.model_items[key];
-                (items as any)[key] = element.instance;
+                (modelInstances as any)[key] = element.instance;
             }
         }
     
-        return items as model_types;
+        return {
+            ...(modelInstances as model_types), // Spread the model instances
+            sequelize: Models.sequelizeInstance, // Add the sequelize instance
+        } as ModelContainer; // Cast to ModelContainer
     }
 
 }
