@@ -1,7 +1,6 @@
 import { FindAndCountOptions, Model } from 'sequelize';
 import db from '../models/db';
 import { FastifyInstance, FastifyRequest } from 'fastify';
-import response from '../helpers/response';
 var bcrypt = require('bcrypt');
 import { body, validationResult } from 'express-validator';
 import crypto from 'crypto';
@@ -14,9 +13,10 @@ import {
     Request,
 } from '../../../common_types/object';
 import { env } from 'process';
-import error_trace from '../helpers/error_trace';
-import custom_error from '../helpers/custom_error';
 import Models from '../../../database/models';
+import response from '../../../helpers/response';
+import error_trace from '../../../common/errors/error_trace';
+import custom_error from '../../../common/errors/custom_error';
 
 async function validate(req: Request) {
     await body('email')

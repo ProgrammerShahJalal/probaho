@@ -3,13 +3,13 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import Models from '../../../database/models';
-import response from '../helpers/response';
 import { responseObject, anyObject } from '../../../common_types/object';
 import { body, validationResult } from 'express-validator';
 import { Request } from '../../../common_types/object';
-import error_trace from '../helpers/error_trace';
-import custom_error from '../helpers/custom_error';
 import { env } from 'process';
+import response from '../../../helpers/response';
+import error_trace from '../../../common/errors/error_trace';
+import custom_error from '../../../common/errors/custom_error';
 
 // Basic email validation
 async function validate(req: Request) {

@@ -1,12 +1,12 @@
 import { FastifyInstance, FastifyRequest } from 'fastify';
 import bcrypt from 'bcrypt';
 import Models from '../../../database/models';
-import response from '../helpers/response';
 import { responseObject } from '../../../common_types/object';
 import { body, validationResult } from 'express-validator';
-import { Request } from '../../../common_types/object';
-import error_trace from '../helpers/error_trace';
-import custom_error from '../helpers/custom_error';
+import { Request } from '../../../common_types/object';import response from '../../../helpers/response';
+import error_trace from '../../../common/errors/error_trace';
+import custom_error from '../../../common/errors/custom_error';
+;
 
 // Define SUPER_ADMIN_ROLE_SERIAL based on user feedback
 const SUPER_ADMIN_ROLE_SERIAL = 1;
