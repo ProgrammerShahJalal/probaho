@@ -26,9 +26,9 @@ POST {{hostname}}/register HTTP/1.1
 content-type: application/json
 
 {
-    "name": "Farabi",
-    "email": "farabi@gmail.com",
-    "phone_number": "01794322124",
+    "name": "Shah Jalal",
+    "email": "shah.jalal.ju.bd@gmail.com",
+    "phone_number": "01894344124",
     "photo": "avatar.png",
     "password": "Probaho@34"
 }
