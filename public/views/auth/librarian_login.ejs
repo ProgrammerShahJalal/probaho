@@ -59,7 +59,7 @@
               </div>
               <div class="form_group button_group">
               <div class="form_group" style="text-align: right; margin-bottom: 8px;">
-                <a href="#" style="color: #007BFF; text-decoration: none; font-size: 0.75em;">Forgot Your Password?</a>
+                <a href="/auth/forgot-password-request" style="color: #007BFF; text-decoration: none; font-size: 0.75em;">Forgot Your Password?</a>
               </div>
                 <div class="buttons">
                   <button onclick="remove_form_action_classes()" type="reset">
@@ -115,7 +115,7 @@
               el.parentNode?.parentNode.insertAdjacentHTML(
                 'beforeend',
                 `
-                        <div class="form_error">
+                          <div class="form_error" style="color: #d32f2f; background: #ffeaea; border: 1px solid #f5c2c7; border-radius: 4px; padding: 6px 10px; margin-top: 4px; font-size: 0.95em;">
                             ${error.msg}
                         </div>
                         `,

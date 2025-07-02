@@ -8,8 +8,7 @@ import error_trace from '../../../common/errors/error_trace';
 import custom_error from '../../../common/errors/custom_error';
 ;
 
-// Define SUPER_ADMIN_ROLE_SERIAL based on user feedback
-const SUPER_ADMIN_ROLE_SERIAL = 1;
+// const SUPER_ADMIN_ROLE_SERIAL = 1; // No longer needed
 const MIN_PASSWORD_LENGTH = 6;
 
 async function validateResetPassword(req: Request) {
@@ -148,15 +147,8 @@ async function resetPassword(
             return response(400, 'Password reset token has expired. Please request a new one.', {});
         }
 
-        // Verify user is a super admin
-        if (user.role_serial !== SUPER_ADMIN_ROLE_SERIAL) {
-            // This case should ideally not be reached if forget.ts only sends emails to super admins.
-            // But as a safeguard:
-            user.forget_code = null; // Clear token as it's potentially misused/unexpected
-            user.forget_code_expiry = null;
-            await user.save();
-            return response(403, 'This token is not valid for a super admin account.', {});
-        }
+        // User found and token is valid, proceed to reset password.
+        // The role check is removed. Any user with a valid token can reset their password.
 
         // Hash the new password
         const hashedNewPassword = await bcrypt.hash(newPassword, 10); // Using 10 salt rounds
