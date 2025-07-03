@@ -133,15 +133,26 @@ export default async function import_users(
                                 throw new Error(`Email '${row.email}' already exists.`);
                             }
 
-
                             // --- 5. Create User ---
+                            // Parse role_serial as array if comma-separated or already array
+                            let roleSerialArr: number[] = [];
+                            if (Array.isArray(row.role_serial)) {
+                                roleSerialArr = row.role_serial.map((r: any) => parseInt(r, 10)).filter((r: any) => !isNaN(r));
+                            } else if (typeof row.role_serial === 'string') {
+                                if (row.role_serial && typeof row.role_serial === 'string') {
+                                    roleSerialArr = (row.role_serial as string).split(',').map((r: string) => parseInt(r.trim(), 10)).filter((r: any) => !isNaN(r));
+                                }
+                            } else if (typeof row.role_serial === 'number') {
+                                roleSerialArr = [row.role_serial];
+                            }
+
                             await models.UserModel.create({
                                 uid: uid,
                                 name: row.name,
                                 email: row.email,
                                 phone_number: row.phone_number,
                                 password: hashedPassword,
-                                role_serial: Number(row.role_serial),
+                                role_serial: roleSerialArr,
                                 slug: slug,
                                 photo: row.photo || '',
                                 is_approved: row.is_approved || '0',

@@ -67,7 +67,6 @@ const Edit: React.FC<Props> = (props: Props) => {
         }
     }, [state.item?.user_documents]);
 
-
     async function handle_submit(e) {
         e.preventDefault();
         const form = e.target as HTMLFormElement;
@@ -167,12 +166,28 @@ const Edit: React.FC<Props> = (props: Props) => {
 
     function get_value(key) {
         try {
-            if (state.item[key]) return state.item[key];
-            if (state.item?.info[key]) return state.item?.info[key];
+            let value = state.item[key] ?? state.item?.info?.[key];
+            if (key === 'role_serial') {
+                // If value is a stringified array, parse it
+                if (typeof value === 'string') {
+                    try {
+                        const parsed = JSON.parse(value);
+                        if (Array.isArray(parsed)) return parsed;
+                    } catch {
+                        // fallback
+                    }
+                }
+                // If value is already an array, return as is
+                if (Array.isArray(value)) return value;
+                // If value is a single number, return as array
+                if (typeof value === 'number') return [value];
+                // If value is undefined/null, return []
+                return [];
+            }
+            return value ?? '';
         } catch (error) {
             return '';
         }
-        return '';
     }
 
     // Prevent 'e' and other non-numeric characters in number input
@@ -215,7 +230,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                         {[
                                             'name',
                                             'phone_number',
-                                            'role',
+                                            'role_serial',
                                             'is_verified',
                                             'is_approved',
                                             'is_blocked',
@@ -271,22 +286,22 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                             defalut_preview={get_value('photo')}
                                                         />
                                                     </div>
-                                                ) : i === 'role' ? (
+                                                ) : i === 'role_serial' ? (
                                                     <>
                                                         <label>
                                                             User Roles
                                                         </label>
                                                         <UserRolesDropDown
-                                                            name="role"
-                                                            multiple={false}
+                                                            name="role_serial"
+                                                            multiple={true}
                                                             default_value={
                                                                 get_value(
-                                                                    'role',
+                                                                    'role_serial',
                                                                 )
                                                                     ? [
                                                                         {
                                                                             id: get_value(
-                                                                                'role',
+                                                                                'role_serial',
                                                                             ),
                                                                         },
                                                                     ]

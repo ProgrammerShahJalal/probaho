@@ -16,6 +16,7 @@ import SelectItem from './components/all_data_page/SelectItem';
 import SelectAll from './components/all_data_page/SelectIAll';
 import TableHeading from './components/all_data_page/TableHeading';
 import { useSearchParams } from 'react-router-dom';
+import useUserRoles from '../../../hooks/useUserRoles';
 
 export interface Props {}
 
@@ -25,13 +26,10 @@ const All: React.FC<Props> = () => {
     );
 
     const [pageTitle, setPageTitle] = useState('');
-    const [userRolesMap, setUserRolesMap] = useState<{ [key: number]: string }>(
-        {},
-    );
+    const { getRoleTitles } = useUserRoles(); // Use the custom hook
 
     const dispatch = useAppDispatch();
     let [searchParams] = useSearchParams();
-
 
     useEffect(() => {
         let role = searchParams.get('role');
@@ -44,31 +42,38 @@ const All: React.FC<Props> = () => {
 
         dispatch(
             storeSlice.actions.set_select_fields(
-                'id,uid,role_serial,name,email,phone_number,photo,is_verified,is_blocked, is_approved,join_date,base_salary,status',
+                'id,uid,role_serial,name,email,phone_number,photo,is_verified,is_blocked,is_approved,join_date,base_salary,status',
             ),
         );
         dispatch(all({}));
-
-        // Fetch user roles and store them in a map
-        fetch(
-            `/api/v1/user-roles?orderByCol=id&orderByAsc=true&show_active_data=true&paginate=10&select_fields=`,
-        )
-            .then((res) => res.json())
-            .then((data) => {
-                const roleMap: { [key: number]: string } = {};
-                data?.data?.data?.forEach(
-                    (role: { serial: number; title: string }) => {
-                        roleMap[role.serial] = role.title;
-                    },
-                );
-                setUserRolesMap(roleMap);
-            })
-            .catch((err) => console.error('Error fetching user roles:', err));
-    }, [searchParams]);
+    }, [searchParams, dispatch]); // Added dispatch to dependency array
 
     function quick_view(data: anyObject = {}) {
         dispatch(storeSlice.actions.set_item(data));
         dispatch(storeSlice.actions.set_show_quick_view_canvas(true));
+    }
+
+    // Function to format role_serial for display
+    function formatRoleSerial(value: any): string {
+        try {
+            // If value is a stringified array, parse it
+            if (typeof value === 'string') {
+                try {
+                    const parsed = JSON.parse(value);
+                    if (Array.isArray(parsed)) return parsed.join(', ');
+                } catch {
+                    // fallback
+                }
+            }
+            // If value is already an array, join with comma and space
+            if (Array.isArray(value)) return value.join(', ');
+            // If value is a single number, return as string
+            if (typeof value === 'number') return value.toString();
+            // If value is undefined/null, return empty string
+            return '';
+        } catch (error) {
+            return '';
+        }
     }
 
     return (
@@ -126,21 +131,6 @@ const All: React.FC<Props> = () => {
                                             col_name="status"
                                             sort
                                         />
-                                        {/* <TableHeading
-                                            label="Is Verified"
-                                            col_name="is_verified"
-                                            sort
-                                        />
-                                        <TableHeading
-                                            label="Is Approved"
-                                            col_name="is_approved"
-                                            sort
-                                        />
-                                        <TableHeading
-                                            label="Is Blocked"
-                                            col_name="is_blocked"
-                                            sort
-                                        /> */}
                                     </tr>
                                 </thead>
                                 <tbody id="all_list">
@@ -158,12 +148,8 @@ const All: React.FC<Props> = () => {
                                                 </td>
                                                 <td>{i.id}</td>
                                                 <td>{i.uid || ''}</td>
-                                                <td>{i.role_serial}</td>
-                                                <td>
-                                                    {userRolesMap[
-                                                        i.role_serial
-                                                    ] || 'Unknown'}
-                                                </td>
+                                                <td>{formatRoleSerial(i.role_serial)}</td>
+                                                <td>{getRoleTitles(i.role_serial)}</td>
                                                 <td>
                                                     <img
                                                         src={
@@ -194,21 +180,6 @@ const All: React.FC<Props> = () => {
                                                 </td>
                                                 <td>{i.email}</td>
                                                 <td>{i.status}</td>
-                                                {/* <td>
-                                                    {i.is_verified === '1'
-                                                        ? 'Yes'
-                                                        : 'No'}
-                                                </td>
-                                                <td>
-                                                    {i.is_verified === '1'
-                                                        ? 'Yes'
-                                                        : 'No'}
-                                                </td>
-                                                <td>
-                                                    {i.is_blocked === '1'
-                                                        ? 'Yes'
-                                                        : 'No'}
-                                                </td> */}
                                             </tr>
                                         ),
                                     )}

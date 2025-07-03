@@ -177,10 +177,18 @@ async function logout(
         } else {
             // Determine redirect path based on user's role_serial
             let redirectPath = '/login'; // Default redirect path
-            if (user && user.role_serial && roleRedirectMap[user.role_serial]) {
-                redirectPath = roleRedirectMap[user.role_serial];
+            let roleSerial: number | undefined;
+            if (Array.isArray(user?.role_serial)) {
+                roleSerial = Number(user.role_serial[0]);
+            } else if (user?.role_serial !== undefined) {
+                roleSerial = Number(user.role_serial);
+            } else {
+                roleSerial = undefined;
             }
-            console.log(`Logout from admin panel/backend - redirecting to: ${redirectPath} for role_serial: ${user?.role_serial}`);
+            if (roleSerial && roleRedirectMap[roleSerial]) {
+                redirectPath = roleRedirectMap[roleSerial];
+            }
+            console.log(`Logout from admin panel/backend - redirecting to: ${redirectPath} for role_serial: ${roleSerial}`);
             return reply.redirect(redirectPath);
         }
 

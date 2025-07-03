@@ -27,7 +27,6 @@ const DropDown: React.FC<Props> = ({
     const state: typeof initialState = useSelector(
         (state: RootState) => state[setup.module_name],
     );
-
     /** local states */
     const [showDropDownList, setShowDropDownList] = useState(false);
     const [selectedList, setSelectedList] = useState<anyObject[]>([]);
@@ -48,19 +47,24 @@ const DropDown: React.FC<Props> = ({
         ) {
             // Prevent overwriting user selections
             if (selectedList.length === 0) {
-                const defaultItems = default_value.map((item) => ({
-                    serial: item.id?.serial || item.serial || null,
-                    title: item.id?.title || item.title || null,
-                }));
-
-                const enrichedList = defaultItems.map((defaultItem) => {
-                    const fullItem = state.all.data.find(
-                        (item) => item.role_serial === defaultItem.serial,
-                    );
-                    return fullItem || defaultItem;
+                // Support default_value as [{id: [8,7]}] or [{id: 8}] or [{serial: 8}]
+                let ids: number[] = [];
+                default_value.forEach((item) => {
+                    if (Array.isArray(item.id)) {
+                        ids.push(...item.id);
+                    } else if (typeof item.id === 'number') {
+                        ids.push(item.id);
+                    } else if (typeof item.serial === 'number') {
+                        ids.push(item.serial);
+                    }
                 });
-
-                setSelectedList(enrichedList);
+                // Remove duplicates
+                ids = Array.from(new Set(ids));
+                const defaultItems = ids.map((serial) => {
+                    const fullItem = state?.all?.data?.find((item) => item.serial === serial);
+                    return fullItem || { serial, title: '' };
+                });
+                setSelectedList(defaultItems);
             }
         }
     }, [default_value, state.all?.data]);

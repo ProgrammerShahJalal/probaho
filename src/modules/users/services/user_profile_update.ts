@@ -87,9 +87,27 @@ async function user_profile_update(fastify_instance: FastifyInstance, req: Fasti
             }
 
              // Update user data
+
+        // Handle multiple roles: store as array or string (JSON) in DB
+        let role_serial_to_save: any = data.role_serial;
+        if (body.role_serial) {
+            let rolesArr: number[] = [];
+            if (Array.isArray(body.role_serial)) {
+                rolesArr = body.role_serial.map((r: any) => parseInt(r, 10)).filter((r: any) => !isNaN(r));
+            } else if (typeof body.role_serial === 'string') {
+                rolesArr = body.role_serial.split(',').map((r: string) => parseInt(r.trim(), 10)).filter((r: any) => !isNaN(r));
+            } else if (typeof body.role_serial === 'number') {
+                rolesArr = [body.role_serial];
+            }
+            // Store as array if model supports, else as JSON string
+            role_serial_to_save = rolesArr;
+            // If your DB expects string, uncomment below:
+            // role_serial_to_save = JSON.stringify(rolesArr);
+        }
+
         await data.update({
             name: body.name || data.name,
-            role_serial: body.role || data.role_serial,
+            role_serial: role_serial_to_save,
             phone_number: body.phone_number || data.phone_number,
             photo: image_path || data.photo,
             password: hashedPassword || data.password,

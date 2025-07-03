@@ -6,6 +6,8 @@ import { initialState } from '../../config/store/inital_state';
 import { useSelector } from 'react-redux';
 import setup from '../../config/setup';
 import moment from 'moment/moment';
+import useUserRoles from '../../../../../hooks/useUserRoles'; // Import the custom hook
+
 export interface Props { }
 
 const modalRoot = document.getElementById('filter-root');
@@ -16,6 +18,7 @@ const QuickView: React.FC<Props> = (props: Props) => {
     );
 
     const dispatch = useAppDispatch();
+    const { getRoleTitles } = useUserRoles(); // Use the custom hook
 
     function close_canvas(action: boolean = true) {
         dispatch(storeSlice.actions.set_show_quick_view_canvas(action));
@@ -81,7 +84,7 @@ const QuickView: React.FC<Props> = (props: Props) => {
                                 <tr>
                                     <th>Role</th>
                                     <th>:</th>
-                                    <th>{state.item.role.title}</th>
+                                    <th>{getRoleTitles(state.item.role_serial)}</th>
                                 </tr>
                                 <tr>
                                     <th>Email</th>
@@ -138,3 +141,4 @@ const QuickView: React.FC<Props> = (props: Props) => {
 };
 
 export default QuickView;
+

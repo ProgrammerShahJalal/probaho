@@ -84,7 +84,6 @@ async function all(
     let query: FindAndCountOptions = {
         order: [[orderByCol, orderByAsc == 'true' ? 'ASC' : 'DESC']],
         where: {},
-        include: [{ model: models.UserRolesModel, as: "role" }]
     };
 
     query.attributes = select_fields;
@@ -155,6 +154,57 @@ else if (end_date) {
             paginate,
             query,
         );
+
+        // Ensure role_serial is always an array
+        if (data && data.data && Array.isArray(data.data)) {
+            const processedUsers = await Promise.all(data.data.map(async (user: anyObject) => {
+                let current_role_serial = user.role_serial;
+                if (typeof current_role_serial === 'number') {
+                    current_role_serial = [current_role_serial];
+                } else if (typeof current_role_serial === 'string') {
+                    try {
+                        const parsed = JSON.parse(current_role_serial);
+                        if (Array.isArray(parsed)) {
+                            current_role_serial = parsed;
+                        } else if (typeof parsed === 'number') {
+                            current_role_serial = [parsed];
+                        } else {
+                            const num = parseInt(current_role_serial, 10);
+                            current_role_serial = !isNaN(num) ? [num] : [];
+                        }
+                    } catch (e) {
+                        const num = parseInt(current_role_serial, 10);
+                        current_role_serial = !isNaN(num) ? [num] : [];
+                    }
+                } else if (!Array.isArray(current_role_serial)) {
+                    current_role_serial = [];
+                }
+                user.role_serial = current_role_serial;
+
+                // Now, fetch roles based on the normalized user.role_serial
+                if (user.role_serial && user.role_serial.length > 0) {
+                    try {
+                        const roles = await models.UserRolesModel.findAll({
+                            where: {
+                                serial: {
+                                    [Op.in]: user.role_serial,
+                                },
+                            },
+                            attributes: ['id', 'title', 'serial', 'status', 'created_at', 'updated_at'], // Specify attributes to fetch
+                        });
+                        user.role = roles; // Assign array of role objects
+                    } catch (roleError) {
+                        console.error('Error fetching roles for user:', user.id, roleError);
+                        user.role = []; // Assign empty array on error
+                    }
+                } else {
+                    user.role = []; // Assign empty array if no role_serials
+                }
+                return user;
+            }));
+            data.data = processedUsers;
+        }
+
         return response(200, 'data fetched', data);
     } catch (error: any) {
         let uid = await error_trace(models, error, req.url, req.query);

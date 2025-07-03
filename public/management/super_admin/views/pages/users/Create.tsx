@@ -166,7 +166,7 @@ const Create: React.FC<Props> = (props: Props) => {
                                         'email',
                                         'phone_number',
                                         'password',
-                                        'role',
+                                        'role_serial',
                                         'photo',
                                         'join_date',
                                         'base_salary',
@@ -175,7 +175,7 @@ const Create: React.FC<Props> = (props: Props) => {
                                             key={i}
                                             className="form-group form-vertical"
                                         >
-                                            {i === 'role' ? (
+                                            {i === 'role_serial' ? (
                                                 <>
                                                     <label>
                                                         User Roles
@@ -188,8 +188,8 @@ const Create: React.FC<Props> = (props: Props) => {
                                                         </span>
                                                     </label>
                                                     <UserRolesDropDown
-                                                        name="role"
-                                                        multiple={false}
+                                                        name="role_serial"
+                                                        multiple={true}
                                                         get_selected_data={
                                                             handleRoleSelection
                                                         }

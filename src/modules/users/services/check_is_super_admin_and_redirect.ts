@@ -45,7 +45,7 @@ const check_is_super_admin_and_redirect = async (
         }
 
         // Check if the user is a super admin (role_serial === 1)
-        if (user.role_serial !== 1) {
+        if (Number(user.role_serial) !== 1) {
             return reply.redirect(`/super-admin-login`);
         }
 
