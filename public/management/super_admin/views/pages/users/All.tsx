@@ -16,6 +16,7 @@ import SelectItem from './components/all_data_page/SelectItem';
 import SelectAll from './components/all_data_page/SelectIAll';
 import TableHeading from './components/all_data_page/TableHeading';
 import { useSearchParams } from 'react-router-dom';
+import useUserRoles from '../../../hooks/useUserRoles';
 
 export interface Props {}
 
@@ -25,9 +26,7 @@ const All: React.FC<Props> = () => {
     );
 
     const [pageTitle, setPageTitle] = useState('');
-    const [userRolesMap, setUserRolesMap] = useState<{ [key: number]: string }>(
-        {},
-    );
+    const { getRoleTitles } = useUserRoles(); // Use the custom hook
 
     const dispatch = useAppDispatch();
     let [searchParams] = useSearchParams();
@@ -47,23 +46,7 @@ const All: React.FC<Props> = () => {
             ),
         );
         dispatch(all({}));
-
-        // Fetch user roles and store them in a map
-        fetch(
-            `/api/v1/user-roles?orderByCol=id&orderByAsc=true&show_active_data=true&paginate=10&select_fields=`,
-        )
-            .then((res) => res.json())
-            .then((data) => {
-                const roleMap: { [key: number]: string } = {};
-                data?.data?.data?.forEach(
-                    (role: { serial: number; title: string }) => {
-                        roleMap[role.serial] = role.title;
-                    },
-                );
-                setUserRolesMap(roleMap);
-            })
-            .catch((err) => console.error('Error fetching user roles:', err));
-    }, [searchParams]);
+    }, [searchParams, dispatch]); // Added dispatch to dependency array
 
     function quick_view(data: anyObject = {}) {
         dispatch(storeSlice.actions.set_item(data));
@@ -90,34 +73,6 @@ const All: React.FC<Props> = () => {
             return '';
         } catch (error) {
             return '';
-        }
-    }
-
-    // Function to map role_serial array to role titles
-    function getRoleTitles(roleSerial: any): string {
-        try {
-            let serials: number[] = [];
-            // If value is a stringified array, parse it
-            if (typeof roleSerial === 'string') {
-                try {
-                    const parsed = JSON.parse(roleSerial);
-                    if (Array.isArray(parsed)) serials = parsed;
-                } catch {
-                    // fallback
-                }
-            }
-            // If value is already an array, use it
-            if (Array.isArray(roleSerial)) serials = roleSerial;
-            // If value is a single number, treat as array
-            if (typeof roleSerial === 'number') serials = [roleSerial];
-
-            // Map each serial to its role title and join
-            const roles = serials
-                .map((serial) => userRolesMap[serial] || 'Unknown')
-                .filter((role) => role !== 'Unknown');
-            return roles.length > 0 ? roles.join(', ') : 'Unknown';
-        } catch (error) {
-            return 'Unknown';
         }
     }
 
