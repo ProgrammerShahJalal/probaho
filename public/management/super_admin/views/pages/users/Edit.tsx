@@ -278,7 +278,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                         </label>
                                                         <UserRolesDropDown
                                                             name="role"
-                                                            multiple={false}
+                                                            multiple={true}
                                                             default_value={
                                                                 get_value(
                                                                     'role',

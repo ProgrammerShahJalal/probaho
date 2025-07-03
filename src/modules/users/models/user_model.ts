@@ -23,7 +23,10 @@ class DataModel extends Model<Infer, InferCreation> {
     declare uid?: string;
     declare branch_id?: number;
     declare class_id?: number;
-    declare role_serial?: number;
+    /**
+     * Stores all role serials as a JSON string (e.g., "[1,2,3]")
+     */
+    declare role_serial?: number[] | string;
     declare is_approved?: approved;
     declare name: string;
     declare email: string;
@@ -72,8 +75,27 @@ function init(sequelize: Sequelize) {
             },
 
             role_serial: {
-                type: DataTypes.INTEGER.UNSIGNED,
+                // Store as TEXT for JSON array of numbers (e.g., "[1,2,3]")
+                type: DataTypes.TEXT,
                 allowNull: false,
+                get() {
+                    const raw = this.getDataValue('role_serial');
+                    if (typeof raw === 'string') {
+                        try {
+                            return JSON.parse(raw);
+                        } catch {
+                            return raw;
+                        }
+                    }
+                    return raw;
+                },
+                set(val: number[] | string) {
+                    if (Array.isArray(val)) {
+                        this.setDataValue('role_serial', JSON.stringify(val));
+                    } else {
+                        this.setDataValue('role_serial', val);
+                    }
+                },
             },
             is_approved: {
                 type: DataTypes.ENUM('0', '1'),

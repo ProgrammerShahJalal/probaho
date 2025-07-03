@@ -189,7 +189,7 @@ const Create: React.FC<Props> = (props: Props) => {
                                                     </label>
                                                     <UserRolesDropDown
                                                         name="role"
-                                                        multiple={false}
+                                                        multiple={true}
                                                         get_selected_data={
                                                             handleRoleSelection
                                                         }

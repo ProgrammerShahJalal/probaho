@@ -141,7 +141,7 @@ export default async function import_users(
                                 email: row.email,
                                 phone_number: row.phone_number,
                                 password: hashedPassword,
-                                role_serial: Number(row.role_serial),
+                                role_serial: String(row.role_serial),
                                 slug: slug,
                                 photo: row.photo || '',
                                 is_approved: row.is_approved || '0',
