@@ -139,24 +139,73 @@ async function register(
         });
 
         // Assign role serial dynamically
-        let roleSerial = body.role || studentRecord?.serial || 0;
+        // let roleSerial = body.role_serial || studentRecord?.serial || 0; // Changed body.role to body.role_serial
 
-        // Check if a role with this serial exists
-        let roleRecord = await models.UserRolesModel.findOne({
-            where: { serial: roleSerial },
-        });
-
-        if (!roleRecord) {
-            // If no student record exists, create a new student role with the next available serial
-            let nextSerial = ((await models.UserRolesModel.max('serial')) as number) || 0;
-            nextSerial++;
-        
-            roleRecord = await models.UserRolesModel.create({
-                title: 'student', // Default title
-                serial: nextSerial, // Assign a new serial properly
-            });
+        // Handle multiple roles: store as array or string (JSON) in DB
+        let role_serial_to_save: any;
+        if (body.role_serial) { // Using body.role_serial now
+            let rolesArr: number[] = [];
+            if (Array.isArray(body.role_serial)) {
+                rolesArr = body.role_serial.map((r: any) => parseInt(r, 10)).filter((r: any) => !isNaN(r));
+            } else if (typeof body.role_serial === 'string') {
+                rolesArr = body.role_serial.split(',').map((r: string) => parseInt(r.trim(), 10)).filter((r: any) => !isNaN(r));
+            } else if (typeof body.role_serial === 'number') {
+                rolesArr = [body.role_serial];
+            }
+            role_serial_to_save = rolesArr;
+        } else {
+            // Default to student role if no role_serial is provided
+            role_serial_to_save = [studentRecord?.serial || 0]; // Default to student role
+            // Ensure the default student role exists or create it
+            if (!studentRecord && role_serial_to_save[0] === 0) { // Check if studentRecord was null and we're attempting to use serial 0
+                let nextSerial = ((await models.UserRolesModel.max('serial')) as number) || 0;
+                nextSerial++;
+                const newStudentRole = await models.UserRolesModel.create({
+                    title: 'student',
+                    serial: nextSerial,
+                });
+                role_serial_to_save = [newStudentRole.serial]; // Update with the newly created student role serial
+                studentRecord = newStudentRole; // Update studentRecord for consistency
+            } else if (!studentRecord && role_serial_to_save[0] !== 0) { // Should not happen if logic is correct, but as a safeguard
+                 return response(400, 'Default student role configuration error.', {});
+            }
         }
-        roleSerial = roleRecord.serial;
+
+        // Verify existence of all provided role serials
+        for (const serial of role_serial_to_save) {
+            const roleExists = await models.UserRolesModel.findOne({ where: { serial: serial } });
+            if (!roleExists) {
+                // If a specific role serial does not exist (and it's not the default student role scenario handled above)
+                // This check is particularly for cases where body.role_serial is provided by the client
+                if (body.role_serial) { // Only error if client explicitly provided non-existing roles
+                    return response(400, `Role with serial ${serial} not found.`, {});
+                }
+                // If it's the default student role scenario and it somehow wasn't created (e.g. serial was not 0 initially but studentRecord was null)
+                // This part of the logic might be redundant if the default role creation above is robust.
+                // However, it acts as a safeguard.
+                else if (serial === (studentRecord?.serial || 0) && !studentRecord) {
+                    // This case should ideally be covered by the default role creation logic.
+                    // If it reaches here, it implies a logic flaw or an unexpected state.
+                    // For safety, try to create the student role if it's the default one expected.
+                    let nextSerialVal = ((await models.UserRolesModel.max('serial')) as number) || 0;
+                    nextSerialVal++;
+                    const newStudentRoleDefault = await models.UserRolesModel.create({
+                        title: 'student',
+                        serial: nextSerialVal,
+                    });
+                    // Update the specific serial in role_serial_to_save if it was the default student role
+                    const indexToUpdate = role_serial_to_save.indexOf(serial);
+                    if (indexToUpdate !== -1) {
+                        role_serial_to_save[indexToUpdate] = newStudentRoleDefault.serial;
+                    }
+                    console.warn(`Default student role was missing and has been created with serial ${newStudentRoleDefault.serial}.`);
+                } else if (!body.role_serial && serial !== (studentRecord?.serial || 0)) {
+                    // If no role_serial was provided by the client, and the serial in role_serial_to_save
+                    // is not the studentRecord's serial, this indicates an internal logic issue.
+                    return response(500, 'Internal server error: Role processing failed.', {});
+                }
+            }
+        }
         
 
 
@@ -189,7 +238,7 @@ async function register(
             uid: uid,
             branch_id: body.branch_id,
             class_id: body.class_id,
-            role_serial: roleSerial || studentRecord?.serial,
+            role_serial: role_serial_to_save, // Use the processed array
             is_approved: body.is_approved,
             name: body.name,
             email: body.email,
