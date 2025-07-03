@@ -50,6 +50,7 @@
     "stripe": "^18.2.1",
     "styled-components": "^6.1.19",
     "sweetalert2": "^11.22.2",
+    "sweetalert2-react-content": "^5.1.0",
     "ua-parser-js": "^2.0.3",
     "use-debounce": "^10.0.5",
     "vite": "^6.3.5",
