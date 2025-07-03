@@ -27,12 +27,28 @@ const Details: React.FC<Props> = (props: Props) => {
 
     function get_value(key) {
         try {
-            if (state.item[key]) return state.item[key];
-            if (state.item?.info[key]) return state.item?.info[key];
+            let value = state.item[key] ?? state.item?.info?.[key];
+            if (key === 'role_serial') {
+                // If value is a stringified array, parse it
+                if (typeof value === 'string') {
+                    try {
+                        const parsed = JSON.parse(value);
+                        if (Array.isArray(parsed)) return parsed.join(', ');
+                    } catch {
+                        // fallback
+                    }
+                }
+                // If value is already an array, join with comma and space
+                if (Array.isArray(value)) return value.join(', ');
+                // If value is a single number, return as string
+                if (typeof value === 'number') return value.toString();
+                // If value is undefined/null, return empty string
+                return '';
+            }
+            return value ?? '';
         } catch (error) {
             return '';
         }
-        return '';
     }
 
     // Function to convert base_salary to words

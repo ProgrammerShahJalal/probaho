@@ -81,7 +81,7 @@ const QuickView: React.FC<Props> = (props: Props) => {
                                 <tr>
                                     <th>Role</th>
                                     <th>:</th>
-                                    <th>{state.item.role.title}</th>
+                                    <th>{state.item.role_serial.title}</th>
                                 </tr>
                                 <tr>
                                     <th>Email</th>

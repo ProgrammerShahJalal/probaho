@@ -90,14 +90,14 @@ async function user_profile_update(fastify_instance: FastifyInstance, req: Fasti
 
         // Handle multiple roles: store as array or string (JSON) in DB
         let role_serial_to_save: any = data.role_serial;
-        if (body.role) {
+        if (body.role_serial) {
             let rolesArr: number[] = [];
-            if (Array.isArray(body.role)) {
-                rolesArr = body.role.map((r: any) => parseInt(r, 10)).filter((r: any) => !isNaN(r));
-            } else if (typeof body.role === 'string') {
-                rolesArr = body.role.split(',').map((r: string) => parseInt(r.trim(), 10)).filter((r: any) => !isNaN(r));
-            } else if (typeof body.role === 'number') {
-                rolesArr = [body.role];
+            if (Array.isArray(body.role_serial)) {
+                rolesArr = body.role_serial.map((r: any) => parseInt(r, 10)).filter((r: any) => !isNaN(r));
+            } else if (typeof body.role_serial === 'string') {
+                rolesArr = body.role_serial.split(',').map((r: string) => parseInt(r.trim(), 10)).filter((r: any) => !isNaN(r));
+            } else if (typeof body.role_serial === 'number') {
+                rolesArr = [body.role_serial];
             }
             // Store as array if model supports, else as JSON string
             role_serial_to_save = rolesArr;
