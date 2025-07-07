@@ -23,10 +23,11 @@ module.exports = async function (fastify: FastifyInstance) {
                 .post(`/active`, controllerInstance.active)
                 .post(`/trash`, controllerInstance.trash)
                 .post(`/restore`, { preHandler: auth_middleware }, controllerInstance.restore)
-                .post(`/forget`, controllerInstance.forget) // This will now use the generalized forgetPassword service
-                .post(`/reset-password`, controllerInstance.resetPassword) // New generic route for resetting password
+                .post(`/forget`, controllerInstance.forget) 
+                .post(`/reset-password`, controllerInstance.resetPassword) 
                 .get(`/:id`, controllerInstance.find)
-                .post(`/import`, { preHandler: auth_middleware }, controllerInstance.importUsers);
+                .post(`/import`, { preHandler: auth_middleware }, controllerInstance.importUsers)
+                .get(`/branch-admins`, { preHandler: auth_middleware }, controllerInstance.getBranchAdmins); 
         },
         { prefix },
     );

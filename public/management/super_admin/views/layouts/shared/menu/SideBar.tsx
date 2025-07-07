@@ -37,18 +37,10 @@ const SideBar: React.FC<Props> = (props: Props) => {
                 {/* Users  */}
                 <MenuDropDown group_title="Admin Management" icon="icon-user">
                     <MenuDropDownItem label="Admins" to="/auth" />
-                    <MenuDropDownItem label="User Roles" to="/user-roles" />
+                    {/* <MenuDropDownItem label="User Roles" to="/user-roles" /> */}
                     <MenuDropDownItem
                         label="User Login Histories"
                         to="/user-login-histories"
-                    />
-                </MenuDropDown>
-                {/* App Settings  */}
-                <MenuDropDown group_title="App Settings" icon="icon-settings">
-                    {/* <MenuDropDownItem label="App Setting Keys" to="/app-settings" /> */}
-                    <MenuDropDownItem
-                        label="App Settings"
-                        to="/app-setting-values"
                     />
                 </MenuDropDown>
 

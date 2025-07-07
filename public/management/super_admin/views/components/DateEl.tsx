@@ -55,7 +55,7 @@ const DateEl: React.FC<Props> = ({ value, name, label, handler }: Props) => {
     return (
         <>
             {label && (
-                <label htmlFor={name} className="form-label text-capitalize mb-1">
+                <label htmlFor={name} className="form-label text-capitalize mb-6">
                     {label}
                 </label>
             )}

@@ -40,7 +40,7 @@ const Input: React.FC<Props> = ({
 
     return (
         <>
-            <label htmlFor={name}>
+            <label htmlFor={name} style={{ marginBottom: '20px' }}>
                 {label ? label : name.replaceAll('_', ' ')}
                 {required && <span style={{ color: 'red' }}>*</span>}
             </label>

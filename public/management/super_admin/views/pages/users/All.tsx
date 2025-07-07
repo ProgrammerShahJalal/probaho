@@ -25,20 +25,13 @@ const All: React.FC<Props> = () => {
         (state: RootState) => state[setup.module_name],
     );
 
-    const [pageTitle, setPageTitle] = useState('');
-    const { getRoleTitles } = useUserRoles(); // Use the custom hook
+    const { getRoleTitles } = useUserRoles(); 
 
     const dispatch = useAppDispatch();
-    let [searchParams] = useSearchParams();
 
     useEffect(() => {
-        let role = searchParams.get('role');
-        if (role) {
-            setPageTitle(role);
-            dispatch(storeSlice.actions.set_role(role));
-        } else {
-            dispatch(storeSlice.actions.set_role('all'));
-        }
+        dispatch(storeSlice.actions.set_role('branch_admin'));
+
 
         dispatch(
             storeSlice.actions.set_select_fields(
@@ -46,7 +39,7 @@ const All: React.FC<Props> = () => {
             ),
         );
         dispatch(all({}));
-    }, [searchParams, dispatch]); // Added dispatch to dependency array
+    }, [dispatch]); 
 
     function quick_view(data: anyObject = {}) {
         dispatch(storeSlice.actions.set_item(data));
@@ -79,7 +72,8 @@ const All: React.FC<Props> = () => {
     return (
         <div className="page_content">
             <div className="explore_window fixed_size">
-                <Header title={pageTitle + ' All Admins'} />
+                {/* Changed title to be static */}
+                <Header title={'All Branch Admins'} />
 
                 <div className="content_body">
                     <div className="data_list">

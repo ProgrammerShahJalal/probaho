@@ -266,6 +266,7 @@ const Create: React.FC<Props> = (props: Props) => {
                                         top: 0,
                                         backgroundColor: '#2c2f36',
                                         zIndex: 10,
+                                        marginTop: '130px',
                                         paddingTop: '10px',
                                         paddingBottom: '10px',
                                         display: 'flex',
