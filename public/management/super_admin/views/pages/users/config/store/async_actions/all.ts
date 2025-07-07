@@ -42,12 +42,13 @@ const fetch_api = async (param, thunkAPI) => {
             show_active_data: state[`show_active_data`],
             show_trash_data: state[`show_trash_data`],
             select_fields: state[`select_fields`],
-            role: state[`role`],
+            // role: state[`role`], // Role parameter removed as endpoint is specific to branch admins
         },
     };
 
     let response: { [key: string]: any } = {};
-    let url = `${api_host}${end_point}/${api_prefix}`;
+    // Modified URL to point to the new branch-admins endpoint
+    let url = `${api_host}${end_point}/${api_prefix}/branch-admins`; 
     let full_url: URL = new URL(url);
     let fetch_only_latest: boolean = state[`only_latest_data`];
 

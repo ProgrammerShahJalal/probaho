@@ -17,7 +17,8 @@ import restore from './services/restore';
 import active from './services/active';
 import trash from './services/trash';
 import inactive from './services/inactive';
-import import_users from './services/import_users'; // Import the new service
+import import_users from './services/import_users'; 
+import get_branch_admins from './services/get_branch_admins';
 import { handleServiceError } from '../../common/utils/controller_utils';
 const { serialize, parse } = require('@fastify/cookie');
 
@@ -210,6 +211,18 @@ export default function (fastify: FastifyInstance) {
 
                 let data: responseObject = await import_users(fastify, req);
                 return res.code(data.status).send(data);
+            } catch (error: any) {
+                return handleServiceError(error, res);
+            }
+        },
+
+        getBranchAdmins: async function (req: FastifyRequest, res: FastifyReply) { 
+            try {
+                let data: responseObject = await get_branch_admins(fastify, req);
+                return res
+                    .code(data.status)
+                    .header('Cache-Control', 'public, max-age=30')
+                    .send(data);
             } catch (error: any) {
                 return handleServiceError(error, res);
             }

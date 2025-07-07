@@ -80,7 +80,7 @@ const DropDown: React.FC<Props> = ({
 
     return (
         <>
-            <div className="custom_drop_down">
+            <div className="custom_drop_down" style={{zIndex: 1000}}>
                 <input
                     type="hidden"
                     ref={selected_items_input}
