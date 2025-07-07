@@ -135,9 +135,8 @@ async function all(
             [Op.or]: [
                 { id: { [Op.like]: `%${search_key}%` } },
                 { user_id: { [Op.like]: `%${search_key}%` } },
-                // Add these lines to search by user name (first or last)
-                { '$user.first_name$': { [Op.like]: `%${search_key}%` } },
-                { '$user.last_name$': { [Op.like]: `%${search_key}%` } }, 
+                // Add these lines to search by user name
+                { '$user.name$': { [Op.like]: `%${search_key}%` } },
                 { device: { [Op.like]: `%${search_key}%` } },
             ],
         };
