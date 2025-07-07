@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MenuDropDown from './MenuDropDown';
 import MenuDropDownItem from './MenuDropDownItem';
 import MenuSingle from './MenuSingle';
@@ -9,10 +9,20 @@ export interface Props {}
 const SideBar: React.FC<Props> = (props: Props) => {
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false); // Added state
 
-    setTimeout(() => {
-        init_nav_action();
-        active_link(window.location.href);
-    }, 1000);
+    useEffect(() => {
+        // Ensure jQuery is loaded before trying to use it, though in typical script setups it would be global.
+        if ((window as any).jQuery) {
+            init_nav_action();
+            active_link(window.location.href);
+        }
+
+        // Cleanup function to remove event listeners when the component unmounts
+        return () => {
+            if ((window as any).jQuery) {
+                (window as any).jQuery('.sidebar-menu').off('click', 'li a');
+            }
+        };
+    }, []); // Empty dependency array ensures this runs only once on mount and cleans up on unmount
 
     const handleLogout = () => {
         (document.getElementById('logout_form') as HTMLFormElement)?.submit();
@@ -198,15 +208,7 @@ function init_nav_action() {
     var animationSpeed = 300,
         subMenuSelector = '.sidebar-submenu';
     (window as any).jQuery('.sidebar-menu').on('click', 'li a', function (e) {
-        // Check if the click originated from within a SweetAlert2 modal
-        if ((window as any).jQuery(e.target).closest('.swal2-container').length > 0) {
-            return; // Do nothing if click is inside modal
-        }
-
-        // Check if a SweetAlert2 modal is visible (fallback, though the above should catch it)
-        if ((window as any).jQuery('.swal2-container').is(':visible')) {
-            return; // Do nothing if modal is open
-        }
+        // All modal checks removed to allow sidebar interaction at all times.
 
         var $this = (window as any).jQuery(this);
         var checkElement = $this.next();
