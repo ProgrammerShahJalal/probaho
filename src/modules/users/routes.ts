@@ -27,7 +27,8 @@ module.exports = async function (fastify: FastifyInstance) {
                 .post(`/reset-password`, controllerInstance.resetPassword) 
                 .get(`/:id`, controllerInstance.find)
                 .post(`/import`, { preHandler: auth_middleware }, controllerInstance.importUsers)
-                .get(`/branch-admins`, { preHandler: auth_middleware }, controllerInstance.getBranchAdmins); 
+                .get(`/branch-admins`, { preHandler: auth_middleware }, controllerInstance.getBranchAdmins) 
+                .get(`/students`, { preHandler: auth_middleware }, controllerInstance.getStudents); 
         },
         { prefix },
     );

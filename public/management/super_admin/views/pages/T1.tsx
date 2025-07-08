@@ -48,6 +48,7 @@ const T1: React.FC<Props> = () => {
             )
             .then((res) => {
                 const users = res.data.data.data;
+                console.log('UI roles', users);
                 setAdmins(
                     users.filter((item: any) => item.role?.title === 'admin'),
                 );
@@ -179,7 +180,7 @@ const T1: React.FC<Props> = () => {
                         <div className="business-top-widget card-body">
                             <div className="media d-inline-flex">
                                 <div className="media-body">
-                                    <span className="mb-2">Total Students</span>
+                                    <span className="mb-2">Students</span>
                                     <h2 className="total-value m-0 counter">
                                         {students?.length}
                                     </h2>
@@ -199,7 +200,7 @@ const T1: React.FC<Props> = () => {
                         <div className="business-top-widget card-body">
                             <div className="media d-inline-flex">
                                 <div className="media-body">
-                                    <span className="mb-2">Total Parents</span>
+                                    <span className="mb-2">Parents</span>
                                     <h2 className="total-value m-0 counter">
                                         {parents?.length}
                                     </h2>
@@ -220,7 +221,7 @@ const T1: React.FC<Props> = () => {
                         <div className="business-top-widget card-body">
                             <div className="media d-inline-flex">
                                 <div className="media-body">
-                                    <span className="mb-2">Total events</span>
+                                    <span className="mb-2">Events</span>
                                     <h2 className="total-value m-0 counter">
                                         {events?.length}
                                     </h2>
@@ -240,7 +241,7 @@ const T1: React.FC<Props> = () => {
                         <div className="business-top-widget card-body">
                             <div className="media d-inline-flex">
                                 <div className="media-body">
-                                    <span className="mb-2">Total blogs</span>
+                                    <span className="mb-2">Blogs</span>
                                     <h2 className="total-value m-0 counter">
                                         {blogs?.length}
                                     </h2>
