@@ -4,16 +4,16 @@ import ChangePasswordForm from './components/ChangePasswordForm';
 
 const ProfilePage: React.FC = () => {
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">My Profile</h1>
+        <div className="container p-4">
+            <h1 className="mb-4 display-4">My Profile</h1> {/* Using display-4 for larger heading, mb-4 for margin */}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                    <h2 className="text-xl font-semibold mb-3">Profile Information</h2>
+            <div className="row g-5"> {/* Bootstrap grid row with gap */}
+                <div className="col-md-6"> {/* Column for Profile Information */}
+                    <h2 className="mb-3 h4">Profile Information</h2> {/* Using h4 for sub-heading, mb-3 for margin */}
                     <ProfileForm />
                 </div>
-                <div>
-                    <h2 className="text-xl font-semibold mb-3">Change Password</h2>
+                <div className="col-md-6"> {/* Column for Change Password */}
+                    <h2 className="mb-3 h4">Change Password</h2> {/* Using h4 for sub-heading, mb-3 for margin */}
                     <ChangePasswordForm />
                 </div>
             </div>

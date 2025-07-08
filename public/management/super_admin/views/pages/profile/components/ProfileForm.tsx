@@ -16,28 +16,28 @@ const ProfileForm: React.FC = () => {
         photo: undefined,
     });
     const [previewImage, setPreviewImage] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false); // For submission spinner
+    const [initialLoading, setInitialLoading] = useState(true); // For initial data load
 
     useEffect(() => {
         const loadUserProfile = async () => {
-            setIsLoading(true);
+            setInitialLoading(true); // Ensure it's true when loading starts
             try {
                 const data = await fetchUserProfile();
                 setFormData({
                     name: data.name,
                     email: data.email,
                     phone_number: data.phone_number,
-                    photo: data.photo, 
+                    photo: data.photo, // Store original photo URL or undefined
                 });
-                if (data.photo) {
+                if (data.photo && typeof data.photo === 'string') {
                     setPreviewImage(data.photo);
                 }
             } catch (error) {
                 console.error("Failed to load user profile", error);
-                // TODO: Handle error display using a toast or an error message state
-                // For now, we'll just log it. The existing axios interceptor might catch and display some errors.
+                // Error should be handled by global interceptor or a specific toast message here
             }
-            setIsLoading(false);
+            setInitialLoading(false); // Set to false after loading finishes
         };
         loadUserProfile();
     }, []);
@@ -50,8 +50,8 @@ const ProfileForm: React.FC = () => {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
-            setFormData(prev => ({ ...prev, photo: file }));
-            setPreviewImage(URL.createObjectURL(file));
+            setFormData(prev => ({ ...prev, photo: file })); // Store File object for upload
+            setPreviewImage(URL.createObjectURL(file)); // Show preview
         }
     };
 
@@ -59,89 +59,113 @@ const ProfileForm: React.FC = () => {
         e.preventDefault();
         setIsLoading(true);
         try {
-            const updatedUser = await updateUserProfile(formData);
-            console.log('Profile updated successfully', updatedUser);
-            // Assuming window.toaster is globally available as per index.tsx
+            const updatedUser = await updateUserProfile(formData); // formData contains File or string for photo
+            // Assuming window.toaster is globally available
             (window as any).toaster('Profile updated successfully!', 'success');
-            if (updatedUser.photo) { // Assuming photo is the URL of the new/existing image
+            if (updatedUser.photo && typeof updatedUser.photo === 'string') { 
                 setPreviewImage(updatedUser.photo);
-                // Update formData.photo to the new URL if it's returned, to prevent re-uploading a File object
+                // Update formData.photo to the new URL to prevent re-uploading a File object on subsequent saves without new file selection
                 setFormData(prev => ({ ...prev, photo: updatedUser.photo }));
             }
         } catch (error) {
             console.error('Failed to update profile', error);
-            // Error should be handled by the global axios interceptor,
-            // but a specific message can be shown here if needed.
-            // (window as any).toaster('Failed to update profile.', 'error');
+            // Error should be handled by the global axios interceptor
         }
         setIsLoading(false);
     };
 
-    if (isLoading && !formData.name && !previewImage) { // More robust initial loading check
-        return <p>Loading profile...</p>;
+    if (initialLoading) { 
+        return (
+            <div className="card shadow-sm">
+                <div className="card-body text-center p-4">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </div>
+                    <p className="mt-2 mb-0">Loading profile...</p>
+                </div>
+            </div>
+        );
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 p-4 border rounded-md shadow-sm">
-            <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
-                <input
-                    type="text"
-                    name="name"
-                    id="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                />
-            </div>
-            <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                />
-            </div>
-            <div>
-                <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700">Phone Number</label>
-                <input
-                    type="tel"
-                    name="phone_number"
-                    id="phone_number"
-                    value={formData.phone_number}
-                    onChange={handleChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-            </div>
-            <div>
-                <label htmlFor="photo" className="block text-sm font-medium text-gray-700">Photo</label>
-                <input
-                    type="file"
-                    name="photo"
-                    id="photo"
-                    onChange={handleFileChange}
-                    accept="image/*"
-                    className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100"
-                />
-                {previewImage && (
-                    <div className="mt-2">
-                        <img src={previewImage} alt="Photo preview" className="h-32 w-32 object-cover rounded-md" />
-                    </div>
-                )}
-            </div>
-            <div>
-                <button
-                    type="submit"
-                    disabled={isLoading}
-                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-                >
-                    {isLoading ? 'Updating...' : 'Update Profile'}
-                </button>
+        <form onSubmit={handleSubmit} className="card shadow-sm">
+            <div className="card-body">
+                <div className="mb-3">
+                    <label htmlFor="name" className="form-label">Name</label>
+                    <input
+                        type="text"
+                        name="name"
+                        id="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        className="form-control"
+                        required
+                        disabled={isLoading}
+                    />
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="email" className="form-label">Email</label>
+                    <input
+                        type="email"
+                        name="email"
+                        id="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className="form-control"
+                        required
+                        disabled={isLoading}
+                    />
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="phone_number" className="form-label">Phone Number</label>
+                    <input
+                        type="tel"
+                        name="phone_number"
+                        id="phone_number"
+                        value={formData.phone_number}
+                        onChange={handleChange}
+                        className="form-control"
+                        disabled={isLoading}
+                    />
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="photo" className="form-label">Photo</label>
+                    <input
+                        type="file"
+                        name="photo"
+                        id="photo"
+                        onChange={handleFileChange}
+                        accept="image/*"
+                        className="form-control"
+                        disabled={isLoading}
+                    />
+                    {previewImage && (
+                        <div className="mt-2">
+                            <img 
+                                src={previewImage} 
+                                alt="Photo preview" 
+                                className="img-thumbnail" 
+                                style={{ maxHeight: '128px', maxWidth: '128px', objectFit: 'cover' }}
+                            />
+                        </div>
+                    )}
+                </div>
+                <div className="d-grid">
+                    <button
+                        type="submit"
+                        disabled={isLoading || initialLoading} 
+                        className="btn btn-primary"
+                    >
+                        {isLoading ? (
+                            <>
+                                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                Updating...
+                            </>
+                        ) : (
+                            'Update Profile'
+                        )}
+                    </button>
+                </div>
             </div>
         </form>
     );

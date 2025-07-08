@@ -18,7 +18,7 @@ const ChangePasswordForm: React.FC = () => {
             setError("New password and confirm password don't match.");
             return;
         }
-        if (newPassword.length < 6) { // Example: Basic password length validation
+        if (newPassword.length < 6) { 
             setError("New password must be at least 6 characters long.");
             return;
         }
@@ -27,64 +27,80 @@ const ChangePasswordForm: React.FC = () => {
         try {
             await changePassword({ current_password: currentPassword, new_password: newPassword, confirm_password: confirmPassword });
             setSuccessMessage('Password changed successfully!');
-            // Assuming window.toaster is globally available
-            (window as any).toaster('Password changed successfully!', 'success');
+            (window as any).toaster('Password changed successfully!', 'success'); // Keep global toaster
             setCurrentPassword('');
             setNewPassword('');
             setConfirmPassword('');
         } catch (err: any) {
-            // The global axios interceptor should handle displaying network/server errors.
-            // This setError is for specific client-side or caught business logic errors from the API.
-            setError(err.response?.data?.message || 'Failed to change password. Ensure your current password is correct.');
+            // Prefer API error message, fallback to generic
+            const apiErrorMessage = err.response?.data?.message;
+            const displayError = apiErrorMessage || 'Failed to change password. Ensure your current password is correct.';
+            setError(displayError);
+            if (!apiErrorMessage) { // If it's not a specific API error, toaster can show generic one
+                 (window as any).toaster(displayError, 'error');
+            }
         }
         setIsLoading(false);
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 p-4 border rounded-md shadow-sm">
-            {error && <div className="p-3 bg-red-100 text-red-700 rounded-md">{error}</div>}
-            {successMessage && <div className="p-3 bg-green-100 text-green-700 rounded-md">{successMessage}</div>}
-            <div>
-                <label htmlFor="currentPassword_profile" className="block text-sm font-medium text-gray-700">Current Password</label>
-                <input
-                    type="password"
-                    id="currentPassword_profile"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                />
-            </div>
-            <div>
-                <label htmlFor="newPassword_profile" className="block text-sm font-medium text-gray-700">New Password</label>
-                <input
-                    type="password"
-                    id="newPassword_profile"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                />
-            </div>
-            <div>
-                <label htmlFor="confirmPassword_profile" className="block text-sm font-medium text-gray-700">Confirm New Password</label>
-                <input
-                    type="password"
-                    id="confirmPassword_profile"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                />
-            </div>
-            <div>
-                <button
-                    type="submit"
-                    disabled={isLoading}
-                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-                >
-                    {isLoading ? 'Changing...' : 'Change Password'}
-                </button>
+        <form onSubmit={handleSubmit} className="card shadow-sm">
+            <div className="card-body">
+                {error && <div className="alert alert-danger mb-3">{error}</div>}
+                {successMessage && <div className="alert alert-success mb-3">{successMessage}</div>}
+                
+                <div className="mb-3">
+                    <label htmlFor="currentPassword_profile" className="form-label">Current Password</label>
+                    <input
+                        type="password"
+                        id="currentPassword_profile"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        className="form-control"
+                        required
+                        disabled={isLoading}
+                    />
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="newPassword_profile" className="form-label">New Password</label>
+                    <input
+                        type="password"
+                        id="newPassword_profile"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        className="form-control"
+                        required
+                        disabled={isLoading}
+                    />
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="confirmPassword_profile" className="form-label">Confirm New Password</label>
+                    <input
+                        type="password"
+                        id="confirmPassword_profile"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        className="form-control"
+                        required
+                        disabled={isLoading}
+                    />
+                </div>
+                <div className="d-grid">
+                    <button
+                        type="submit"
+                        disabled={isLoading}
+                        className="btn btn-primary"
+                    >
+                        {isLoading ? (
+                            <>
+                                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                Changing...
+                            </>
+                        ) : (
+                            'Change Password'
+                        )}
+                    </button>
+                </div>
             </div>
         </form>
     );
