@@ -13,6 +13,8 @@ import {
     Title,
     CategoryScale,
 } from 'chart.js';
+import CalendarComponent from '../components/Calendar';
+import UserLoginHistory from '../components/UserLoginHistory';
 
 Chart.register(
     BarController,
@@ -266,6 +268,23 @@ const T1: React.FC<Props> = () => {
                             <canvas ref={pieChartRef}></canvas>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            {/* New row for Calendar and User Login History */}
+            <div className="row my-4">
+                <div className="col-md-6">
+                    <div className="card">
+                        <div className="card-header">
+                            <h5 className="card-title mb-0">Calendar</h5>
+                        </div>
+                        <div className="card-body">
+                            <CalendarComponent />
+                        </div>
+                    </div>
+                </div>
+                <div className="col-md-6">
+                    <UserLoginHistory />
                 </div>
             </div>
         </div>
