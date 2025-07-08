@@ -14,6 +14,12 @@ import Models from '../../../database/models';
 
 /** validation rules */
 async function validate(req: Request) {
+    await query('role_serial')
+        .not()
+        .isEmpty()
+        .withMessage('the role_serial field is required')
+        .run(req);
+
     await query('orderByCol')
         .not()
         .isEmpty()
@@ -43,7 +49,7 @@ async function validate(req: Request) {
     return result;
 }
 
-async function get_students( // Renamed function
+async function get_users_by_role( // Renamed function
     fastify_instance: FastifyInstance,
     req: FastifyRequest,
 ): Promise<responseObject> {
@@ -99,10 +105,11 @@ async function get_students( // Renamed function
             id: { [Op.ne]: authUser?.id },
         };
     }
+    const role_serial = query_param.role_serial; // Get role_serial from query parameters
     query.where = {
         ...query.where,
         [Op.and]: [ // Ensure this condition is ANDed with previous
-            Sequelize.literal(`JSON_CONTAINS(role_serial, '3')`)
+            Sequelize.literal(`JSON_CONTAINS(role_serial, '${role_serial}')`)
         ]
     };
 
@@ -208,4 +215,4 @@ async function get_students( // Renamed function
 // Need to import Sequelize for Sequelize.literal
 import { Sequelize } from 'sequelize';
 
-export default get_students;
+export default get_users_by_role;

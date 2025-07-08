@@ -28,7 +28,7 @@ module.exports = async function (fastify: FastifyInstance) {
                 .get(`/:id`, controllerInstance.find)
                 .post(`/import`, { preHandler: auth_middleware }, controllerInstance.importUsers)
                 .get(`/branch-admins`, { preHandler: auth_middleware }, controllerInstance.getBranchAdmins) 
-                .get(`/students`, { preHandler: auth_middleware }, controllerInstance.getStudents); 
+                .get(`/users-by-role`, { preHandler: auth_middleware }, controllerInstance.getUsersByRole); // New route
         },
         { prefix },
     );
