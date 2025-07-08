@@ -31,6 +31,7 @@ import event_enrollments from '../views/pages/event_enrollments/config/routes';
 import event_payments from '../views/pages/event_payments/config/routes';
 import event_payment_refunds from '../views/pages/event_payment_refunds/config/routes';
 import event_feedback_form_fields from '../views/pages/event_feedback_form_fields/config/routes';
+import profile_routes from '../views/pages/profile/config/routes';
 
 
 interface RouteTypes extends NonIndexRouteObject { }
@@ -68,6 +69,7 @@ const router: RouteTypes[] = [
             event_feedback_form_fields,
             app_settings,
             app_setting_values,
+            profile_routes,
         ],
     },
 ];

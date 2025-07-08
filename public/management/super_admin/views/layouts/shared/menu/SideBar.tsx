@@ -74,10 +74,10 @@ function active_link(hash) {
     let url = new URL(hash);
     (window as any).jQuery(`.sidebar-submenu a`).removeClass('active');
     (window as any)
-        .$(`.sidebar-submenu a[href="${url.hash}"]`)
+        .jQuery(`.sidebar-submenu a[href="${url.hash}"]`)
         .addClass('active');
     (window as any)
-        .$(`.sidebar-submenu a[href="${url.hash}"]`)
+        .jQuery(`.sidebar-submenu a[href="${url.hash}"]`)
         .parent('li')
         .parent('ul')
         .css({ display: 'block' })

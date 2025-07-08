@@ -50,4 +50,29 @@ module.exports = async function (fastify: FastifyInstance) {
         },
         { prefix },
     );
+
+    // New routes for user profile management
+    // Assuming a global prefix like /api is already applied
+    // These routes will be /api/users/*
+    fastify.register(
+        async (route, opts) => {
+            route
+                .get(
+                    `/profile`,
+                    { preHandler: auth_middleware },
+                    controllerInstance.getProfile,
+                )
+                .post( // Using POST for profile update to handle multipart/form-data for photo
+                    `/profile-update`,
+                    { preHandler: auth_middleware },
+                    controllerInstance.updateProfile,
+                )
+                .post(
+                    `/change-password`,
+                    { preHandler: auth_middleware },
+                    controllerInstance.changePassword,
+                );
+        },
+        { prefix: '/users' }, // This will make routes like /users/profile
+    );
 };
