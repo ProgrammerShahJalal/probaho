@@ -51,8 +51,12 @@ const T1: React.FC<Props> = () => {
 
     const barChartRef = useRef<HTMLCanvasElement>(null);
     const pieChartRef = useRef<HTMLCanvasElement>(null);
+    const doughnutChartRef = useRef<HTMLCanvasElement>(null); // New Doughnut Chart Ref
+    const horizontalBarChartRef = useRef<HTMLCanvasElement>(null); // New Horizontal Bar Chart Ref
     const barChartInstance = useRef<Chart | null>(null);
     const pieChartInstance = useRef<Chart | null>(null);
+    const doughnutChartInstance = useRef<Chart | null>(null); // New Doughnut Chart Instance
+    const horizontalBarChartInstance = useRef<Chart | null>(null); // New Horizontal Bar Chart Instance
 
     useEffect(() => {
         let isMounted = true;
@@ -71,7 +75,7 @@ const T1: React.FC<Props> = () => {
                 ];
 
                 const fetchPromises = roles.map((role) =>
-                    axios.get(`/api/v1/auth/users-by-role?role_serial=${role}&orderByCol=id&orderByAsc=true&show_active_data=true&paginate=10`)
+                    axios.get(`/api/v1/auth/users-by-role?role_serial=${role}&orderByCol=id&orderByAsc=true&show_active_data=true`)
                 );
 
                 const responses = await Promise.all(fetchPromises);
@@ -95,6 +99,8 @@ const T1: React.FC<Props> = () => {
             isMounted = false;
             if (barChartInstance.current) barChartInstance.current.destroy();
             if (pieChartInstance.current) pieChartInstance.current.destroy();
+            if (doughnutChartInstance.current) doughnutChartInstance.current.destroy(); // Destroy doughnut chart
+            if (horizontalBarChartInstance.current) horizontalBarChartInstance.current.destroy(); // Destroy horizontal bar chart
         };
     }, []);
 
@@ -155,6 +161,108 @@ const T1: React.FC<Props> = () => {
             });
         }
 
+        // Horizontal Bar Chart for User Counts
+        if (horizontalBarChartRef.current) {
+            horizontalBarChartInstance.current = new Chart(horizontalBarChartRef.current, {
+                type: 'bar', // Use 'bar' type and set indexAxis to 'y' for horizontal
+                data: {
+                    labels: [
+                        'Students',
+                        'Parents',
+                        'Teachers',
+                        'Staff',
+                        'Librarians',
+                        'Accountants',
+                        'Receptionists',
+                    ],
+                    datasets: [
+                        {
+                            label: 'Total Count',
+                            data: [
+                                data.students.length,
+                                data.parents.length,
+                                data.teachers.length,
+                                data.staff.length,
+                                data.librarians.length,
+                                data.accountants.length,
+                                data.receptionists.length,
+                            ],
+                            backgroundColor: [
+                                '#FF5733',
+                                '#33FF57',
+                                '#3357FF',
+                                '#FF33A1',
+                                '#A133FF',
+                                '#FFC300',
+                                '#DAF7A6',
+                            ],
+                            borderColor: 'black',
+                            borderWidth: 1,
+                        },
+                    ],
+                },
+                options: {
+                    indexAxis: 'y', // This makes the bar chart horizontal
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'User Counts (Active)',
+                        },
+                        legend: {
+                            display: false, // Can hide legend if it's redundant
+                        },
+                    },
+                    scales: {
+                        x: { // Note: x and y are swapped for horizontal charts
+                            beginAtZero: true,
+                        },
+                    },
+                },
+            });
+        }
+
+        // Doughnut Chart for Staff Distribution
+        if (doughnutChartRef.current) {
+            doughnutChartInstance.current = new Chart(doughnutChartRef.current, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Librarians', 'Accountants', 'Receptionists'],
+                    datasets: [
+                        {
+                            data: [
+                                data.librarians.length,
+                                data.accountants.length,
+                                data.receptionists.length,
+                            ],
+                            backgroundColor: ['#FF9F40', '#FFCD56', '#4BC0C0'],
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Staff Distribution',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    let value = context.raw || 0;
+                                    return `${label}${value}`;
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+        }
+
         if (pieChartRef.current) {
             pieChartInstance.current = new Chart(pieChartRef.current, {
                 type: 'pie',
@@ -198,6 +306,8 @@ const T1: React.FC<Props> = () => {
         return () => {
             if (barChartInstance.current) barChartInstance.current.destroy();
             if (pieChartInstance.current) pieChartInstance.current.destroy();
+            if (doughnutChartInstance.current) doughnutChartInstance.current.destroy(); // Destroy doughnut chart
+            if (horizontalBarChartInstance.current) horizontalBarChartInstance.current.destroy(); // Destroy horizontal bar chart
         };
     }, [data]);
 
@@ -248,31 +358,53 @@ const T1: React.FC<Props> = () => {
 
 
             <div className="row my-4">
-                <div className="col-md-6">
-                    <div className="card">
+                <div className="col-md-6 mb-4">
+                    <div className="card h-100">
                         <div className="card-header">
-                            <h3>User Statistics</h3>
+                            <h3 className="m-0">User Statistics (Vertical Bar)</h3>
+                        </div>
+                        <div className="card-body">
                             <canvas ref={barChartRef}></canvas>
                         </div>
                     </div>
                 </div>
-                <div className="col-md-6">
-                    <div className="card">
-                        <div className="card-header py-1">
-                            <h3 className="m-0">
-                                Distribution of Students, Parents, and Teachers
-                            </h3>
+                <div className="col-md-6 mb-4">
+                    <div className="card h-100">
+                        <div className="card-header">
+                            <h3 className="m-0">User Counts (Horizontal Bar)</h3>
+                        </div>
+                        <div className="card-body">
+                            <canvas ref={horizontalBarChartRef}></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="row my-4">
+                <div className="col-md-6 mb-4">
+                    <div className="card h-100">
+                        <div className="card-header">
+                            <h3 className="m-0">Distribution of Students, Parents, and Teachers</h3>
                         </div>
                         <div className="card-body">
                             <canvas ref={pieChartRef}></canvas>
                         </div>
                     </div>
                 </div>
+                <div className="col-md-6 mb-4">
+                    <div className="card h-100">
+                        <div className="card-header">
+                            <h3 className="m-0">Staff Distribution (Doughnut)</h3>
+                        </div>
+                        <div className="card-body">
+                            <canvas ref={doughnutChartRef}></canvas>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            {/* New row for Calendar and User Login History */}
+            {/* New row for User Login History */}
             <div className="row my-4">
-                
                 <div className="col-md-12">
                     <UserLoginHistory />
                 </div>
