@@ -10,10 +10,10 @@ import { InferCreationAttributes } from 'sequelize';
 import moment from 'moment';
 
 import response from '../../../helpers/response';
-import custom_error from '../../../common/errors/custom_error';
-import error_trace from '../../../common/errors/error_trace';
 
 import { modelName } from '../models/model';
+import error_trace from '../../../common/errors/error_trace';
+import custom_error from '../../../common/errors/custom_error';
 
 /** validation rules */
 async function validate(req: Request) {

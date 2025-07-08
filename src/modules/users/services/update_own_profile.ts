@@ -108,15 +108,18 @@ async function update_own_profile(fastify_instance: FastifyInstance, req: Reques
         }
 
         // Handle photo upload
-        if (bodyParams.photo && bodyParams.photo.filename) { // fastify-multipart file object has filename
-            // Ensure the upload plugin is available (it's named `upload` in user_profile_update.ts)
+        if (bodyParams.photo && bodyParams.photo.name && bodyParams.photo.data && typeof bodyParams.photo.name === 'string') {
             if (!(fastify_instance as any).upload) {
                 throw new custom_error('File upload capability is not configured on the server.', 500, 'Configuration error');
             }
-            const photoFile = bodyParams.photo;
-            const image_path = 'uploads/users/' + moment().format('YYYYMMDDHHmmss') + '_' + photoFile.filename.replace(/\s+/g, '_');
+
+            const photoData = bodyParams.photo; // This is { data: Buffer, name: string, ext: string }
+
+            // Construct path using photoData.name
+            const image_path = 'uploads/users/' + moment().format('YYYYMMDDHHmmss') + '_' + photoData.name;
             
-            await (fastify_instance as any).upload(photoFile, image_path);
+            // Pass photoData directly to the upload function
+            await (fastify_instance as any).upload(photoData, image_path);
             updateData.photo = image_path;
             // TODO: Optionally, delete the old photo if it exists and is different
         }

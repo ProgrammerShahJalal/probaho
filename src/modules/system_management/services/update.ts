@@ -9,12 +9,12 @@ import {
 import { InferCreationAttributes } from 'sequelize';
 
 import response from '../../../helpers/response';
-import custom_error from '../../../common/errors/custom_error';
-import error_trace from '../../../common/errors/error_trace';
 
 import moment from 'moment';
 import { modelName } from '../models/error_trace.model';
 import Models from '../../../database/models';
+import error_trace from '../../../common/errors/error_trace';
+import custom_error from '../../../common/errors/custom_error';
 
 /** validation rules */
 async function validate(req: Request) {

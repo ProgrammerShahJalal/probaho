@@ -2,10 +2,10 @@ import db from '../models/db';
 import { FastifyInstance, FastifyRequest } from 'fastify';
 import { responseObject } from '../../../common_types/object';
 import response from '../../../helpers/response';
-import error_trace from '../../../common/errors/error_trace';
-import custom_error from '../../../common/errors/custom_error';
 import { modelName } from '../models/model';
 import Models from '../../../database/models';
+import custom_error from '../../../common/errors/custom_error';
+import error_trace from '../../../common/errors/error_trace';
 // async function details(
 //     fastify_instance: FastifyInstance,
 //     req: FastifyRequest,

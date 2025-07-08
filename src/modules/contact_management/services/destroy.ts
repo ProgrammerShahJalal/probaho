@@ -7,9 +7,9 @@ import {
     Request,
 } from '../../../common_types/object';
 import response from '../../../helpers/response';
-import error_trace from '../../../common/errors/error_trace';
-import custom_error from '../../../common/errors/custom_error';
 import { modelName } from '../models/model';
+import custom_error from '../../../common/errors/custom_error';
+import error_trace from '../../../common/errors/error_trace';
 
 /** validation rules */
 async function validate(req: Request) {

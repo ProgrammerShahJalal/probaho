@@ -3,9 +3,9 @@ import { FastifyInstance, FastifyRequest } from 'fastify';
 import { body, validationResult } from 'express-validator';
 import { responseObject, Request } from '../../../common_types/object';
 import response from '../../../helpers/response';
+import { modelName } from '../models/model';
 import custom_error from '../../../common/errors/custom_error';
 import error_trace from '../../../common/errors/error_trace';
-import { modelName } from '../models/model';
 
 /** validation rules */
 async function validate(req: Request) {

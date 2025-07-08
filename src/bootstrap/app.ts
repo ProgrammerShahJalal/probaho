@@ -9,9 +9,6 @@ import { app_config } from '../configs/app.config';
 const underPressure = require('@fastify/under-pressure');
 import fastifyCors from '@fastify/cors';
 
-import { init as initEventCategories } from "../modules/event_categories_management/models/model_relations";
-import { init as initEvents } from "../modules/event_management/models/model_relations";
-
 
 class FastifyApp {
     private fastify: FastifyInstance;
@@ -22,8 +19,6 @@ class FastifyApp {
 
     async register(sequelizeInstance: Sequelize) {
         // Initialize models
-        initEventCategories();
-        initEvents();
         await this.registerMultipartSupport();
         await this.registerRoutes();
         await this.registerPlugins(sequelizeInstance);
