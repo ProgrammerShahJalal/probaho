@@ -1,15 +1,28 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import TopHeader from './shared/TopHeader';
 import SideBar from './shared/menu/SideBar';
+import { RootState, useAppDispatch } from '../../store';
+import { fetchUserProfileThunk } from '../../store/slices/profileSlice';
 
 export interface Props { }
 
 const DashboardLayout: React.FC<Props> = (props: Props) => {
+    const dispatch = useAppDispatch();
+    const { profileImageUrl, isLoadingProfile } = useSelector((state: RootState) => state.profile);
+
+    useEffect(() => {
+        // Load profile only if not already loaded or currently loading
+        if (!profileImageUrl && !isLoadingProfile) {
+            dispatch(fetchUserProfileThunk());
+        }
+    }, [dispatch, profileImageUrl, isLoadingProfile]);
+        
     return (
         <div className="page-wrapper">
             {/*Page Header Start*/}
-            <TopHeader></TopHeader>
+            <TopHeader />
             {/*Page Header Ends*/}
 
             {/*Page Body Start*/}
@@ -18,11 +31,22 @@ const DashboardLayout: React.FC<Props> = (props: Props) => {
                 <div className="page-sidebar custom-scrollbar">
                     <div className="sidebar-user text-center">
                         <div>
-                            <img
-                                className="img-80 rounded-circle bg-white"
-                                src="/assets/dashboard/images/logo.png"
-                                alt="super admin"
-                            />
+                            {isLoadingProfile && !profileImageUrl ? (
+                                <div className="spinner-border text-primary avatar-placeholder" role="status">
+                                    <span className="visually-hidden">Loading...</span>
+                                </div>
+                            ) : (
+                                <img
+                                    className="img-100 rounded-circle bg-white"
+                                    style={{ maxHeight: '128px', maxWidth: '128px', objectFit: 'cover' }}
+                                    src={profileImageUrl || "/assets/dashboard/images/logo.png"}
+                                    alt="super admin"
+                                    onError={(e) => {
+                                        // Fallback if image fails to load, e.g., broken URL
+                                        (e.target as HTMLImageElement).src = "/assets/dashboard/images/logo.png";
+                                    }}
+                                />
+                            )}
                         </div>
                     </div>
                     <SideBar />
