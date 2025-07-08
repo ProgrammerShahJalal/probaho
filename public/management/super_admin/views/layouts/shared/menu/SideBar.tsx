@@ -22,7 +22,7 @@ const SideBar: React.FC<Props> = (props: Props) => {
                 (window as any).jQuery('.sidebar-menu').off('click', 'li a');
             }
         };
-    }, []); // Empty dependency array ensures this runs only once on mount and cleans up on unmount
+    }, []); 
 
     const handleLogout = () => {
         (document.getElementById('logout_form') as HTMLFormElement)?.submit();
@@ -74,10 +74,10 @@ function active_link(hash) {
     let url = new URL(hash);
     (window as any).jQuery(`.sidebar-submenu a`).removeClass('active');
     (window as any)
-        .$(`.sidebar-submenu a[href="${url.hash}"]`)
+        .jQuery(`.sidebar-submenu a[href="${url.hash}"]`)
         .addClass('active');
     (window as any)
-        .$(`.sidebar-submenu a[href="${url.hash}"]`)
+        .jQuery(`.sidebar-submenu a[href="${url.hash}"]`)
         .parent('li')
         .parent('ul')
         .css({ display: 'block' })
@@ -90,8 +90,6 @@ function init_nav_action() {
     var animationSpeed = 300,
         subMenuSelector = '.sidebar-submenu';
     (window as any).jQuery('.sidebar-menu').on('click', 'li a', function (e) {
-        // All modal checks removed to allow sidebar interaction at all times.
-
         var $this = (window as any).jQuery(this);
         var checkElement = $this.next();
         if (checkElement.is(subMenuSelector) && checkElement.is(':visible')) {
@@ -114,7 +112,7 @@ function init_nav_action() {
             });
         }
 
-        if (e.target && e.target.href && e.target.href.includes('http') && !e.target.href.includes('#')) { // aaded !e.target.href.includes('#')
+        if (e.target && e.target.href && e.target.href.includes('http')) {
             active_link(e.target.href);
         }
     });

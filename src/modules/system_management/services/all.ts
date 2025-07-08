@@ -2,8 +2,6 @@ import { FindAndCountOptions } from 'sequelize';
 import db from '../models/db';
 import { FastifyInstance, FastifyRequest } from 'fastify';
 import response from '../../../helpers/response';
-import error_trace from '../../../common/errors/error_trace';
-import custom_error from '../../../common/errors/custom_error';
 import { validationResult, query } from 'express-validator';
 import {
     anyObject,
@@ -11,6 +9,8 @@ import {
     Request,
 } from '../../../common_types/object';
 import { modelName } from '../models/error_trace.model';
+import error_trace from '../../../common/errors/error_trace';
+import custom_error from '../../../common/errors/custom_error';
 
 /** validation rules */
 async function validate(req: Request) {
