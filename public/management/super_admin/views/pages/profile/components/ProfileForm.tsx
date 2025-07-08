@@ -1,46 +1,76 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { fetchUserProfile, updateUserProfile } from '../services';
+import { useAppDispatch } from '../../../../store'; // Adjusted path
+import { RootState } from '../../../../store'; // Adjusted path
+import { setProfileImageUrl, fetchUserProfileThunk } from '../../../../store/slices/profileSlice';
 
 interface ProfileData {
     name: string;
     email: string;
     phone_number: string;
-    photo?: string | File;
+    photo?: string | File; 
 }
 
 const ProfileForm: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const { profileImageUrl: currentGlobalProfileImage, isLoadingProfile: isGlobalLoading } = useSelector((state: RootState) => state.profile);
+
     const [formData, setFormData] = useState<ProfileData>({
         name: '',
         email: '',
         phone_number: '',
         photo: undefined,
     });
-    const [previewImage, setPreviewImage] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false); // For submission spinner
-    const [initialLoading, setInitialLoading] = useState(true); // For initial data load
+    const [previewImage, setPreviewImage] = useState<string | null>(null); // For local file preview or fetched image
+    const [isSubmitting, setIsSubmitting] = useState(false); // For submission spinner
+    const [isInitialLoading, setIsInitialLoading] = useState(true); // For initial data load for the form
 
     useEffect(() => {
-        const loadUserProfile = async () => {
-            setInitialLoading(true); // Ensure it's true when loading starts
+        // Load initial profile data for the form
+        const loadFormProfileData = async () => {
+            setIsInitialLoading(true);
             try {
-                const data = await fetchUserProfile();
+                const data = await fetchUserProfile(); 
                 setFormData({
                     name: data.name,
                     email: data.email,
                     phone_number: data.phone_number,
-                    photo: data.photo, // Store original photo URL or undefined
+                    photo: data.photo, // Store original photo URL
                 });
                 if (data.photo && typeof data.photo === 'string') {
-                    setPreviewImage(data.photo);
+                    setPreviewImage(data.photo); // Set form's preview from fetched data
+                } else {
+                    setPreviewImage(null);
                 }
             } catch (error) {
-                console.error("Failed to load user profile", error);
-                // Error should be handled by global interceptor or a specific toast message here
+                console.error("Failed to load user profile for form", error);
             }
-            setInitialLoading(false); // Set to false after loading finishes
+            setIsInitialLoading(false);
         };
-        loadUserProfile();
-    }, []);
+        
+        if (!currentGlobalProfileImage && !isGlobalLoading) {
+            dispatch(fetchUserProfileThunk());
+        }
+        
+        loadFormProfileData();
+
+        // Sync local preview with global state if it changes (e.g. fetched by DashboardLayout)
+        // and no local file is staged for upload
+        if (currentGlobalProfileImage && !(formData.photo instanceof File)) {
+             setPreviewImage(currentGlobalProfileImage);
+        }
+
+    }, [dispatch, currentGlobalProfileImage, isGlobalLoading]); // formData.photo dependency removed to avoid loop with setFormData
+
+    // Effect to update form's photo state if global image changes and it's not a File object
+    useEffect(() => {
+        if (currentGlobalProfileImage && !(formData.photo instanceof File) && formData.photo !== currentGlobalProfileImage) {
+            setFormData(prev => ({ ...prev, photo: currentGlobalProfileImage }));
+            setPreviewImage(currentGlobalProfileImage);
+        }
+    }, [currentGlobalProfileImage]);
+
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -51,37 +81,62 @@ const ProfileForm: React.FC = () => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
             setFormData(prev => ({ ...prev, photo: file })); // Store File object for upload
-            setPreviewImage(URL.createObjectURL(file)); // Show preview
+            setPreviewImage(URL.createObjectURL(file)); // Show local preview of the selected file
         }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setIsLoading(true);
+        setIsSubmitting(true);
         try {
-            const updatedUser = await updateUserProfile(formData); // formData contains File or string for photo
-            // Assuming window.toaster is globally available
+            const payload: ProfileData = {
+                name: formData.name,
+                email: formData.email,
+                phone_number: formData.phone_number,
+            };
+            if (formData.photo instanceof File) {
+                payload.photo = formData.photo;
+            } else if (typeof formData.photo === 'string') {
+                // If you want to allow removing photo, you'd need a mechanism for that.
+                // Otherwise, if photo is a string, it means it's the existing URL.
+                // The backend service `updateUserProfile` should handle if `photo` field is absent.
+                // For this example, we assume `updateUserProfile` can handle `photo` being a string (URL)
+                // or a File object. If it's a URL, it implies no change to the photo unless explicitly handled.
+                // To be safe, only send photo if it's a File.
+                // payload.photo = formData.photo; // Or omit if it's a URL and no new file
+            }
+
+
+            const updatedUser = await updateUserProfile(payload); 
             (window as any).toaster('Profile updated successfully!', 'success');
-            if (updatedUser.photo && typeof updatedUser.photo === 'string') { 
-                setPreviewImage(updatedUser.photo);
-                // Update formData.photo to the new URL to prevent re-uploading a File object on subsequent saves without new file selection
+
+            if (updatedUser.photo && typeof updatedUser.photo === 'string') {
+                dispatch(setProfileImageUrl(updatedUser.photo)); // Update global Redux state
+                setPreviewImage(updatedUser.photo); // Update local preview
+                // Update formData.photo to the new URL to prevent re-uploading a File object
+                // on subsequent saves if no new file is selected.
                 setFormData(prev => ({ ...prev, photo: updatedUser.photo }));
+            } else if (!updatedUser.photo) {
+                // If the photo was removed, update global and local state
+                dispatch(setProfileImageUrl(null));
+                setPreviewImage(null);
+                setFormData(prev => ({ ...prev, photo: undefined }));
             }
         } catch (error) {
             console.error('Failed to update profile', error);
-            // Error should be handled by the global axios interceptor
+            // Error should be handled by the global axios interceptor or a specific toast message here
         }
-        setIsLoading(false);
+        setIsSubmitting(false);
     };
 
-    if (initialLoading) { 
+    if (isInitialLoading && !previewImage) { // Show loading only if no image is available yet
         return (
             <div className="card shadow-sm">
                 <div className="card-body text-center p-4">
                     <div className="spinner-border text-primary" role="status">
                         <span className="visually-hidden">Loading...</span>
                     </div>
-                    <p className="mt-2 mb-0">Loading profile...</p>
+                    <p className="mt-2 mb-0">Loading profile data...</p>
                 </div>
             </div>
         );
@@ -100,7 +155,7 @@ const ProfileForm: React.FC = () => {
                         onChange={handleChange}
                         className="form-control"
                         required
-                        disabled={isLoading}
+                        disabled={isSubmitting || isInitialLoading}
                     />
                 </div>
                 <div className="mb-3">
@@ -113,7 +168,7 @@ const ProfileForm: React.FC = () => {
                         onChange={handleChange}
                         className="form-control"
                         required
-                        disabled={isLoading}
+                        disabled={isSubmitting || isInitialLoading}
                     />
                 </div>
                 <div className="mb-3">
@@ -125,7 +180,7 @@ const ProfileForm: React.FC = () => {
                         value={formData.phone_number}
                         onChange={handleChange}
                         className="form-control"
-                        disabled={isLoading}
+                        disabled={isSubmitting || isInitialLoading}
                     />
                 </div>
                 <div className="mb-3">
@@ -137,7 +192,7 @@ const ProfileForm: React.FC = () => {
                         onChange={handleFileChange}
                         accept="image/*"
                         className="form-control"
-                        disabled={isLoading}
+                        disabled={isSubmitting || isInitialLoading}
                     />
                     {previewImage && (
                         <div className="mt-2">
@@ -153,10 +208,10 @@ const ProfileForm: React.FC = () => {
                 <div className="d-grid">
                     <button
                         type="submit"
-                        disabled={isLoading || initialLoading} 
+                        disabled={isSubmitting || isInitialLoading} 
                         className="btn btn-primary"
                     >
-                        {isLoading ? (
+                        {isSubmitting ? (
                             <>
                                 <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                                 Updating...
