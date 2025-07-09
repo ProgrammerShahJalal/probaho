@@ -194,6 +194,7 @@ const Create: React.FC<Props> = (props: Props) => {
                                                         get_selected_data={
                                                             handleRoleSelection
                                                         }
+                                                        default_value={[{ serial: 2 }]} // '2' is the serial for Branch_admin
                                                     />
                                                 </>
                                             ) : i === 'gender' ? (
