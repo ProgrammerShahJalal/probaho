@@ -4,7 +4,7 @@ import DashboardLayout from '../views/layouts/DashboardLayout';
 import T1 from '../views/pages/T1';
 
 import users from '../views/pages/users/config/routes';
-import all_users from '../views/pages/all_users/config/routes';
+import admins from '../views/pages/admins/config/routes';
 import user_roles from '../views/pages/user_roles/config/routes';
 import user_login_histories from '../views/pages/user-login-histories/config/routes';
 import contact_messages from '../views/pages/contact_management/config/routes';
@@ -22,8 +22,8 @@ const router: RouteTypes[] = [
                 path: '',
                 element: <T1 />,
             },
+            admins,
             users,
-            all_users,
             user_roles,
             user_login_histories,
             contact_messages,

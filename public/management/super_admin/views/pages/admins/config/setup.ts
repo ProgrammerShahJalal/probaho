@@ -5,7 +5,7 @@ const setup: setup_type = {
     prefix,
     module_name: 'users',
 
-    route_prefix: 'auth/users', //react route
+    route_prefix: 'auth', //react route
 
     api_host: location.origin,
     api_prefix: 'auth', //api route 

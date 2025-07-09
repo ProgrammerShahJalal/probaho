@@ -48,7 +48,7 @@ const fetch_api = async (param, thunkAPI) => {
 
     let response: { [key: string]: any } = {};
     // Modified URL to point to the new branch-admins endpoint
-    let url = `${api_host}${end_point}/${api_prefix}/users`; 
+    let url = `${api_host}${end_point}/${api_prefix}/branch-admins`; 
     let full_url: URL = new URL(url);
     let fetch_only_latest: boolean = state[`only_latest_data`];
 
