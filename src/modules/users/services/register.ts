@@ -244,6 +244,7 @@ async function register(
             email: body.email,
             phone_number: body.phone_number,
             photo: body.photo || image_path,
+            gender: body.gender,
             password: hashedPassword,
             slug: slug,
             token: body.token,

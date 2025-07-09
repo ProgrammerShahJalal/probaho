@@ -110,6 +110,7 @@ async function user_profile_update(fastify_instance: FastifyInstance, req: Fasti
             role_serial: role_serial_to_save,
             phone_number: body.phone_number || data.phone_number,
             photo: image_path || data.photo,
+            gender: body.gender || data.gender,
             password: hashedPassword || data.password,
             slug: slug || data.slug,
             is_verified: body.is_verified !== undefined ? body.is_verified : data.is_verified,

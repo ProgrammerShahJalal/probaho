@@ -17,6 +17,7 @@ type verified = '0' | '1';
 type approved = '0' | '1';
 type blocked = '0' | '1';
 type status = 'active' | 'deactive';
+type gender = 'male' | 'female' | 'others';
 
 class DataModel extends Model<Infer, InferCreation> {
     declare id?: CreationOptional<number>;
@@ -32,6 +33,7 @@ class DataModel extends Model<Infer, InferCreation> {
     declare email: string;
     declare phone_number: string;
     declare photo?: string | null;
+    declare gender?: gender;
     declare password: string;
     declare slug: string;
     declare token: string;
@@ -117,6 +119,10 @@ function init(sequelize: Sequelize) {
             },
             photo: {
                 type: DataTypes.STRING(255),
+                allowNull: true,
+            },
+            gender: {
+                type: DataTypes.ENUM('male', 'female', 'others'),
                 allowNull: true,
             },
             password: {
