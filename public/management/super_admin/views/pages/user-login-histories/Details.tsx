@@ -29,7 +29,7 @@ const Details: React.FC<Props> = (props: Props) => {
         try {
             // Handle nested user object
             if (key === 'user_id' && state.item.user) {
-                return `${state.item.user.first_name} ${state.item.user.last_name}`;
+                return `${state.item.user.name}`;
             }
 
             if (state.item[key]) return state.item[key];
@@ -44,6 +44,15 @@ const Details: React.FC<Props> = (props: Props) => {
         return moment(date).format('Do MMM YY, h:mm:ss A');
     };
 
+    const formatSessionTime = (seconds: number): string => {
+        const hrs = Math.floor(seconds / 3600);
+        const mins = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+
+        return `${hrs.toString().padStart(2, '0')}:${mins
+            .toString()
+            .padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    };
 
     return (
         <>
@@ -54,29 +63,6 @@ const Details: React.FC<Props> = (props: Props) => {
                     {Object.keys(state.item).length && (
                         <div className="content_body custom_scroll">
                             <table className="table quick_modal_table table-hover">
-                                {/* <tbody>
-                                    {['id', 'user_id', 'login_date','logout_date', 'device', 'total_session_time', 'status'].map(
-                                        (i) => (
-                                            <tr key={i}>
-                                                <td>
-                                                    {i.replaceAll('_', ' ')}
-                                                </td>
-                                                <td>:</td>
-                                            {
-                                                i === 'total_session_time' ? ( <td>{get_value(i)} seconds</td>) : (
-                                                    i === 'login_date' || i === 'logout_date' ? (<td>{formateDateTime(get_value(i))}</td>) : (
-                                                        i === 'user_id' ? (
-                                                        <><label>User Name</label>
-                                                        <td>{get_value(i)}</td></>
-                                                        ) : <td>{get_value(i)}</td>)
-                                                    )
-                                            }
-                                            </tr>
-                                        ),
-                                    )}
-                                </tbody> */}
-
-
                                 <tbody>
                                     {[
                                         'id',
@@ -111,14 +97,18 @@ const Details: React.FC<Props> = (props: Props) => {
                                                     i === 'total_session_time' ? (<tr key={i}>
                                                         <td>{i.replaceAll('_', ' ')}</td>
                                                         <td>:</td>
-                                                        <td>{get_value(i)}seconds</td>
-                                                    </tr>) 
-                                                    : 
-                                                    (<tr key={i}>
-                                                        <td>{i.replaceAll('_', ' ')}</td>
-                                                        <td>:</td>
-                                                        <td>{get_value(i)}</td>
+                                                        <td>
+                                                            {get_value(i)
+                                                                ? `${formatSessionTime(get_value(i))} (HH:MM:SS)`
+                                                                : 'N/A'}
+                                                        </td>
                                                     </tr>)
+                                                        :
+                                                        (<tr key={i}>
+                                                            <td>{i.replaceAll('_', ' ')}</td>
+                                                            <td>:</td>
+                                                            <td>{get_value(i)}</td>
+                                                        </tr>)
                                                 )
                                             )
                                         )

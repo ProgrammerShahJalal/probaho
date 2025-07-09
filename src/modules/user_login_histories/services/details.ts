@@ -30,7 +30,7 @@ async function details(
                 {
                     model: models.UserModel,
                     as: 'user',
-                    attributes: ['first_name', 'last_name'],
+                    attributes: ['name'],
                     required: false,
                 },
             ],

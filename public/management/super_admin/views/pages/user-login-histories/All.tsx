@@ -51,10 +51,23 @@ const All: React.FC<Props> = (props: Props) => {
     }
 
 
-    let formateDateTime = (date: string) => {
+    const formateDateTime = (date?: string): string => {
+        if (!date || !moment(date).isValid()) {
+            return 'N/A';
+        }
+
         return moment(date).format('Do MMM YY, h:mm:ss A');
     };
 
+    const formatSessionTime = (seconds: number): string => {
+        const hrs = Math.floor(seconds / 3600);
+        const mins = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+
+        return `${hrs.toString().padStart(2, '0')}:${mins
+            .toString()
+            .padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    };
 
 
     return (
@@ -140,7 +153,11 @@ const All: React.FC<Props> = (props: Props) => {
                                                             {i.device}
                                                         </span>
                                                     </td>
-                                                    <td>{i.total_session_time} seconds</td>
+                                                    <td>
+                                                        {i.total_session_time
+                                                            ? `${formatSessionTime(i.total_session_time)} (HH:MM:SS)`
+                                                            : 'N/A'}
+                                                    </td>
                                                     <td>{i.status}</td>
 
                                                 </tr>

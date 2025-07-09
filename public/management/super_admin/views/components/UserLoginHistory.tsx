@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import moment from 'moment/moment';
 
 interface LoginHistory {
     id: number;
@@ -74,11 +75,30 @@ const UserLoginHistory: React.FC<UserLoginHistoryProps> = () => {
             .padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     };
 
+        const formateDateTime = (date?: string): string => {
+        if (!date || !moment(date).isValid()) {
+            return 'N/A';
+        }
+
+        return moment(date).format('Do MMM YY, h:mm:ss A');
+    };
+
+
+
     return (
         <div className="card">
-            <div className="card-header">
+            <div className="card-header d-flex justify-content-between align-items-center">
                 <h5 className="card-title mb-0">User Login History (Latest 5)</h5>
+                <a href="super-admin#/user-login-histories" className="text-sm see-all-link"
+                    style={{ textDecoration: 'none' }}
+                    onMouseOver={(e) => (e.currentTarget.style.color = 'white')}
+                    onMouseOut={(e) => (e.currentTarget.style.color = '#AB8CE4')}>
+                    See All
+                </a>
+
             </div>
+
+
             <div className="card-body">
                 <div className="table-responsive">
                     <table className="table table-hover table-striped">
@@ -95,8 +115,8 @@ const UserLoginHistory: React.FC<UserLoginHistoryProps> = () => {
                             {loginHistories.map((history) => (
                                 <tr key={history.id}>
                                     <td>{history.user?.name || 'N/A'}</td>
-                                    <td>{new Date(history.login_date).toLocaleString() || 'N/A'}</td>
-                                    <td>{new Date(history.logout_date).toLocaleString() || 'N/A'}</td>
+                                    <td>{formateDateTime(history.login_date)}</td>
+                                    <td>{formateDateTime(history.logout_date)}</td>
                                     <td>{history.device || 'N/A'}</td>
                                     <td>
                                         {history.total_session_time
