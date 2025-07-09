@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux';
 import DateEl from '../../components/DateEl';
 import TextEditor from './components/management_data_page/TextEditor';
 
-export interface Props {}
+export interface Props { }
 interface Document {
     key: string;
     title: string;
@@ -167,6 +167,7 @@ const Create: React.FC<Props> = (props: Props) => {
                                         'phone_number',
                                         'password',
                                         'role_serial',
+                                        'gender',
                                         'photo',
                                         'join_date',
                                         'base_salary',
@@ -194,6 +195,38 @@ const Create: React.FC<Props> = (props: Props) => {
                                                             handleRoleSelection
                                                         }
                                                     />
+                                                </>
+                                            ) : i === 'gender' ? (
+                                                <>
+                                                    <label>
+                                                        Gender
+                                                        <span
+                                                            style={{
+                                                                color: 'red',
+                                                            }}
+                                                        >
+                                                            *
+                                                        </span>
+                                                    </label>
+                                                    <div className="form_elements">
+                                                        <select
+                                                            name="gender"
+                                                            required={true}
+                                                            value={data[i] || ''}
+                                                            onChange={(e) =>
+                                                                setData((prev) => ({
+                                                                    ...prev,
+                                                                    [i]: e.target.value,
+                                                                }))
+                                                            }
+                                                        >
+                                                            <option value="">Select Gender</option>
+                                                            <option value="male">Male</option>
+                                                            <option value="female">Female</option>
+                                                            <option value="others">Others</option>
+                                                        </select>
+                                                    </div>
+
                                                 </>
                                             ) : i === 'photo' ? (
                                                 <div className="form-group grid_full_width form-vertical">
@@ -324,7 +357,7 @@ const Create: React.FC<Props> = (props: Props) => {
                                                 <DateEl
                                                     label="Expire Date"
                                                     name={`documents[${index}].expireDate`}
-                                                    value={doc.expireDate}
+                                                    value={doc.issueDate}
                                                     handler={(data) => handleDocumentFieldChange(index, 'expireDate', data.value)}
                                                 />
                                             </div>
