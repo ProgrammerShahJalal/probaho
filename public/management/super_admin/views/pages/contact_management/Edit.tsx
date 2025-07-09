@@ -14,6 +14,7 @@ import InputImage from './components/management_data_page/InputImage';
 import DropDown from './components/dropdown/DropDown';
 import Select from './components/management_data_page/Select';
 import { anyObject } from '../../../common_types/object';
+import { getValue } from '../utils/getValue';
 export interface Props { }
 
 const Edit: React.FC<Props> = (props: Props) => {
@@ -37,16 +38,6 @@ const Edit: React.FC<Props> = (props: Props) => {
         const response = await dispatch(update(form_data) as any);
     }
 
-    function get_value(key) {
-        try {
-            if (state.item[key]) return state.item[key];
-            if (state.item?.info[key]) return state.item?.info[key];
-        } catch (error) {
-            return '';
-        }
-        return '';
-    }
-
     return (
         <>
             <div className="page_content">
@@ -62,7 +53,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                 <input
                                     type="hidden"
                                     name="id"
-                                    defaultValue={get_value(`id`)}
+                                    defaultValue={getValue(state, `id`)}
                                 />
 
                                 <div>
@@ -74,10 +65,10 @@ const Edit: React.FC<Props> = (props: Props) => {
                                             'full_name',
                                             'email',
                                         ].map((i) => (
-                                            <div className="form-group form-vertical">
+                                            <div className="form-group form-vertical" key={i}>
                                                 <Input
                                                     name={i}
-                                                    value={get_value(i)}
+                                                    value={getValue(state, i)}
                                                 />
                                             </div>
                                         ))}

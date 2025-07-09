@@ -15,6 +15,7 @@ import InputFile from './components/management_data_page/InputFile';
 import UserRolesDropDown from '../user_roles/components/dropdown/DropDown';
 import DateEl from '../../components/DateEl';
 import TextEditor from './components/management_data_page/TextEditor';
+import { getValueForEdit } from '../utils/getValue';
 
 export interface Props { }
 interface Document {
@@ -146,27 +147,6 @@ const Edit: React.FC<Props> = (props: Props) => {
         setDocuments(documents.filter(doc => doc.key !== keyToRemove));
     };
 
-    function get_value(key) {
-        try {
-            let value = state.item[key] ?? state.item?.info?.[key];
-            if (key === 'role_serial') {
-                if (typeof value === 'string') {
-                    try {
-                        const parsed = JSON.parse(value);
-                        if (Array.isArray(parsed)) return parsed;
-                    } catch {
-                    }
-                }
-                if (Array.isArray(value)) return value;
-                if (typeof value === 'number') return [value];
-                return [];
-            }
-            return value ?? '';
-        } catch (error) {
-            return '';
-        }
-    }
-
     const handleNumberKeyDown = (e) => {
         if (e.key === 'e' || e.key === 'E' || e.key === '+' || e.key === '-') {
             e.preventDefault();
@@ -174,12 +154,12 @@ const Edit: React.FC<Props> = (props: Props) => {
     };
 
     useEffect(() => {
-        const value = get_value('base_salary');
+        const value = getValueForEdit(state, 'base_salary');
         let el = document.querySelector('input[name="base_salary_in_text"]');
         if (el && value) {
             (el as HTMLInputElement).value = (window as any).convertAmount(value).bn + ' টাকা মাত্র';
         }
-    }, [get_value('base_salary')]);
+    }, [getValueForEdit(state, 'base_salary')]);
 
     return (
         <>
@@ -196,7 +176,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                 <input
                                     type="hidden"
                                     name="id"
-                                    defaultValue={get_value(`id`)}
+                                    defaultValue={getValueForEdit(state, `id`)}
                                 />
 
                                 <div>
@@ -220,7 +200,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                         <Input
                                                             type='number'
                                                             name={i}
-                                                            value={get_value(i)}
+                                                            value={getValueForEdit(state, i)}
                                                             onChange={(e) => {
                                                                 const value = e.target.value;
                                                                 dispatch(storeSlice.actions.set_item({
@@ -246,12 +226,12 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                         </div>
                                                     </>
                                                 ) : i === 'name' || i === 'phone_number' ? (
-                                                    <Input name={i} value={get_value(i)} />
+                                                    <Input name={i} value={getValueForEdit(state, i)} />
                                                 ) : i === 'join_date' ? (
                                                     <DateEl
                                                         label="Join Date"
                                                         name={i}
-                                                        value={get_value(i) ? String(get_value(i)).slice(0, 10) : ''}
+                                                        value={getValueForEdit(state, i) ? String(getValueForEdit(state, i)).slice(0, 10) : ''}
                                                         handler={(data) => dispatch(storeSlice.actions.set_item({ ...state.item, [i]: data.value }))}
                                                     />
                                                 ) : i === 'photo' ? (
@@ -259,7 +239,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                         <InputImage
                                                             label="Photo"
                                                             name="photo"
-                                                            defalut_preview={get_value('photo')}
+                                                            defalut_preview={getValueForEdit(state, 'photo')}
                                                         />
                                                     </div>
                                                 ) : i === 'role_serial' ? (
@@ -271,12 +251,12 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                             name="role_serial"
                                                             multiple={true}
                                                             default_value={
-                                                                get_value(
+                                                                getValueForEdit(state,
                                                                     'role_serial',
                                                                 )
                                                                     ? [
                                                                         {
-                                                                            id: get_value(
+                                                                            id: getValueForEdit(state,
                                                                                 'role_serial',
                                                                             ),
                                                                         },
@@ -301,7 +281,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                         <div className="form_elements">
                                                             <select
                                                             name="gender"
-                                                            value={get_value(i)}
+                                                            value={getValueForEdit(state, i)}
                                                             onChange={(e) =>
                                                                 dispatch(
                                                                     storeSlice.actions.set_item({
@@ -329,7 +309,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                                     name={i}
                                                                     value="1"
                                                                     checked={
-                                                                        get_value(
+                                                                        getValueForEdit(state,
                                                                             i,
                                                                         ) == '1'
                                                                     }
@@ -356,7 +336,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                                     name={i}
                                                                     value="0"
                                                                     checked={
-                                                                        get_value(
+                                                                        getValueForEdit(state,
                                                                             i,
                                                                         ) == '0'
                                                                     }
@@ -472,7 +452,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                             <div key={i} className="form-group form-vertical">
                                                 <TextEditor
                                                     name={i}
-                                                    value={get_value(i)}
+                                                    value={getValueForEdit(state, i)}
                                                     onChange={(value) =>
                                                         dispatch(
                                                             storeSlice.actions.set_item({

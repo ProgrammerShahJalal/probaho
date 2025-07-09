@@ -12,6 +12,7 @@ import { anyObject } from '../../../common_types/object';
 import UserRolesDropDown from '../user_roles/components/dropdown/DropDown';
 import { initialState } from './config/store/inital_state';
 import { useSelector } from 'react-redux';
+import { getValue } from '../utils/getValue';
 import DateEl from '../../components/DateEl';
 import TextEditor from './components/management_data_page/TextEditor';
 
@@ -62,21 +63,21 @@ const Create: React.FC<Props> = (props: Props) => {
         }
     }
 
-    function get_value(key) {
-        try {
-            if (state.item[key]) return state.item[key];
-            if (state.item?.info[key]) return state.item?.info[key];
-        } catch (error) {
-            return '';
-        }
-        return '';
-    }
+    // function get_value(key) {
+    //     try {
+    //         if (state.item[key]) return state.item[key];
+    //         if (state.item?.info[key]) return state.item?.info[key];
+    //     } catch (error) {
+    //         return '';
+    //     }
+    //     return '';
+    // }
 
     useEffect(() => {
-        if (get_value('role')) {
+        if (getValue(state, 'role')) {
             setData((prevData) => ({
                 ...prevData,
-                role: get_value('role'),
+                role: getValue(state, 'role'),
             }));
         }
     }, [state.item]);
@@ -235,7 +236,7 @@ const Create: React.FC<Props> = (props: Props) => {
                                                         required={true}
                                                         label="Photo"
                                                         name="photo"
-                                                        defalut_preview={get_value(
+                                                        defalut_preview={getValue(state,
                                                             'photo',
                                                         )}
                                                     />

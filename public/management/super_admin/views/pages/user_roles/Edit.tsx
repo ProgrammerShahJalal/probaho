@@ -10,6 +10,7 @@ import { Link, useParams } from 'react-router-dom';
 import storeSlice from './config/store';
 import { update } from './config/store/async_actions/update';
 import Input from './components/management_data_page/Input';
+import { getValue } from '../utils/getValue';
 export interface Props {}
 
 const Edit: React.FC<Props> = (props: Props) => {
@@ -32,15 +33,6 @@ const Edit: React.FC<Props> = (props: Props) => {
         console.log('response', response);
     }
 
-    function get_value(key) {
-        try {
-            if (state.item[key]) return state.item[key];
-            if (state.item?.info[key]) return state.item?.info[key];
-        } catch (error) {
-            return '';
-        }
-        return '';
-    }
 
     return (
         <>
@@ -57,7 +49,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                 <input
                                     type="hidden"
                                     name="id"
-                                    defaultValue={get_value(`id`)}
+                                    defaultValue={getValue(state, `id`)}
                                 />
 
                                 <div>
@@ -70,7 +62,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                             >
                                                 <Input
                                                     name={i}
-                                                    value={get_value(i)}
+                                                    value={getValue(state, i)}
                                                 />
                                             </div>
                                         ))}

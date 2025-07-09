@@ -9,6 +9,7 @@ import { initialState } from './config/store/inital_state';
 import { Link, useParams } from 'react-router-dom';
 import storeSlice from './config/store';
 import moment from 'moment/moment';
+import { getValue } from '../utils/getValue';
 
 export interface Props {}
 
@@ -25,31 +26,31 @@ const Details: React.FC<Props> = (props: Props) => {
         dispatch(details({ id: params.id }) as any);
     }, []);
 
-    function get_value(key) {
-        try {
-            let value = state.item[key] ?? state.item?.info?.[key];
-            if (key === 'role_serial') {
-                // If value is a stringified array, parse it
-                if (typeof value === 'string') {
-                    try {
-                        const parsed = JSON.parse(value);
-                        if (Array.isArray(parsed)) return parsed.join(', ');
-                    } catch {
-                        // fallback
-                    }
-                }
-                // If value is already an array, join with comma and space
-                if (Array.isArray(value)) return value.join(', ');
-                // If value is a single number, return as string
-                if (typeof value === 'number') return value.toString();
-                // If value is undefined/null, return empty string
-                return '';
-            }
-            return value ?? '';
-        } catch (error) {
-            return '';
-        }
-    }
+    // function get_value(key) {
+    //     try {
+    //         let value = state.item[key] ?? state.item?.info?.[key];
+    //         if (key === 'role_serial') {
+    //             // If value is a stringified array, parse it
+    //             if (typeof value === 'string') {
+    //                 try {
+    //                     const parsed = JSON.parse(value);
+    //                     if (Array.isArray(parsed)) return parsed.join(', ');
+    //                 } catch {
+    //                     // fallback
+    //                 }
+    //             }
+    //             // If value is already an array, join with comma and space
+    //             if (Array.isArray(value)) return value.join(', ');
+    //             // If value is a single number, return as string
+    //             if (typeof value === 'number') return value.toString();
+    //             // If value is undefined/null, return empty string
+    //             return '';
+    //         }
+    //         return value ?? '';
+    //     } catch (error) {
+    //         return '';
+    //     }
+    // }
 
     // Function to convert base_salary to words
     function convertSalaryToWords(value) {
@@ -102,13 +103,13 @@ const Details: React.FC<Props> = (props: Props) => {
                                             <td>:</td>
                                             <td>
                                                 {['is_verified', 'is_approved', 'is_blocked'].includes(i)
-                                                    ? get_value(i) === '1'
+                                                    ? getValue(state, i) === '1'
                                                         ? 'Yes'
                                                         : 'No'
-                                                    : i === 'join_date' && get_value(i)
-                                                    ? moment.utc(get_value(i)).local().format('DD MMMM YYYY')
-                                                    : get_value(i)
-                                                    ? get_value(i)
+                                                    : i === 'join_date' && getValue(state, i)
+                                                    ? moment.utc(getValue(state, i)).local().format('DD MMMM YYYY')
+                                                    : getValue(state, i)
+                                                    ? getValue(state, i)
                                                     : 'N/A'}
                                             </td>
                                         </tr>
@@ -117,13 +118,13 @@ const Details: React.FC<Props> = (props: Props) => {
                                     <tr>
                                         <td>Base Salary in Words</td>
                                         <td>:</td>
-                                        <td>{convertSalaryToWords(get_value('base_salary'))}</td>
+                                        <td>{convertSalaryToWords(getValue(state, 'base_salary'))}</td>
                                     </tr>
                                 </tbody>
                             </table>
 
                             {/* User Informations Section */}
-                            {!get_value('user_infos') ? (
+                            {!getValue(state, 'user_infos') ? (
                                 <div className="details_section mt-4">
                                     <h5 className="details_section_title">User Information</h5>
                                     <p className="text-muted">No information provided.</p>
@@ -133,7 +134,7 @@ const Details: React.FC<Props> = (props: Props) => {
                                     <h5 className="details_section_title">User Informations</h5>
                                     <div
                                         className="p-3 border rounded text-dark"
-                                        dangerouslySetInnerHTML={{ __html: get_value('user_infos') }}
+                                        dangerouslySetInnerHTML={{ __html: getValue(state, 'user_infos') }}
                                     />
                                 </div>
                             )}
@@ -143,7 +144,7 @@ const Details: React.FC<Props> = (props: Props) => {
                             <div className="details_section mt-4">
                                 <h5 className="details_section_title mb-3">User Documents</h5>
                                 {(() => {
-                                    const documentsJson = get_value('user_documents');
+                                    const documentsJson = getValue(state, 'user_documents');
                                     if (!documentsJson) {
                                         return <p className="text-muted">No documents provided.</p>;
                                     }

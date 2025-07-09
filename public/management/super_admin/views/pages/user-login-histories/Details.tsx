@@ -10,6 +10,7 @@ import { initialState } from './config/store/inital_state';
 import { Link, useParams } from 'react-router-dom';
 import storeSlice from './config/store';
 import moment from 'moment/moment';
+import { getValue } from '../utils/getValue';
 export interface Props { }
 
 const Details: React.FC<Props> = (props: Props) => {
@@ -24,21 +25,6 @@ const Details: React.FC<Props> = (props: Props) => {
         dispatch(storeSlice.actions.set_item({}));
         dispatch(details({ id: params.id }) as any);
     }, []);
-
-    function get_value(key) {
-        try {
-            // Handle nested user object
-            if (key === 'user_id' && state.item.user) {
-                return `${state.item.user.name}`;
-            }
-
-            if (state.item[key]) return state.item[key];
-            if (state.item?.info[key]) return state.item?.info[key];
-        } catch (error) {
-            return '';
-        }
-        return '';
-    }
 
     let formateDateTime = (date: string) => {
         return moment(date).format('Do MMM YY, h:mm:ss A');
@@ -77,29 +63,29 @@ const Details: React.FC<Props> = (props: Props) => {
                                             <tr key={i}>
                                                 <td>User Name</td>
                                                 <td>:</td>
-                                                <td>{get_value(i)}</td>
+                                                <td>{getValue(state, i)}</td>
                                             </tr>
                                         ) : (
                                             i === 'blog_id' ? (
                                                 <tr key={i}>
                                                     <td>Blog Title</td>
                                                     <td>:</td>
-                                                    <td>{get_value(i)}</td>
+                                                    <td>{getValue(state, i)}</td>
                                                 </tr>
                                             ) : (
                                                 i === 'login_date' || i === 'logout_date' ? (
                                                     <tr key={i}>
                                                         <td>{i.replaceAll('_', ' ')}</td>
                                                         <td>:</td>
-                                                        <td>{formateDateTime(get_value(i))}</td>
+                                                        <td>{formateDateTime(getValue(state, i))}</td>
                                                     </tr>
                                                 ) : (
                                                     i === 'total_session_time' ? (<tr key={i}>
                                                         <td>{i.replaceAll('_', ' ')}</td>
                                                         <td>:</td>
                                                         <td>
-                                                            {get_value(i)
-                                                                ? `${formatSessionTime(get_value(i))} (HH:MM:SS)`
+                                                            {getValue(state, i)
+                                                                ? `${formatSessionTime(getValue(state, i))} (HH:MM:SS)`
                                                                 : 'N/A'}
                                                         </td>
                                                     </tr>)
@@ -107,7 +93,7 @@ const Details: React.FC<Props> = (props: Props) => {
                                                         (<tr key={i}>
                                                             <td>{i.replaceAll('_', ' ')}</td>
                                                             <td>:</td>
-                                                            <td>{get_value(i)}</td>
+                                                            <td>{getValue(state, i)}</td>
                                                         </tr>)
                                                 )
                                             )
