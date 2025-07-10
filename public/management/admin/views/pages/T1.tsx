@@ -32,6 +32,7 @@ export interface Props { }
 
 const T1: React.FC<Props> = () => {
     const [data, setData] = useState<{
+        admission_officers: any[];
         students: any[];
         parents: any[];
         teachers: any[];
@@ -40,6 +41,7 @@ const T1: React.FC<Props> = () => {
         accountants: any[];
         receptionists: any[];
     }>({
+        admission_officers: [],
         students: [],
         parents: [],
         teachers: [],
@@ -63,8 +65,9 @@ const T1: React.FC<Props> = () => {
 
         const fetchData = async () => {
             try {
-                const roles = [3, 6, 4, 5, 7, 8, 9];
+                const roles = [10, 3, 6, 4, 5, 7, 8, 9];
                 const roleKeys = [
+                    'admission_officer',
                     'students',
                     'parents',
                     'teachers',
@@ -371,11 +374,11 @@ const T1: React.FC<Props> = () => {
                 {/* Card Item */}
                 {[
                     { title: "Students", src: "/assets/dashboard/images/student.png", count: data.students?.length },
-                    { title: "Parents", src: "/assets/dashboard/images/parent.png", count: data.parents?.length },
                     { title: "Teachers", src: "/assets/dashboard/images/teacher.png", count: data.teachers?.length },
-                    { title: "Staff", src: "/assets/dashboard/images/staff.png", count: data.staff?.length },
+                    { title: "Accountants", src: "/assets/dashboard/images/staff.png", count: data.accountants?.length },
+                    { title: "Admission Officers", src: "/assets/dashboard/images/staff.png", count: data.admission_officers?.length },
                 ].map((item, index) => (
-                    <div className="col-xl-3 col-lg-4" key={index}>
+                    <div className="col-xl-3 col-lg-3" key={index}>
                         <div className="card" data-intro={index === 0 ? "This is card" : undefined}>
                             <div className="business-top-widget card-body">
                                 <div className="media d-inline-flex items-center gap-2">
