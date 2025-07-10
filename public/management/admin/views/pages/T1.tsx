@@ -381,12 +381,12 @@ console.log('data', data);
                 {[
                     { title: "Students", src: "/assets/dashboard/images/student.png", count: data.students?.length },
                     { title: "Teachers", src: "/assets/dashboard/images/teacher.png", count: data.teachers?.length },
-                    { title: "Accountants", src: "/assets/dashboard/images/staff.png", count: data.accountants?.length },
-                    { title: "Admission Officers", src: "/assets/dashboard/images/staff.png", count: data.admission_officer?.length },
-                    { title: "Course Coordinators", src: "/assets/dashboard/images/staff.png", count: data.course_coordinator?.length },
-                    { title: "Publications", src: "/assets/dashboard/images/staff.png", count: data.publication?.length },
+                    { title: "Accountants", src: "/assets/dashboard/images/accounting.png", count: data.accountants?.length },
+                    { title: "Admission Officers", src: "/assets/dashboard/images/admission-officer.png", count: data.admission_officer?.length },
+                    { title: "Course Coordinators", src: "/assets/dashboard/images/coordinator.png", count: data.course_coordinator?.length },
+                    { title: "Publications", src: "/assets/dashboard/images/publication.png", count: data.publication?.length },
                 ].map((item, index) => (
-                    <div className="col-xl-3 col-lg-4" key={index}>
+                    <div className="col-md-4" key={index}>
                         <div className="card" data-intro={index === 0 ? "This is card" : undefined}>
                             <div className="business-top-widget card-body">
                                 <div className="media d-inline-flex items-center gap-2">
@@ -411,7 +411,18 @@ console.log('data', data);
 
                                     {/* Content */}
                                     <div className="media-body">
-                                        <span className="mb-2">{item.title}</span>
+                                        <span
+                                            className="mb-2"
+                                            style={{
+                                                whiteSpace: 'nowrap',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                display: 'block', // Ensure it takes up block-level space for overflow to work
+                                                maxWidth: '100%' // Ensure it doesn't overflow its container
+                                            }}
+                                        >
+                                            {item.title}
+                                        </span>
                                         <h2 className="total-value m-0 counter">{item.count}</h2>
                                     </div>
                                 </div>
