@@ -59,7 +59,7 @@ axios.interceptors.response.use(
         if (error.response.data.status === 422 || 500 || 409) {
             // Show the error message in toaster
             (window as anyObject).toaster(
-                error.response.data.message || `${error.response.status} - ${error.response.statusText}`,
+                error.response.data.message || `${error.response.statusText}`,
                 'warning',
             );
 

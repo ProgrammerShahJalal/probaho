@@ -34,7 +34,7 @@ const fetch_api = async (param, thunkAPI) => {
     dispatch(storeSlice.actions.set_is_loading(true));
 
     (window as anyObject).toaster(
-        `${response.status} - ${response.data.message}`,
+        `${response.data.message}`,
     );
     return response.data;
     // thunkAPI.dispatch(storeSlice.actions.my_action())
