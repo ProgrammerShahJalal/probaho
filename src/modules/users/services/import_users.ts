@@ -5,10 +5,12 @@ import moment from 'moment'; // Import moment
 import { responseObject } from '../../../common_types/object';
 import Models from '../../../database/models';
 
+type gender = 'male' | 'female' | 'others';
 interface UserImportData {
     name: string;
     email: string;
     phone_number: string;
+    gender: gender;
     photo?: string; // Photo might be optional if not provided in CSV
     password?: string; // Password might be optional if we generate one, or required
     role_serial: number;
@@ -151,6 +153,7 @@ export default async function import_users(
                                 name: row.name,
                                 email: row.email,
                                 phone_number: row.phone_number,
+                                gender: row.gender,
                                 password: hashedPassword,
                                 role_serial: roleSerialArr,
                                 slug: slug,

@@ -122,7 +122,8 @@
               );
             }
           });
-          window.toaster(`${error.response.status} - ${error.response.statusText}`);
+          // window.toaster(`${error.response.status} - ${error.response.statusText}`);
+          window.toaster(`${error.response.statusText}`);
           console.log(error.response);
         }
         return Promise.reject(error);

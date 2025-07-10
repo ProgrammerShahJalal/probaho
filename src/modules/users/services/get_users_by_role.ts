@@ -39,9 +39,9 @@ async function validate(req: Request) {
         .run(req);
 
     await query('paginate')
-        .not()
-        .isEmpty()
-        .withMessage('the paginate field is required')
+        .optional() // Make paginate optional
+        .isInt({ min: 1 }) // Optionally, validate if it's an integer if provided
+        .withMessage('paginate must be a positive integer if provided')
         .run(req);
 
     let result = await validationResult(req);
@@ -67,7 +67,7 @@ async function get_users_by_role( // Renamed function
     let orderByAsc = query_param.orderByAsc || 'true';
     let show_active_data = query_param.show_active_data || 'true';
     let show_trash_data = query_param.show_trash_data === 'true' ? true : false;
-    let paginate = parseInt((req.query as any).paginate) || 10;
+    let paginate: number | undefined = query_param.paginate ? parseInt(query_param.paginate) : undefined; // Make paginate optional
     let select_fields: string[] = [];
     const authUser = (req as any).user;
 
@@ -80,7 +80,7 @@ async function get_users_by_role( // Renamed function
         select_fields = [...select_fields, 'id', 'status', 'created_at', 'updated_at', 'deleted_at'];
     } else {
         // Default fields if not specified, ensure role_serial is included for filtering and processing
-        select_fields = ['id', 'uid', 'name', 'email', 'phone_number', 'photo', 'role_serial', 'is_verified', 'is_blocked', 'is_approved', 'join_date', 'base_salary', 'status', 'created_at', 'updated_at', 'deleted_at'];
+        select_fields = ['id', 'uid', 'name', 'email', 'gender', 'phone_number', 'photo', 'role_serial', 'is_verified', 'is_blocked', 'is_approved', 'join_date', 'base_salary', 'status', 'created_at', 'updated_at', 'deleted_at'];
     }
 
     let query: FindAndCountOptions = {
@@ -151,12 +151,26 @@ async function get_users_by_role( // Renamed function
     }
 
     try {
-        let data = await (fastify_instance as anyObject).paginate(
-            req,
-            UserModel,
-            paginate,
-            query,
-        );
+        let data: any;
+        if (paginate !== undefined) {
+            data = await (fastify_instance as anyObject).paginate(
+                req,
+                UserModel,
+                paginate,
+                query,
+            );
+        } else {
+            // Fetch all data if paginate is not provided
+            const result = await UserModel.findAndCountAll(query);
+            data = {
+                data: result.rows,
+                total: result.count,
+                page: 1, // Assuming page 1 when all data is fetched
+                limit: result.count, // Limit is the total count
+                totalPages: 1, // Only one page when all data is fetched
+                // Add other pagination fields if necessary, or adjust based on expected response structure
+            };
+        }
 
         if (data && data.data && Array.isArray(data.data)) {
             const processedUsers = await Promise.all(data.data.map(async (user: anyObject) => {

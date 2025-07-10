@@ -26,6 +26,7 @@ import get_user_profile from './services/get_user_profile';
 import user_change_password from './services/user_change_password';
 import update_own_profile from './services/update_own_profile';
 import get_users_by_role from './services/get_users_by_role'; // Import the new service
+import all_users from './services/all_users';
 
 const { serialize, parse } = require('@fastify/cookie');
 
@@ -35,6 +36,17 @@ export default function (fastify: FastifyInstance) {
         all: async function (req: FastifyRequest, res: FastifyReply) {
             try {
                 let data: responseObject = await all(fastify, req);
+                return res
+                    .code(data.status)
+                    .header('Cache-Control', 'public, max-age=30')
+                    .send(data);
+            } catch (error: any) {
+                return handleServiceError(error, res);
+            }
+        },
+        users: async function (req: FastifyRequest, res: FastifyReply) {
+            try {
+                let data: responseObject = await all_users(fastify, req);
                 return res
                     .code(data.status)
                     .header('Cache-Control', 'public, max-age=30')
