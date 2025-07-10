@@ -265,7 +265,7 @@ const T1: React.FC<Props> = () => {
                     datasets: [
                         {
                             data: [genderCounts.male, genderCounts.female, genderCounts.others],
-                            backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56'], // Example colors
+                            backgroundColor: ['#4CAF50', '#E91E63', '#9E9E9E'], // Updated colors
                         },
                     ],
                 },
