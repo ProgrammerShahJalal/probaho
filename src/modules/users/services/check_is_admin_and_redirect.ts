@@ -44,7 +44,7 @@ const check_is_admin_and_redirect = async (
         }
 
         // Check if the user is an admin
-        if (decoded.role !== 'admin') {
+        if (decoded.role !== 'branch_admin') {
             return reply.redirect(`/admin-login`);
         }
 
