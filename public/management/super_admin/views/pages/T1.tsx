@@ -157,6 +157,17 @@ const T1: React.FC<Props> = () => {
                             beginAtZero: true,
                         },
                     },
+                    animation: {
+                        delay: (context) => {
+                            let delay = 0;
+                            if (context.type === 'data' && context.mode === 'default' && context.dataIndex !== undefined) {
+                                delay = context.dataIndex * 300 + context.datasetIndex * 100;
+                            }
+                            return delay;
+                        },
+                        duration: 1000,
+                        easing: 'easeOutQuart',
+                    },
                 },
             });
         }
@@ -218,6 +229,17 @@ const T1: React.FC<Props> = () => {
                             beginAtZero: true,
                         },
                     },
+                    animation: {
+                        delay: (context) => {
+                            let delay = 0;
+                            if (context.type === 'data' && context.mode === 'default' && context.dataIndex !== undefined) {
+                                delay = context.dataIndex * 300 + context.datasetIndex * 100;
+                            }
+                            return delay;
+                        },
+                        duration: 1000,
+                        easing: 'easeOutQuart',
+                    },
                 },
             });
         }
@@ -267,6 +289,18 @@ const T1: React.FC<Props> = () => {
                             },
                         },
                     },
+                    animation: {
+                        delay: (context) => {
+                            let delay = 0;
+                            if (context.type === 'data' && context.mode === 'default' && context.dataIndex !== undefined) {
+                                // For pie/doughnut, dataIndex refers to the segment index
+                                delay = context.dataIndex * 300;
+                            }
+                            return delay;
+                        },
+                        duration: 2000,
+                        easing: 'easeOutQuart',
+                    },
                 },
             });
         }
@@ -306,6 +340,18 @@ const T1: React.FC<Props> = () => {
                                 },
                             },
                         },
+                    },
+                    animation: {
+                        delay: (context) => {
+                            let delay = 0;
+                            if (context.type === 'data' && context.mode === 'default' && context.dataIndex !== undefined) {
+                                // For pie/doughnut, dataIndex refers to the segment index
+                                delay = context.dataIndex * 300;
+                            }
+                            return delay;
+                        },
+                        duration: 2000,
+                        easing: 'easeOutQuart',
                     },
                 },
             });
