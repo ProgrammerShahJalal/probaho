@@ -5,7 +5,7 @@ import ChangePasswordForm from './components/ChangePasswordForm';
 const ProfilePage: React.FC = () => {
     return (
         <div className="container p-4">
-            <h1 className="mb-4 display-4">My Profile</h1> {/* Using display-4 for larger heading, mb-4 for margin */}
+            <h6 className="mb-4 display-6">My Profile</h6> {/* Using display-4 for larger heading, mb-4 for margin */}
 
             <div className="row g-5"> {/* Bootstrap grid row with gap */}
                 <div className="col-md-6"> {/* Column for Profile Information */}

@@ -18,7 +18,7 @@ const DashboardLayout: React.FC<Props> = (props: Props) => {
             dispatch(fetchUserProfileThunk());
         }
     }, [dispatch, profileImageUrl, isLoadingProfile]);
-        
+
     return (
         <div className="page-wrapper">
             {/*Page Header Start*/}
@@ -36,16 +36,20 @@ const DashboardLayout: React.FC<Props> = (props: Props) => {
                                     <span className="visually-hidden">Loading...</span>
                                 </div>
                             ) : (
-                                <img
-                                    className="img-100 rounded-circle bg-white"
-                                    style={{ maxHeight: '128px', maxWidth: '128px', objectFit: 'cover' }}
-                                    src={profileImageUrl || "/assets/dashboard/images/logo.png"}
-                                    alt="super admin"
-                                    onError={(e) => {
-                                        // Fallback if image fails to load, e.g., broken URL
-                                        (e.target as HTMLImageElement).src = "/assets/dashboard/images/logo.png";
-                                    }}
-                                />
+                                <>
+                                <h6>SUPER ADMIN PANEL</h6>
+                                    <img
+                                        className="img-100 rounded-circle bg-white"
+                                        style={{ maxHeight: '128px', maxWidth: '128px', objectFit: 'cover' }}
+                                        src={profileImageUrl || "/assets/dashboard/images/logo.png"}
+                                        alt="super admin"
+                                        onError={(e) => {
+                                            // Fallback if image fails to load, e.g., broken URL
+                                            (e.target as HTMLImageElement).src = "/assets/dashboard/images/logo.png";
+                                        }}
+                                    />
+                                <h3></h3>
+                                </>
                             )}
                         </div>
                     </div>
