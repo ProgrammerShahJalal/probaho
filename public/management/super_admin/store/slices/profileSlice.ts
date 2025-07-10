@@ -3,12 +3,14 @@ import { fetchUserProfile } from '../../views/pages/profile/services'; // Adjust
 
 interface ProfileState {
     profileImageUrl: string | null;
+    userName: string | null; // Added userName
     isLoadingProfile: boolean;
     error: string | null;
 }
 
 const initialState: ProfileState = {
     profileImageUrl: null,
+    userName: null, // Initialized userName
     isLoadingProfile: false,
     error: null,
 };
@@ -19,14 +21,23 @@ export const fetchUserProfileThunk = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const data = await fetchUserProfile();
-            // Assuming data.photo is the URL string or null/undefined
-            return data.photo && typeof data.photo === 'string' ? data.photo : null;
+            // Return both profileImageUrl and userName
+            return {
+                profileImageUrl: data.photo && typeof data.photo === 'string' ? data.photo : null,
+                userName: data.name || null
+            };
         } catch (error: any) {
             console.error("Failed to load user profile for store", error);
             return rejectWithValue(error.message || 'Failed to fetch profile');
         }
     }
 );
+
+// Define the expected payload type for the fulfilled action
+interface UserProfilePayload {
+    profileImageUrl: string | null;
+    userName: string | null;
+}
 
 const profileSlice = createSlice({
     name: 'profile',
@@ -51,8 +62,9 @@ const profileSlice = createSlice({
                 state.isLoadingProfile = true;
                 state.error = null;
             })
-            .addCase(fetchUserProfileThunk.fulfilled, (state, action: PayloadAction<string | null>) => {
-                state.profileImageUrl = action.payload;
+            .addCase(fetchUserProfileThunk.fulfilled, (state, action: PayloadAction<UserProfilePayload>) => {
+                state.profileImageUrl = action.payload.profileImageUrl;
+                state.userName = action.payload.userName; // Update userName
                 state.isLoadingProfile = false;
             })
             .addCase(fetchUserProfileThunk.rejected, (state, action) => {
