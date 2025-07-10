@@ -78,7 +78,7 @@ async function all_users(
         select_fields = query_param.select_fields.replace(/\s/g, '').split(',');
         select_fields = [...select_fields, 'id', 'status', 'created_at', 'updated_at', 'deleted_at'];
     } else {
-        select_fields = ['id', 'uid', 'email', 'token', 'status', 'created_at', 'updated_at', 'deleted_at'];
+        select_fields = ['id', 'uid', 'email', 'gender', 'token', 'status', 'created_at', 'updated_at', 'deleted_at'];
     }
 
     let query: FindAndCountOptions = {

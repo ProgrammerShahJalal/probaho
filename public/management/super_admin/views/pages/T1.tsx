@@ -222,20 +222,28 @@ const T1: React.FC<Props> = () => {
             });
         }
 
-        // Doughnut Chart for Staff Distribution
-        if (doughnutChartRef.current) {
+        // Doughnut Chart for Student Gender Distribution
+        if (doughnutChartRef.current && data.students.length > 0) {
+            const genderCounts = data.students.reduce((acc, student) => {
+                const gender = student.gender ? student.gender.toLowerCase() : 'other';
+                if (gender === 'male') {
+                    acc.male += 1;
+                } else if (gender === 'female') {
+                    acc.female += 1;
+                } else {
+                    acc.others += 1;
+                }
+                return acc;
+            }, { male: 0, female: 0, others: 0 });
+
             doughnutChartInstance.current = new Chart(doughnutChartRef.current, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Librarians', 'Accountants', 'Receptionists'],
+                    labels: ['Male', 'Female', 'Others'],
                     datasets: [
                         {
-                            data: [
-                                data.librarians.length,
-                                data.accountants.length,
-                                data.receptionists.length,
-                            ],
-                            backgroundColor: ['#FF9F40', '#FFCD56', '#4BC0C0'],
+                            data: [genderCounts.male, genderCounts.female, genderCounts.others],
+                            backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56'], // Example colors
                         },
                     ],
                 },
@@ -244,7 +252,7 @@ const T1: React.FC<Props> = () => {
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Staff Distribution',
+                            text: 'Student Gender Distribution',
                         },
                         tooltip: {
                             callbacks: {
@@ -394,7 +402,7 @@ const T1: React.FC<Props> = () => {
                 <div className="col-md-6 mb-4">
                     <div className="card h-100">
                         <div className="card-header">
-                            <h3 className="m-0">Staff Distribution (Doughnut)</h3>
+                            <h3 className="m-0">Student Gender Distribution (Doughnut)</h3>
                         </div>
                         <div className="card-body">
                             <canvas ref={doughnutChartRef}></canvas>

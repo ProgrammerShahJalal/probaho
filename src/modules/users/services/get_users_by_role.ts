@@ -80,7 +80,7 @@ async function get_users_by_role( // Renamed function
         select_fields = [...select_fields, 'id', 'status', 'created_at', 'updated_at', 'deleted_at'];
     } else {
         // Default fields if not specified, ensure role_serial is included for filtering and processing
-        select_fields = ['id', 'uid', 'name', 'email', 'phone_number', 'photo', 'role_serial', 'is_verified', 'is_blocked', 'is_approved', 'join_date', 'base_salary', 'status', 'created_at', 'updated_at', 'deleted_at'];
+        select_fields = ['id', 'uid', 'name', 'email', 'gender', 'phone_number', 'photo', 'role_serial', 'is_verified', 'is_blocked', 'is_approved', 'join_date', 'base_salary', 'status', 'created_at', 'updated_at', 'deleted_at'];
     }
 
     let query: FindAndCountOptions = {
