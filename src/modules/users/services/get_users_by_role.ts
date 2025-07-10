@@ -109,7 +109,12 @@ async function get_users_by_role( // Renamed function
     query.where = {
         ...query.where,
         [Op.and]: [ // Ensure this condition is ANDed with previous
-            Sequelize.literal(`JSON_CONTAINS(role_serial, '${role_serial}')`)
+            {
+                [Op.or]: [
+                    Sequelize.literal(`JSON_CONTAINS(role_serial, '${role_serial}')`),
+                    Sequelize.literal(`role_serial = ${role_serial}`)
+                ]
+            }
         ]
     };
 
