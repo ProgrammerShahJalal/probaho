@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { fetchUserProfile, updateUserProfile } from '../services';
 import { useAppDispatch } from '../../../../store'; // Adjusted path
 import { RootState } from '../../../../store'; // Adjusted path
-import { setProfileImageUrl, fetchUserProfileThunk } from '../../../../store/slices/profileSlice';
+import { setProfileImageUrl, fetchUserProfileThunk, setUserName } from '../../../../store/slices/profileSlice'; 
 
 interface ProfileData {
     name: string;
@@ -109,6 +109,11 @@ const ProfileForm: React.FC = () => {
 
             const updatedUser = await updateUserProfile(payload); 
             (window as any).toaster('Profile updated successfully!', 'success');
+
+            // Dispatch setUserName to update the name in the Redux store
+            if (updatedUser.name) {
+                dispatch(setUserName(updatedUser.name));
+            }
 
             if (updatedUser.photo && typeof updatedUser.photo === 'string') {
                 dispatch(setProfileImageUrl(updatedUser.photo)); // Update global Redux state
