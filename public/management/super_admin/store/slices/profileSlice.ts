@@ -54,6 +54,9 @@ const profileSlice = createSlice({
         // Optional: if you want to manually set loading state from components
         setProfileLoading: (state, action: PayloadAction<boolean>) => {
             state.isLoadingProfile = action.payload;
+        },
+        setUserName: (state, action: PayloadAction<string | null>) => { // Added setUserName reducer
+            state.userName = action.payload;
         }
     },
     extraReducers: (builder) => {
@@ -74,5 +77,5 @@ const profileSlice = createSlice({
     },
 });
 
-export const { setProfileImageUrl, clearProfileImage, setProfileLoading } = profileSlice.actions;
+export const { setProfileImageUrl, clearProfileImage, setProfileLoading, setUserName } = profileSlice.actions; // Exported setUserName
 export default profileSlice.reducer;
