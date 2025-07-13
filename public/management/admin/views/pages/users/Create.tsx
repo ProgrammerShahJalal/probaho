@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux';
 import { getValue } from '../utils/getValue';
 import DateEl from '../../components/DateEl';
 import TextEditor from './components/management_data_page/TextEditor';
+import BloodGroupSelector from './components/management_data_page/BloodGroupSelector';
 
 export interface Props { }
 interface Document {
@@ -154,13 +155,14 @@ const Create: React.FC<Props> = (props: Props) => {
                                 <div className="form_auto_fit">
                                     {[
                                         'name',
-                                        'email',
-                                        'phone_number',
-                                        'password',
                                         'role_serial',
+                                        'email',
                                         'gender',
-                                        'photo',
+                                        'phone_number',
+                                        'blood_group',
                                         'join_date',
+                                        'password',
+                                        'photo',
                                         'base_salary',
                                     ].map((i) => (
                                         <div
@@ -219,6 +221,18 @@ const Create: React.FC<Props> = (props: Props) => {
                                                     </div>
 
                                                 </>
+                                            ) : i === 'blood_group' ? (
+                                                <BloodGroupSelector
+                                                    name={i}
+                                                    value={data[i] || ''}
+                                                    onChange={(e) =>
+                                                        setData((prev) => ({
+                                                            ...prev,
+                                                            [i]: e.target.value,
+                                                        }))
+                                                    }
+                                                    required={true}
+                                                />
                                             ) : i === 'photo' ? (
                                                 <div className="form-group grid_full_width form-vertical">
                                                     <InputImage
