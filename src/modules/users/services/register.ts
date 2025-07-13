@@ -245,10 +245,11 @@ async function register(
             phone_number: body.phone_number,
             photo: body.photo || image_path,
             gender: body.gender,
+            blood_group: body.blood_group,
             password: hashedPassword,
             slug: slug,
             token: body.token,
-            user_infos: body.user_infos,
+            // user_infos: body.user_infos,
             // user_documents will be handled after user creation
             join_date: body.join_date ? moment(body.join_date).toDate() : null,
             base_salary: body.base_salary || null,
@@ -291,6 +292,45 @@ async function register(
         
         if (finalUserDocumentsString) {
             newUser.user_documents = finalUserDocumentsString;
+            await newUser.save();
+        }
+        // Handle user infos (similar to user docs)
+        let finalUserInfosString = null; // Default to null if no documents
+        if (body.user_infos && typeof body.user_infos === 'string') {
+            try {
+                let userInfosArray = JSON.parse(body.user_infos);
+                const processedUserInfos = [];
+
+                for (let i = 0; i < userInfosArray.length; i++) {
+                    const doc = userInfosArray[i];
+                    const fileFieldKey = `info_files[${i}]`; 
+                    
+                    if (body[fileFieldKey] && typeof body[fileFieldKey] === 'object' && body[fileFieldKey].name && body[fileFieldKey].data) {
+                        const fileData = body[fileFieldKey];
+                        const infoFileName = `${Date.now()}_${i}_${fileData.name.replace(/\s+/g, '_')}`;
+                        const infoPath = `uploads/user_infos/${infoFileName}`;
+                        
+                        await (fastify_instance as any).upload(fileData, infoPath);
+                        doc.file = infoPath; 
+                        doc.fileName = fileData.name; 
+                    } else if (doc.file && typeof doc.file === 'string') {
+                        // This case might be less relevant for new registration unless pre-set paths are possible
+                        // For now, keep it consistent with update logic
+                    }
+                    processedUserInfos.push(doc);
+                }
+                finalUserDocumentsString = JSON.stringify(processedUserInfos);
+            } catch (e: any) {
+                console.error('Error processing user informations during registration:', e);
+                // Potentially return an error response or log, depending on desired behavior
+                // For now, we'll let it proceed and save null or existing data if parsing fails.
+                // Consider if an error response is more appropriate here.
+                return response(400, 'Error processing user informations', { error: e.message });
+            }
+        }
+        
+        if (finalUserInfosString) {
+            newUser.user_infos = finalUserInfosString;
             await newUser.save();
         }
 
