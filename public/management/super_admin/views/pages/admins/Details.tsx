@@ -26,32 +26,6 @@ const Details: React.FC<Props> = (props: Props) => {
         dispatch(details({ id: params.id }) as any);
     }, []);
 
-    // function get_value(key) {
-    //     try {
-    //         let value = state.item[key] ?? state.item?.info?.[key];
-    //         if (key === 'role_serial') {
-    //             // If value is a stringified array, parse it
-    //             if (typeof value === 'string') {
-    //                 try {
-    //                     const parsed = JSON.parse(value);
-    //                     if (Array.isArray(parsed)) return parsed.join(', ');
-    //                 } catch {
-    //                     // fallback
-    //                 }
-    //             }
-    //             // If value is already an array, join with comma and space
-    //             if (Array.isArray(value)) return value.join(', ');
-    //             // If value is a single number, return as string
-    //             if (typeof value === 'number') return value.toString();
-    //             // If value is undefined/null, return empty string
-    //             return '';
-    //         }
-    //         return value ?? '';
-    //     } catch (error) {
-    //         return '';
-    //     }
-    // }
-
     // Function to convert base_salary to words
     function convertSalaryToWords(value) {
         try {
@@ -124,20 +98,68 @@ const Details: React.FC<Props> = (props: Props) => {
                             </table>
 
                             {/* User Informations Section */}
-                            {!getValue(state, 'user_infos') ? (
-                                <div className="details_section mt-4">
-                                    <h5 className="details_section_title">User Information</h5>
-                                    <p className="text-muted">No information provided.</p>
-                                </div>
-                            ) : (
-                                <div className="details_section mt-4">
-                                    <h5 className="details_section_title">User Informations</h5>
-                                    <div
-                                        className="p-3 border rounded text-dark"
-                                        dangerouslySetInnerHTML={{ __html: getValue(state, 'user_infos') }}
-                                    />
-                                </div>
-                            )}
+                            <div className="details_section mt-4">
+                                <h5 className="details_section_title mb-3">User Informations</h5>
+                                {(() => {
+                                    const userInfosJson = getValue(state, 'user_infos');
+                                    if (!userInfosJson) {
+                                        return <p className="text-muted">No information provided.</p>;
+                                    }
+                                    try {
+                                        const userInfosArray = JSON.parse(userInfosJson);
+                                        if (!Array.isArray(userInfosArray) || userInfosArray.length === 0) {
+                                            return <p className="text-muted">No information found.</p>;
+                                        }
+
+                                        return (
+                                            <ul className="list-group">
+                                                {userInfosArray.map((info, index) => (
+                                                    <li
+                                                        key={index}
+                                                        className="list-group-item mb-3 border rounded p-3"
+                                                    >
+                                                        <h6 className="mb-1">{info.title}</h6>
+                                                        {info.type === 'file' ? (
+                                                            <div className="mt-2" style={{ maxWidth: '60%', margin: 'auto' }}>
+                                                                {/\.(jpe?g|png|gif|webp)$/i.test(info.description) ? (
+                                                                    <img
+                                                                        src={`/${info.description}`}
+                                                                        alt={info.title}
+                                                                        style={{ width: '100%', height: 'auto', border: '1px solid #ddd', borderRadius: '4px', padding: '5px' }}
+                                                                    />
+                                                                ) : (
+                                                                    <iframe
+                                                                        src={`/${info.description}`}
+                                                                        title={info.title}
+                                                                        style={{ width: '100%', height: '500px', border: '1px solid #ddd', borderRadius: '4px' }}
+                                                                    />
+                                                                )}
+                                                                <a
+                                                                    href={`/${info.description}`}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="btn btn-sm btn-outline-primary mt-2"
+                                                                >
+                                                                    View/Download
+                                                                </a>
+                                                            </div>
+                                                        ) : (
+                                                            <p className="mb-1">{info.description}</p>
+                                                        )}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        );
+                                    } catch (error) {
+                                        console.error('Error parsing user_infos JSON:', error);
+                                        return (
+                                            <p className="text-danger">
+                                                Could not load user information due to a formatting error.
+                                            </p>
+                                        );
+                                    }
+                                })()}
+                            </div>
                             {/* End User Informations Section */}
 
                             {/* User Documents Section */}
@@ -191,29 +213,27 @@ const Details: React.FC<Props> = (props: Props) => {
                                                                         )}`}
                                                                 </small>
                                                             </div>
-
-                                                            {isImage && (
-                                                                <img
-                                                                    src={filePath}
-                                                                    alt={doc.title}
-                                                                    style={{
-                                                                        maxHeight: '100px',
-                                                                        maxWidth: '150px',
-                                                                        marginTop: '10px',
-                                                                        borderRadius: '4px',
-                                                                        border: '1px solid #ddd',
-                                                                    }}
-                                                                />
-                                                            )}
-                                                            <div className="mt-2">
+                                                            <div className="mt-2" style={{ maxWidth: '60%', margin: 'auto' }}>
+                                                                {isImage ? (
+                                                                    <img
+                                                                        src={filePath}
+                                                                        alt={doc.title}
+                                                                        style={{ width: '100%', height: 'auto', border: '1px solid #ddd', borderRadius: '4px', padding: '5px' }}
+                                                                    />
+                                                                ) : (
+                                                                    <iframe
+                                                                        src={filePath}
+                                                                        title={doc.title}
+                                                                        style={{ width: '100%', height: '500px', border: '1px solid #ddd', borderRadius: '4px' }}
+                                                                    />
+                                                                )}
                                                                 <a
                                                                     href={filePath}
                                                                     target="_blank"
                                                                     rel="noopener noreferrer"
-                                                                    className="btn btn-sm btn-outline-primary"
+                                                                    className="btn btn-sm btn-outline-primary mt-2"
                                                                 >
-                                                                    View/Download{' '}
-                                                                    {doc.fileName || doc.file.split('/').pop()}
+                                                                    View/Download
                                                                 </a>
                                                             </div>
                                                         </li>

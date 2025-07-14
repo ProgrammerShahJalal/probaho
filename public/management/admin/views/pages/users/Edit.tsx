@@ -261,7 +261,6 @@ const Edit: React.FC<Props> = (props: Props) => {
                                             'name',
                                             'role_serial',
                                             'phone_number',
-                                            'role_serial',
                                             'gender',
                                             'blood_group',
                                             'join_date',

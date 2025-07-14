@@ -16,6 +16,7 @@ import UserRolesDropDown from '../user_roles/components/dropdown/DropDown';
 import DateEl from '../../components/DateEl';
 import TextEditor from './components/management_data_page/TextEditor';
 import { getValueForEdit } from '../utils/getValue';
+import BloodGroupSelector from './components/management_data_page/BloodGroupSelector';
 
 export interface Props { }
 interface Document {
@@ -27,6 +28,14 @@ interface Document {
     issueDate: string;
     expireDate: string;
 }
+interface UserInfo {
+    key?: string;
+    id?: string;
+    title: string;
+    type: 'text' | 'file';
+    description: string | File;
+    fileName?: string;
+}
 
 const Edit: React.FC<Props> = (props: Props) => {
     const state: typeof initialState = useSelector(
@@ -37,6 +46,7 @@ const Edit: React.FC<Props> = (props: Props) => {
     const params = useParams();
 
     const [documents, setDocuments] = useState<Document[]>([]);
+    const [userInfos, setUserInfos] = useState<UserInfo[]>([]);
 
     useEffect(() => {
         dispatch(storeSlice.actions.set_item({}));
@@ -61,14 +71,45 @@ const Edit: React.FC<Props> = (props: Props) => {
         } else {
             setDocuments([]);
         }
-    }, [state.item?.user_documents]);
+
+        if (state.item?.user_infos) {
+            try {
+                const parsedUserInfos = JSON.parse(state.item.user_infos);
+                if (Array.isArray(parsedUserInfos)) {
+                    setUserInfos(parsedUserInfos.map((info, index) => ({
+                        ...info,
+                        key: info.id || `temp-existing-${index}-${Date.now()}`,
+                        fileName: typeof info.description === 'string' ? info.description.split('/').pop() : (info.description instanceof File ? info.description.name : info.fileName || undefined),
+                    })));
+                }
+            } catch (error) {
+                console.error("Failed to parse user_infos JSON:", error);
+                setUserInfos([]);
+            }
+        } else {
+            setUserInfos([]);
+        }
+    }, [state.item]);
 
     async function handle_submit(e) {
         e.preventDefault();
         const form = e.target as HTMLFormElement;
         let form_data = new FormData(form);
 
-        form_data.append('user_infos', state.item?.user_infos || '');
+        const processedUserInfos = userInfos.map((info, index) => {
+            let descriptionDataToSend = info.description;
+            if (info.type === 'file' && info.description instanceof File) {
+                form_data.append(`info_files[${index}]`, info.description, info.fileName || (info.description as File).name);
+                descriptionDataToSend = info.description;
+            }
+            return {
+                id: info.id?.toString().startsWith('temp-') ? undefined : info.id,
+                title: info.title,
+                type: info.type,
+                description: descriptionDataToSend,
+            };
+        });
+        form_data.append('user_infos', JSON.stringify(processedUserInfos));
 
         const processedDocuments = documents.map((doc, index) => {
             let fileDataToSend = doc.file;
@@ -103,6 +144,40 @@ const Edit: React.FC<Props> = (props: Props) => {
 
         const response = await dispatch(update(form_data) as any);
     }
+
+    const handleUserInfoFieldChange = (index: number, field: keyof UserInfo, value: any) => {
+        const updatedUserInfos = userInfos.map((info, i) => {
+            if (i === index) {
+                const newInfo = { ...info, [field]: value };
+                if (field === 'type') {
+                    newInfo.description = ''; // Reset description when type changes
+                } else if (field === 'description' && value instanceof File) {
+                    newInfo.fileName = value.name;
+                }
+                return newInfo;
+            }
+            return info;
+        });
+        setUserInfos(updatedUserInfos);
+    };
+
+    const addNewUserInfoForm = () => {
+        setUserInfos([
+            ...userInfos,
+            {
+                key: `temp-new-${userInfos.length}-${Date.now()}`,
+                id: `temp-new-${userInfos.length}-${Date.now()}`,
+                title: '',
+                type: 'text',
+                description: '',
+                fileName: '',
+            },
+        ]);
+    };
+
+    const removeUserInfoForm = (keyToRemove: string) => {
+        setUserInfos(userInfos.filter(info => info.key !== keyToRemove));
+    };
 
     const handleDocumentFieldChange = (index: number, field: keyof Document, value: any) => {
         const updatedDocuments = documents.map((doc, i) => {
@@ -147,27 +222,6 @@ const Edit: React.FC<Props> = (props: Props) => {
         setDocuments(documents.filter(doc => doc.key !== keyToRemove));
     };
 
-    // function get_value(key) {
-    //     try {
-    //         let value = state.item[key] ?? state.item?.info?.[key];
-    //         if (key === 'role_serial') {
-    //             if (typeof value === 'string') {
-    //                 try {
-    //                     const parsed = JSON.parse(value);
-    //                     if (Array.isArray(parsed)) return parsed;
-    //                 } catch {
-    //                 }
-    //             }
-    //             if (Array.isArray(value)) return value;
-    //             if (typeof value === 'number') return [value];
-    //             return [];
-    //         }
-    //         return value ?? '';
-    //     } catch (error) {
-    //         return '';
-    //     }
-    // }
-
     const handleNumberKeyDown = (e) => {
         if (e.key === 'e' || e.key === 'E' || e.key === '+' || e.key === '-') {
             e.preventDefault();
@@ -201,19 +255,20 @@ const Edit: React.FC<Props> = (props: Props) => {
                                 />
 
                                 <div>
-                                    <h5 className="mb-4">Input Data</h5>
+                                    <h5 className="mb-4">Basic Information</h5>
                                     <div className="form_auto_fit">
                                         {[
                                             'name',
-                                            'phone_number',
                                             'role_serial',
-                                            'is_verified',
-                                            'is_approved',
-                                            'is_blocked',
+                                            'phone_number',
                                             'gender',
+                                            'blood_group',
                                             'join_date',
                                             'base_salary',
                                             'photo',
+                                            'is_verified',
+                                            'is_approved',
+                                            'is_blocked',
                                         ].map((i) => (
                                             <div key={i} className="form-group form-vertical">
                                                 {i === 'base_salary' ? (
@@ -255,6 +310,22 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                         value={getValueForEdit(state, i) ? String(getValueForEdit(state, i)).slice(0, 10) : ''}
                                                         handler={(data) => dispatch(storeSlice.actions.set_item({ ...state.item, [i]: data.value }))}
                                                     />
+                                                ) : i === 'blood_group' ? (
+                                                    <BloodGroupSelector
+                                                        name={i}
+                                                        value={getValueForEdit(state, i)}
+                                                        default_value={getValueForEdit(state, i)}
+                                                        onChange={(e) =>
+                                                            dispatch(
+                                                                storeSlice.actions.set_item({
+                                                                    ...state.item,
+                                                                    [i]: e.target.value,
+                                                                })
+                                                            )
+                                                        }
+                                                        required={false}
+                                                    />
+
                                                 ) : i === 'photo' ? (
                                                     <div className="form-group grid_full_width form-vertical">
                                                         <InputImage
@@ -297,27 +368,26 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                     <>
                                                         <label>
                                                             Gender
-                                                            <span style={{ color: 'red' }}>*</span>
                                                         </label>
                                                         <div className="form_elements">
                                                             <select
-                                                            name="gender"
-                                                            value={getValueForEdit(state, i)}
-                                                            onChange={(e) =>
-                                                                dispatch(
-                                                                    storeSlice.actions.set_item({
-                                                                        ...state.item,
-                                                                        [i]: e.target.value,
-                                                                    })
-                                                                )
-                                                            }
-                                                            required={false}
-                                                        >
-                                                            <option value="">Select Gender</option>
-                                                            <option value="male">Male</option>
-                                                            <option value="female">Female</option>
-                                                            <option value="others">Others</option>
-                                                        </select>
+                                                                name="gender"
+                                                                value={getValueForEdit(state, i)}
+                                                                onChange={(e) =>
+                                                                    dispatch(
+                                                                        storeSlice.actions.set_item({
+                                                                            ...state.item,
+                                                                            [i]: e.target.value,
+                                                                        })
+                                                                    )
+                                                                }
+                                                                required={false}
+                                                            >
+                                                                <option value="">Select Gender</option>
+                                                                <option value="male">Male</option>
+                                                                <option value="female">Female</option>
+                                                                <option value="others">Others</option>
+                                                            </select>
                                                         </div>
                                                     </>
                                                 ) : (
@@ -465,27 +535,90 @@ const Edit: React.FC<Props> = (props: Props) => {
                                 </div>
 
                                 <div>
-                                    <h5 className="mb-4">User Information</h5>
-                                    <div className="form_auto_fit">
-                                        {[
-                                            'user_infos',
-                                        ].map((i) => (
-                                            <div key={i} className="form-group form-vertical">
-                                                <TextEditor
-                                                    name={i}
-                                                    value={getValueForEdit(state, i)}
-                                                    onChange={(value) =>
-                                                        dispatch(
-                                                            storeSlice.actions.set_item({
-                                                                ...state.item,
-                                                                [i]: value,
-                                                            }),
-                                                        )
-                                                    }
-                                                />
-                                            </div>
-                                        ))}
+                                    <div
+                                        style={{
+                                            position: 'sticky',
+                                            top: 0,
+                                            backgroundColor: '#2c2f36',
+                                            zIndex: 10,
+                                            paddingTop: '10px',
+                                            paddingBottom: '10px',
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                            borderBottom: '1px solid #444'
+                                        }}
+                                        className="mb-3"
+                                    >
+                                        <h5 className="mb-0">User Informations</h5>
+                                        <button type="button" className="btn btn-sm btn-success" onClick={addNewUserInfoForm}>
+                                            <span className="material-symbols-outlined fill me-1" style={{ fontSize: '16px', verticalAlign: 'middle' }}>add_circle</span>
+                                            Add User Info
+                                        </button>
                                     </div>
+
+                                    {userInfos.map((info, index) => (
+                                        <div key={info.key || info.id || `info-${index}`} className='mb-3 p-3 border rounded position-relative'>
+                                            <button
+                                                type="button"
+                                                className="btn btn-sm btn-danger position-absolute top-0 end-0 mt-2 me-2"
+                                                onClick={() => removeUserInfoForm(info.key!)}
+                                                style={{ lineHeight: '1', padding: '0.25rem 0.5rem' }}
+                                                title="Remove this user info entry"
+                                            >
+                                                <span className="material-symbols-outlined fill" style={{ fontSize: '16px', verticalAlign: 'middle' }}>delete</span>
+                                            </button>
+                                            <div className="form_auto_fit">
+                                                <div className="form-group form-vertical">
+                                                    <Input
+                                                        label="Title"
+                                                        name={`user_infos[${index}].title`}
+                                                        value={info.title}
+                                                        onChange={(e) => handleUserInfoFieldChange(index, 'title', e.target.value)}
+                                                        placeholder="Enter title"
+                                                    />
+                                                </div>
+                                                <div className="form-group form-vertical">
+                                                    <label>Type</label>
+                                                    <select
+                                                        name={`user_infos[${index}].type`}
+                                                        value={info.type}
+                                                        onChange={(e) => handleUserInfoFieldChange(index, 'type', e.target.value as 'text' | 'file')}
+                                                        className="form-control"
+                                                    >
+                                                        <option value="text">Text</option>
+                                                        <option value="file">File</option>
+                                                    </select>
+                                                </div>
+                                                <div className="form-group form-vertical">
+                                                    {info.type === 'text' ? (
+                                                        <>
+                                                            <label>Description</label>
+                                                            <textarea
+                                                                name={`user_infos[${index}].description`}
+                                                                value={info.description as string}
+                                                                onChange={(e) => handleUserInfoFieldChange(index, 'description', e.target.value)}
+                                                                className="form-control"
+                                                                placeholder="Enter description"
+                                                            />
+                                                        </>
+                                                    ) : (
+                                                        <InputFile
+                                                            label="Description File"
+                                                            name={`user_infos[${index}].description`}
+                                                            // default_file_name={info.description as string}
+                                                            default_file_name={typeof (info as any).file === 'string' && (info as any).file.includes('/') ? (info as any).file.split('/').pop() : (info as any).fileName}
+                                                            default_preview_url={(info as any).description}
+                                                            onChange={(file) => handleUserInfoFieldChange(index, 'description', file)}
+                                                        />
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {userInfos.length === 0 && (
+                                        <p className="text-muted">No user infos added. Click "Add User Info" to get started.</p>
+                                    )}
                                 </div>
                                 <div className="form-group form-vertical">
                                     <label></label>

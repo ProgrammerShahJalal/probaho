@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux';
 import { getValue } from '../utils/getValue';
 import DateEl from '../../components/DateEl';
 import TextEditor from './components/management_data_page/TextEditor';
+import BloodGroupSelector from './components/management_data_page/BloodGroupSelector';
 
 export interface Props { }
 interface Document {
@@ -25,6 +26,12 @@ interface Document {
     issueDate: string;
     expireDate: string;
 }
+interface UserInfo {
+    key: string;
+    title: string;
+    type: 'text' | 'file';
+    description: string | File;
+}
 
 const Create: React.FC<Props> = (props: Props) => {
     const state: typeof initialState = useSelector(
@@ -32,13 +39,28 @@ const Create: React.FC<Props> = (props: Props) => {
     );
     const [data, setData] = useState<anyObject>({});
     const [documents, setDocuments] = useState<Document[]>([]);
+    const [userInfos, setUserInfos] = useState<UserInfo[]>([]);
     const dispatch = useAppDispatch();
 
     async function handle_submit(e) {
         e.preventDefault();
         let form_data = new FormData(e.target);
         // Append user_infos from state
-        form_data.append('user_infos', data['user_infos'] || '');
+        // form_data.append('user_infos', data['user_infos'] || '');
+        const processedUserInfos = userInfos.map((info, index) => {
+            if (info.type === 'file' && info.description instanceof File) {
+                form_data.append(`info_files[${index}]`, info.description);
+                return {
+                    title: info.title,
+                    type: info.type,
+                    description: info.description,
+                };
+            }
+            return info;
+        });
+
+        form_data.append('user_infos', JSON.stringify(processedUserInfos));
+
         // Process documents
         const processedDocuments = documents.map((doc, index) => {
             let fileDataToSend = doc.file;
@@ -60,18 +82,39 @@ const Create: React.FC<Props> = (props: Props) => {
             e.target.reset();
             setData({});
             setDocuments([]);
+            setUserInfos([]);
         }
     }
 
-    // function get_value(key) {
-    //     try {
-    //         if (state.item[key]) return state.item[key];
-    //         if (state.item?.info[key]) return state.item?.info[key];
-    //     } catch (error) {
-    //         return '';
-    //     }
-    //     return '';
-    // }
+    const handleUserInfoFieldChange = (index: number, field: keyof UserInfo, value: any) => {
+        const updatedUserInfos = userInfos.map((info, i) => {
+            if (i === index) {
+                const newInfo = { ...info, [field]: value };
+                if (field === 'type') {
+                    newInfo.description = '';
+                }
+                return newInfo;
+            }
+            return info;
+        });
+        setUserInfos(updatedUserInfos);
+    };
+
+    const addNewUserInfoForm = () => {
+        setUserInfos([
+            ...userInfos,
+            {
+                key: `temp-new-${userInfos.length}-${Date.now()}`,
+                title: '',
+                type: 'text',
+                description: '',
+            },
+        ]);
+    };
+
+    const removeUserInfoForm = (keyToRemove: string) => {
+        setUserInfos(userInfos.filter(info => info.key !== keyToRemove));
+    };
 
     useEffect(() => {
         if (getValue(state, 'role')) {
@@ -160,17 +203,18 @@ const Create: React.FC<Props> = (props: Props) => {
                             className="mx-auto pt-3"
                         >
                             <div>
-                                <h5 className="mb-4">User Informations</h5>
+                                <h5 className="mb-4">Basic Informations</h5>
                                 <div className="form_auto_fit">
                                     {[
                                         'name',
-                                        'email',
-                                        'phone_number',
-                                        'password',
                                         'role_serial',
+                                        'email',
                                         'gender',
-                                        'photo',
+                                        'phone_number',
+                                        'blood_group',
                                         'join_date',
+                                        'password',
+                                        'photo',
                                         'base_salary',
                                     ].map((i) => (
                                         <div
@@ -195,7 +239,6 @@ const Create: React.FC<Props> = (props: Props) => {
                                                         get_selected_data={
                                                             handleRoleSelection
                                                         }
-                                                        default_value={[{ serial: 2 }]} // '2' is the serial for Branch_admin
                                                     />
                                                 </>
                                             ) : i === 'gender' ? (
@@ -230,6 +273,18 @@ const Create: React.FC<Props> = (props: Props) => {
                                                     </div>
 
                                                 </>
+                                            ) : i === 'blood_group' ? (
+                                                <BloodGroupSelector
+                                                    name={i}
+                                                    value={data[i] || ''}
+                                                    onChange={(e) =>
+                                                        setData((prev) => ({
+                                                            ...prev,
+                                                            [i]: e.target.value,
+                                                        }))
+                                                    }
+                                                    required={true}
+                                                />
                                             ) : i === 'photo' ? (
                                                 <div className="form-group grid_full_width form-vertical">
                                                     <InputImage
@@ -372,21 +427,88 @@ const Create: React.FC<Props> = (props: Props) => {
                             </div>
 
                             <div>
-                                <h5 className="mb-4">User Information</h5>
-                                <div className="form_auto_fit">
-                                    <div className="form-group form-vertical">
-                                        <TextEditor
-                                            name="user_infos"
-                                            value={data['user_infos'] || ''}
-                                            onChange={(value) =>
-                                                setData((prev) => ({
-                                                    ...prev,
-                                                    user_infos: value,
-                                                }))
-                                            }
-                                        />
-                                    </div>
+                                <div
+                                    style={{
+                                        position: 'sticky',
+                                        top: 0,
+                                        backgroundColor: '#2c2f36',
+                                        zIndex: 10,
+                                        marginTop: '20px',
+                                        paddingTop: '10px',
+                                        paddingBottom: '10px',
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        borderBottom: '1px solid #444'
+                                    }}
+                                    className="mb-3"
+                                >
+                                    <h5 className="mb-0">User Informations</h5>
+                                    <button type="button" className="btn btn-sm btn-success" onClick={addNewUserInfoForm}>
+                                        <span className="material-symbols-outlined fill me-1" style={{ fontSize: '16px', verticalAlign: 'middle' }}>add_circle</span>
+                                        Add User Info
+                                    </button>
                                 </div>
+
+                                {userInfos.map((info, index) => (
+                                    <div key={info.key} className='mb-3 p-3 border rounded position-relative'>
+                                        <button
+                                            type="button"
+                                            className="btn btn-sm btn-danger position-absolute top-0 end-0 mt-2 me-2"
+                                            onClick={() => removeUserInfoForm(info.key)}
+                                            style={{ lineHeight: '1', padding: '0.25rem 0.5rem' }}
+                                            title="Remove this user info entry"
+                                        >
+                                            <span className="material-symbols-outlined fill" style={{ fontSize: '16px', verticalAlign: 'middle' }}>delete</span>
+                                        </button>
+                                        <div className="form_auto_fit">
+                                            <div className="form-group form-vertical">
+                                                <Input
+                                                    label="Title"
+                                                    name={`user_infos[${index}].title`}
+                                                    value={info.title}
+                                                    onChange={(e) => handleUserInfoFieldChange(index, 'title', e.target.value)}
+                                                    placeholder="Enter title"
+                                                />
+                                            </div>
+                                            <div className="form-group form-vertical">
+                                                <label>Type</label>
+                                                <select
+                                                    name={`user_infos[${index}].type`}
+                                                    value={info.type}
+                                                    onChange={(e) => handleUserInfoFieldChange(index, 'type', e.target.value as 'text' | 'file')}
+                                                    className="form-control"
+                                                >
+                                                    <option value="text">Text</option>
+                                                    <option value="file">File</option>
+                                                </select>
+                                            </div>
+                                            <div className="form-group form-vertical">
+                                                {info.type === 'text' ? (
+                                                    <>
+                                                    <label>Description</label>
+                                                    <textarea
+                                                        name={`user_infos[${index}].description`}
+                                                        value={info.description as string}
+                                                        onChange={(e) => handleUserInfoFieldChange(index, 'description', e.target.value)}
+                                                        className="form-control"
+                                                        placeholder="Enter description"
+                                                    />
+                                                    </>
+                                                ) : (
+                                                    <InputFile
+                                                        label="Description File"
+                                                        name={`user_infos[${index}].description`}
+                                                        onChange={(file) => handleUserInfoFieldChange(index, 'description', file)}
+                                                    />
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                                {userInfos.length === 0 && (
+                                    <p className="text-muted">No user infos added. Click "Add User Info" to get started.</p>
+                                )}
                             </div>
 
                             <div className="form-group form-vertical">
