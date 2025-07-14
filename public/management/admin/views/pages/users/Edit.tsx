@@ -100,7 +100,7 @@ const Edit: React.FC<Props> = (props: Props) => {
             let descriptionDataToSend = info.description;
             if (info.type === 'file' && info.description instanceof File) {
                 form_data.append(`info_files[${index}]`, info.description, info.fileName || (info.description as File).name);
-                descriptionDataToSend = info.fileName || (info.description as File).name;
+                descriptionDataToSend = info.description;
             }
             return {
                 id: info.id?.toString().startsWith('temp-') ? undefined : info.id,
@@ -607,8 +607,9 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                         <InputFile
                                                             label="Description File"
                                                             name={`user_infos[${index}].description`}
-                                                            default_file_name={info.description as string}
-                                                            default_preview_url={(info as any).file}
+                                                            // default_file_name={info.description as string}
+                                                            default_file_name={typeof (info as any).file === 'string' && (info as any).file.includes('/') ? (info as any).file.split('/').pop() : (info as any).fileName}
+                                                            default_preview_url={(info as any).description}
                                                             onChange={(file) => handleUserInfoFieldChange(index, 'description', file)}
                                                         />
                                                     )}

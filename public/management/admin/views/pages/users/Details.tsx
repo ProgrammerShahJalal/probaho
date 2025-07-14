@@ -121,7 +121,7 @@ const Details: React.FC<Props> = (props: Props) => {
                                                         <h6 className="mb-1">{info.title}</h6>
                                                         {info.type === 'file' ? (
                                                             <a
-                                                                href={`/${info.file}`}
+                                                                href={`/${info.description}`}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
                                                             >

@@ -53,7 +53,7 @@ const Create: React.FC<Props> = (props: Props) => {
                 return {
                     title: info.title,
                     type: info.type,
-                    description: info.description.name,
+                    description: info.description,
                 };
             }
             return info;

@@ -179,11 +179,11 @@ async function user_profile_update(fastify_instance: FastifyInstance, req: Fasti
                         const infoPath = `uploads/user_infos/${infoFileName}`;
                         
                         await (fastify_instance as any).upload(fileData, infoPath);
-                        doc.file = infoPath; // Update with the actual path
+                        doc.description = infoPath; // Update with the actual path
                         doc.fileName = fileData.name; // Store original file name
-                    } else if (typeof doc.file === 'string') {
+                    } else if (typeof doc.description === 'string') {
                         // If it's a string, it's an existing file path, keep it as is
-                        // doc.file = doc.file; // No change needed
+                        // doc.description = doc.description; // No change needed
                     }
                     processedUserInfos.push(doc);
                 }

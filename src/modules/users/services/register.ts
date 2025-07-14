@@ -311,9 +311,9 @@ async function register(
                         const infoPath = `uploads/user_infos/${infoFileName}`;
                         
                         await (fastify_instance as any).upload(fileData, infoPath);
-                        doc.file = infoPath; 
+                        doc.description = infoPath; 
                         doc.fileName = fileData.name; 
-                    } else if (doc.file && typeof doc.file === 'string') {
+                    } else if (doc.description && typeof doc.description === 'string') {
                         // This case might be less relevant for new registration unless pre-set paths are possible
                         // For now, keep it consistent with update logic
                     }
