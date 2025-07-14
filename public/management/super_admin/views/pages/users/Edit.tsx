@@ -260,6 +260,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                         {[
                                             'name',
                                             'role_serial',
+                                            'class_id',
                                             'phone_number',
                                             'gender',
                                             'blood_group',

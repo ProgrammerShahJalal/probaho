@@ -66,6 +66,8 @@ const Details: React.FC<Props> = (props: Props) => {
                                         'name',
                                         'email',
                                         'phone_number',
+                                        'blood_group',
+                                        'gender',
                                         'is_verified',
                                         'is_approved',
                                         'is_blocked',

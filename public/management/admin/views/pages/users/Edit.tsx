@@ -260,6 +260,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                         {[
                                             'name',
                                             'role_serial',
+                                            'class_id',
                                             'phone_number',
                                             'gender',
                                             'blood_group',
@@ -301,7 +302,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                             />
                                                         </div>
                                                     </>
-                                                ) : i === 'name' || i === 'phone_number' ? (
+                                                ) : i === 'name' || i === 'phone_number' || i === 'class_id' ? (
                                                     <Input name={i} value={getValueForEdit(state, i)} />
                                                 ) : i === 'join_date' ? (
                                                     <DateEl
