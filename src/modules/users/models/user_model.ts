@@ -127,6 +127,10 @@ function init(sequelize: Sequelize) {
                 type: DataTypes.ENUM('male', 'female', 'others'),
                 allowNull: true,
             },
+            blood_group: {
+                type: DataTypes.ENUM('A+', 'A-', 'AB+', 'AB-', 'B+', 'B-', 'O+', 'O-'),
+                allowNull: true,
+            },
             password: {
                 type: DataTypes.STRING(100),
                 allowNull: false,

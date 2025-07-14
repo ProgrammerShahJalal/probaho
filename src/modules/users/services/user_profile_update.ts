@@ -187,7 +187,7 @@ async function user_profile_update(fastify_instance: FastifyInstance, req: Fasti
                     }
                     processedUserInfos.push(doc);
                 }
-                finalUserDocumentsString = JSON.stringify(processedUserInfos);
+                finalUserInfosString = JSON.stringify(processedUserInfos);
             } catch (e) {
                 console.error('Error processing user informations:', e);
                 // Decide if to throw error or use default/existing data

@@ -16,27 +16,31 @@ import Models from '../../../database/models';
 /** validation rules */
 async function validate(req: Request) {
     await query('orderByCol')
+        .optional()
         .not()
         .isEmpty()
         .withMessage('the orderByCol field is required')
         .run(req);
 
     await query('orderByAsc')
+        .optional()
         .not()
         .isEmpty()
         .withMessage('the orderByAsc field is required')
         .run(req);
 
     await query('show_active_data')
+        .optional()
         .not()
         .isEmpty()
         .withMessage('the show_active_data field is required')
         .run(req);
 
+    // paginate is now optional
     await query('paginate')
-        .not()
-        .isEmpty()
-        .withMessage('the paginate field is required')
+        .optional()
+        .isInt({ min: 1 })
+        .withMessage('the paginate field must be a positive integer')
         .run(req);
 
     let result = await validationResult(req);
@@ -55,16 +59,13 @@ async function all(
     }
     /** initializations */
     let models = Models.get();
-    // let models = await db();
     let query_param = req.query as any;
-    // console.log('models', models);
     const { Op } = require('sequelize');
     let search_key = query_param.search_key;
     let orderByCol = query_param.orderByCol || 'id';
-    // let role = query_param.role || null;
     let orderByAsc = query_param.orderByAsc || 'true';
     let show_active_data = query_param.show_active_data || 'true';
-    let paginate = parseInt((req.query as any).paginate) || 10;
+    let paginate = query_param.paginate ? parseInt(query_param.paginate) : undefined;
     let select_fields: string[] = [];
     let exclude_fields: string[] = ['password'];
 
@@ -90,7 +91,6 @@ async function all(
 
     // Add date range filtering if both start and end dates are provided
     if (start_date && end_date) {
-
         query.where = {
             ...query.where,
             created_at: {
@@ -100,7 +100,6 @@ async function all(
     } 
     // Optional: handle cases where only one date is provided
     else if (start_date) {
-
         query.where = {
             ...query.where,
             created_at: {
@@ -109,7 +108,6 @@ async function all(
         };
     } 
     else if (end_date) {
-
         query.where = {
             ...query.where,
             created_at: {
@@ -119,8 +117,6 @@ async function all(
     }
 
     if (search_key) {
-        // When searching, we should reset to the first page
-
         query.where = {
             ...query.where,
             [Op.or]: [
@@ -132,12 +128,28 @@ async function all(
     }
 
     try {
-        let data = await (fastify_instance as anyObject).paginate(
-            req,
-            UserRolesModel,
-            paginate,
-            query,
-        );
+        let data: any;
+        
+        if (paginate) {
+            // Use pagination when paginate parameter is provided
+            data = await (fastify_instance as anyObject).paginate(
+                req,
+                UserRolesModel,
+                paginate,
+                query,
+            );
+        } else {
+            // Fetch all data when paginate is not provided
+            const result = await UserRolesModel.findAndCountAll(query);
+            data = {
+                data: result.rows,
+                total: result.count,
+                page: 1,
+                limit: result.count,
+                totalPages: 1
+            };
+        }
+        
         return response(200, 'data fetched', data);
     } catch (error: any) {
         let uid = await error_trace(models, error, req.url, req.query);

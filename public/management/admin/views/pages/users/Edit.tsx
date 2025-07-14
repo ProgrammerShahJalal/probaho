@@ -16,6 +16,7 @@ import UserRolesDropDown from '../user_roles/components/dropdown/DropDown';
 import DateEl from '../../components/DateEl';
 import TextEditor from './components/management_data_page/TextEditor';
 import { getValueForEdit } from '../utils/getValue';
+import BloodGroupSelector from './components/management_data_page/BloodGroupSelector';
 
 export interface Props { }
 interface Document {
@@ -98,7 +99,7 @@ const Edit: React.FC<Props> = (props: Props) => {
         const processedUserInfos = userInfos.map((info, index) => {
             let descriptionDataToSend = info.description;
             if (info.type === 'file' && info.description instanceof File) {
-                form_data.append(`user_info_files[${index}]`, info.description, info.fileName || (info.description as File).name);
+                form_data.append(`info_files[${index}]`, info.description, info.fileName || (info.description as File).name);
                 descriptionDataToSend = info.fileName || (info.description as File).name;
             }
             return {
@@ -254,19 +255,21 @@ const Edit: React.FC<Props> = (props: Props) => {
                                 />
 
                                 <div>
-                                    <h5 className="mb-4">Input Data</h5>
+                                    <h5 className="mb-4">Basic Information</h5>
                                     <div className="form_auto_fit">
                                         {[
                                             'name',
+                                            'role_serial',
                                             'phone_number',
                                             'role_serial',
-                                            'is_verified',
-                                            'is_approved',
-                                            'is_blocked',
                                             'gender',
+                                            'blood_group',
                                             'join_date',
                                             'base_salary',
                                             'photo',
+                                            'is_verified',
+                                            'is_approved',
+                                            'is_blocked',
                                         ].map((i) => (
                                             <div key={i} className="form-group form-vertical">
                                                 {i === 'base_salary' ? (
@@ -308,6 +311,22 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                         value={getValueForEdit(state, i) ? String(getValueForEdit(state, i)).slice(0, 10) : ''}
                                                         handler={(data) => dispatch(storeSlice.actions.set_item({ ...state.item, [i]: data.value }))}
                                                     />
+                                                ) : i === 'blood_group' ? (
+                                                    <BloodGroupSelector
+                                                        name={i}
+                                                        value={getValueForEdit(state, i)}
+                                                        default_value={getValueForEdit(state, i)}
+                                                        onChange={(e) =>
+                                                            dispatch(
+                                                                storeSlice.actions.set_item({
+                                                                    ...state.item,
+                                                                    [i]: e.target.value,
+                                                                })
+                                                            )
+                                                        }
+                                                        required={false}
+                                                    />
+
                                                 ) : i === 'photo' ? (
                                                     <div className="form-group grid_full_width form-vertical">
                                                         <InputImage
@@ -350,7 +369,6 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                     <>
                                                         <label>
                                                             Gender
-                                                            <span style={{ color: 'red' }}>*</span>
                                                         </label>
                                                         <div className="form_elements">
                                                             <select
@@ -533,7 +551,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                         }}
                                         className="mb-3"
                                     >
-                                        <h5 className="mb-0">User Infos</h5>
+                                        <h5 className="mb-0">User Informations</h5>
                                         <button type="button" className="btn btn-sm btn-success" onClick={addNewUserInfoForm}>
                                             <span className="material-symbols-outlined fill me-1" style={{ fontSize: '16px', verticalAlign: 'middle' }}>add_circle</span>
                                             Add User Info
@@ -589,8 +607,8 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                         <InputFile
                                                             label="Description File"
                                                             name={`user_infos[${index}].description`}
-                                                            default_file_name={typeof info.description === 'string' && info.description.includes('/') ? info.description.split('/').pop() : info.fileName}
-                                                            default_preview_url={typeof info.description === 'string' ? info.description : null}
+                                                            default_file_name={info.description as string}
+                                                            default_preview_url={(info as any).file}
                                                             onChange={(file) => handleUserInfoFieldChange(index, 'description', file)}
                                                         />
                                                     )}

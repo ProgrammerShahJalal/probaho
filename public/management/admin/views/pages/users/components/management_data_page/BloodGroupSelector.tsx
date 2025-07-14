@@ -1,12 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const BloodGroupSelector = ({ name, value, onChange, required = false }) => {
+const BloodGroupSelector = ({ 
+    name, 
+    value, 
+    onChange, 
+    required = false, 
+    default_value = '' 
+}) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     
     const bloodGroups = [
         'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'
     ];
+
+    // Use default_value if value is not provided or is empty
+    const displayValue = value || default_value || '';
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -21,6 +30,13 @@ const BloodGroupSelector = ({ name, value, onChange, required = false }) => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
+    // Initialize with default_value if value is empty and default_value is provided
+    useEffect(() => {
+        if (!value && default_value && onChange) {
+            onChange({ target: { name, value: default_value } });
+        }
+    }, [default_value, value, onChange, name]);
 
     const handleBloodGroupSelect = (bloodGroup: string) => {
         onChange({ target: { name, value: bloodGroup } });
@@ -65,7 +81,7 @@ const BloodGroupSelector = ({ name, value, onChange, required = false }) => {
                     <input
                         type="text"
                         name={name}
-                        value={value || ''}
+                        value={displayValue}
                         onChange={() => {}} // Disable onChange to prevent typing
                         onKeyDown={handleKeyDown}
                         onClick={handleInputClick}

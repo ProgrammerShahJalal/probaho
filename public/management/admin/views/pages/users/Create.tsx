@@ -49,7 +49,7 @@ const Create: React.FC<Props> = (props: Props) => {
         // form_data.append('user_infos', data['user_infos'] || '');
         const processedUserInfos = userInfos.map((info, index) => {
             if (info.type === 'file' && info.description instanceof File) {
-                form_data.append(`user_info_files[${index}]`, info.description);
+                form_data.append(`info_files[${index}]`, info.description);
                 return {
                     title: info.title,
                     type: info.type,
@@ -203,7 +203,7 @@ const Create: React.FC<Props> = (props: Props) => {
                             className="mx-auto pt-3"
                         >
                             <div>
-                                <h5 className="mb-4">User Informations</h5>
+                                <h5 className="mb-4">Basic Informations</h5>
                                 <div className="form_auto_fit">
                                     {[
                                         'name',

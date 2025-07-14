@@ -319,7 +319,7 @@ async function register(
                     }
                     processedUserInfos.push(doc);
                 }
-                finalUserDocumentsString = JSON.stringify(processedUserInfos);
+                finalUserInfosString = JSON.stringify(processedUserInfos);
             } catch (e: any) {
                 console.error('Error processing user informations during registration:', e);
                 // Potentially return an error response or log, depending on desired behavior
