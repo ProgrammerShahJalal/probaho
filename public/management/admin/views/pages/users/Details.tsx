@@ -98,20 +98,52 @@ const Details: React.FC<Props> = (props: Props) => {
                             </table>
 
                             {/* User Informations Section */}
-                            {!getValue(state, 'user_infos') ? (
-                                <div className="details_section mt-4">
-                                    <h5 className="details_section_title">User Information</h5>
-                                    <p className="text-muted">No information provided.</p>
-                                </div>
-                            ) : (
-                                <div className="details_section mt-4">
-                                    <h5 className="details_section_title">User Informations</h5>
-                                    <div
-                                        className="p-3 border rounded text-dark"
-                                        dangerouslySetInnerHTML={{ __html: getValue(state, 'user_infos') }}
-                                    />
-                                </div>
-                            )}
+                            <div className="details_section mt-4">
+                                <h5 className="details_section_title mb-3">User Informations</h5>
+                                {(() => {
+                                    const userInfosJson = getValue(state, 'user_infos');
+                                    if (!userInfosJson) {
+                                        return <p className="text-muted">No information provided.</p>;
+                                    }
+                                    try {
+                                        const userInfosArray = JSON.parse(userInfosJson);
+                                        if (!Array.isArray(userInfosArray) || userInfosArray.length === 0) {
+                                            return <p className="text-muted">No information found.</p>;
+                                        }
+
+                                        return (
+                                            <ul className="list-group">
+                                                {userInfosArray.map((info, index) => (
+                                                    <li
+                                                        key={index}
+                                                        className="list-group-item mb-3 border rounded p-3"
+                                                    >
+                                                        <h6 className="mb-1">{info.title}</h6>
+                                                        {info.type === 'file' ? (
+                                                            <a
+                                                                href={`/${info.file}`}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                            >
+                                                                View/Download File
+                                                            </a>
+                                                        ) : (
+                                                            <p className="mb-1">{info.description}</p>
+                                                        )}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        );
+                                    } catch (error) {
+                                        console.error('Error parsing user_infos JSON:', error);
+                                        return (
+                                            <p className="text-danger">
+                                                Could not load user information due to a formatting error.
+                                            </p>
+                                        );
+                                    }
+                                })()}
+                            </div>
                             {/* End User Informations Section */}
 
                             {/* User Documents Section */}
