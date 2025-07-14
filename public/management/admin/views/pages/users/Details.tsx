@@ -120,14 +120,29 @@ const Details: React.FC<Props> = (props: Props) => {
                                                     >
                                                         <h6 className="mb-1">{info.title}</h6>
                                                         {info.type === 'file' ? (
-                                                            <a
-                                                                href={`/${info.description}`}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                className="btn btn-sm btn-outline-primary"
-                                                            >
-                                                                View/Download File
-                                                            </a>
+                                                            <div className="mt-2" style={{ maxWidth: '50%', margin: 'auto' }}>
+                                                                {/\.(jpe?g|png|gif|webp)$/i.test(info.description) ? (
+                                                                    <img
+                                                                        src={`/${info.description}`}
+                                                                        alt={info.title}
+                                                                        style={{ width: '100%', height: 'auto', border: '1px solid #ddd', borderRadius: '4px', padding: '5px' }}
+                                                                    />
+                                                                ) : (
+                                                                    <iframe
+                                                                        src={`/${info.description}`}
+                                                                        title={info.title}
+                                                                        style={{ width: '100%', height: '500px', border: '1px solid #ddd', borderRadius: '4px' }}
+                                                                    />
+                                                                )}
+                                                                <a
+                                                                    href={`/${info.description}`}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="btn btn-sm btn-outline-primary mt-2"
+                                                                >
+                                                                    View/Download
+                                                                </a>
+                                                            </div>
                                                         ) : (
                                                             <p className="mb-1">{info.description}</p>
                                                         )}
@@ -175,6 +190,9 @@ const Details: React.FC<Props> = (props: Props) => {
                                                     const filePath = doc.file.startsWith('http')
                                                         ? doc.file
                                                         : `/${doc.file}`;
+                                                    const isImage = /\.(jpe?g|png|gif|webp)$/i.test(
+                                                        doc.fileName || doc.file,
+                                                    );
 
                                                     return (
                                                         <li
@@ -195,15 +213,27 @@ const Details: React.FC<Props> = (props: Props) => {
                                                                         )}`}
                                                                 </small>
                                                             </div>
-                                                            <div className="mt-2">
+                                                            <div className="mt-2" style={{ maxWidth: '50%', margin: 'auto' }}>
+                                                                {isImage ? (
+                                                                    <img
+                                                                        src={filePath}
+                                                                        alt={doc.title}
+                                                                        style={{ width: '100%', height: 'auto', border: '1px solid #ddd', borderRadius: '4px', padding: '5px' }}
+                                                                    />
+                                                                ) : (
+                                                                    <iframe
+                                                                        src={filePath}
+                                                                        title={doc.title}
+                                                                        style={{ width: '100%', height: '500px', border: '1px solid #ddd', borderRadius: '4px' }}
+                                                                    />
+                                                                )}
                                                                 <a
                                                                     href={filePath}
                                                                     target="_blank"
                                                                     rel="noopener noreferrer"
-                                                                    className="btn btn-sm btn-outline-primary"
+                                                                    className="btn btn-sm btn-outline-primary mt-2"
                                                                 >
-                                                                    View/Download{' '}
-                                                                    {doc.fileName || doc.file.split('/').pop()}
+                                                                    View/Download
                                                                 </a>
                                                             </div>
                                                         </li>
