@@ -124,6 +124,7 @@ const Details: React.FC<Props> = (props: Props) => {
                                                                 href={`/${info.description}`}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
+                                                                className="btn btn-sm btn-outline-primary"
                                                             >
                                                                 View/Download File
                                                             </a>
@@ -174,9 +175,6 @@ const Details: React.FC<Props> = (props: Props) => {
                                                     const filePath = doc.file.startsWith('http')
                                                         ? doc.file
                                                         : `/${doc.file}`;
-                                                    const isImage = /\.(jpe?g|png|gif|webp)$/i.test(
-                                                        doc.fileName || doc.file,
-                                                    );
 
                                                     return (
                                                         <li
@@ -197,20 +195,6 @@ const Details: React.FC<Props> = (props: Props) => {
                                                                         )}`}
                                                                 </small>
                                                             </div>
-
-                                                            {isImage && (
-                                                                <img
-                                                                    src={filePath}
-                                                                    alt={doc.title}
-                                                                    style={{
-                                                                        maxHeight: '100px',
-                                                                        maxWidth: '150px',
-                                                                        marginTop: '10px',
-                                                                        borderRadius: '4px',
-                                                                        border: '1px solid #ddd',
-                                                                    }}
-                                                                />
-                                                            )}
                                                             <div className="mt-2">
                                                                 <a
                                                                     href={filePath}
