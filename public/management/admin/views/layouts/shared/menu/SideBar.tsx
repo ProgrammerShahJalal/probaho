@@ -35,8 +35,7 @@ const SideBar: React.FC<Props> = (props: Props) => {
                 <MenuSingle to="/" icon="icon-dashboard" label="Dashboard" />
 
                 {/* Users  */}
-                <MenuDropDown group_title="Admin Management" icon="icon-user">
-                    <MenuDropDownItem label="Admins" to="/auth" />
+                <MenuDropDown group_title="User Management" icon="icon-user">
                     <MenuDropDownItem label="All Users" to="/auth/users" />
                     <MenuDropDownItem label="User Roles" to="/user-roles" />
                     <MenuDropDownItem

@@ -89,7 +89,7 @@ const UserLoginHistory: React.FC<UserLoginHistoryProps> = () => {
         <div className="card">
             <div className="card-header d-flex justify-content-between align-items-center">
                 <h5 className="card-title mb-0">User Login History (Latest 5)</h5>
-                <a href="super-admin#/user-login-histories" className="text-sm see-all-link"
+                <a href="admin#/user-login-histories" className="text-sm see-all-link"
                     style={{ textDecoration: 'none' }}
                     onMouseOver={(e) => (e.currentTarget.style.color = 'white')}
                     onMouseOut={(e) => (e.currentTarget.style.color = '#AB8CE4')}>

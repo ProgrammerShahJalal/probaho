@@ -19,11 +19,13 @@ interface RequestWithUser extends FastifyRequest {
     fastify: FastifyInstance; // To run express-validator and upload
 }
 type gender = 'male' | 'female' | 'others';
+type blood = 'A+' | 'A-' | 'AB+' | 'AB-' | 'B+' | 'B-' | 'O+' | 'O-';
 // Define an interface for the expected request body parts that are updatable
 interface UpdateOwnProfileBody {
     name?: string;
     email?: string;
     gender?: gender;
+    blood_group?: blood;
     phone_number?: string;
     photo?: any; // This will be the file object from fastify-multipart
 }
@@ -91,13 +93,16 @@ async function update_own_profile(fastify_instance: FastifyInstance, req: Reques
             throw new custom_error(`User with ID ${userId} not found.`, 404, 'User not found');
         }
 
-        const updateData: { name?: string; email?: string; gender?: gender; phone_number?: string; photo?: string } = {};
+        const updateData: { name?: string; email?: string; gender?: gender; blood_group?: blood; phone_number?: string; photo?: string } = {};
 
         if (bodyParams.name && bodyParams.name !== user.name) {
             updateData.name = bodyParams.name;
         }
         if (bodyParams.gender && bodyParams.gender !== user.gender) {
             updateData.gender = bodyParams.gender;
+        }
+        if (bodyParams.blood_group && bodyParams.blood_group !== user.blood_group) {
+            updateData.blood_group = bodyParams.blood_group;
         }
         if (bodyParams.email && bodyParams.email !== user.email) {
             // Add email uniqueness check before assigning
