@@ -14,6 +14,7 @@ import moment from 'moment';
 import { modelName } from '../models/model';
 import error_trace from '../../../common/errors/error_trace';
 import custom_error from '../../../common/errors/custom_error';
+import Models from '../../../database/models';
 
 /** validation rules */
 async function validate(req: Request) {
@@ -50,7 +51,7 @@ async function update(
     }
 
     /** initializations */
-    let models = await db();
+    let models = Models.get();
     let body = req.body as anyObject;
     let user_model = new models[modelName]();
 
@@ -60,7 +61,7 @@ async function update(
         let data = await models.BranchInfosModel.findByPk(body.id);
         if (data) {
             let inputs: InferCreationAttributes<typeof user_model> = {
-        user_id: body.user_id || data.user_id,
+        user_id: data.user_id,
         branch_code: body.branch_code || data.branch_code,
         name: body.name || data.name,
         logo: body.logo || data.logo,

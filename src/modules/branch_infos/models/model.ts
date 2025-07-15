@@ -44,8 +44,7 @@ function init(sequelize: Sequelize) {
                 primaryKey: true,
             },
             user_id: {
-                type: DataTypes.ENUM('branch'),
-                defaultValue: 'branch',
+                type: DataTypes.INTEGER,
             },
             branch_code: {
                 type: DataTypes.STRING,

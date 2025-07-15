@@ -14,6 +14,7 @@ import response from '../../../helpers/response';
 import { modelName } from '../models/model';
 import error_trace from '../../../common/errors/error_trace';
 import custom_error from '../../../common/errors/custom_error';
+import Models from '../../../database/models';
 
 /** validation rules */
 async function validate(req: Request) {
@@ -52,12 +53,18 @@ async function store(
     }
 
     /** initializations */
-    let models = await db();
+    let models = Models.get();
     let body = req.body as anyObject;
     let data = new models[modelName]();
     
+    const user_role = await models.UserRolesModel.findOne({
+        where: {
+            title: 'branch',
+        },
+    });
+
     let inputs: InferCreationAttributes<typeof data> = {
-        user_id: body.user_id,
+        user_id: user_role?.serial || 1,
         branch_code: body.branch_code,
         name: body.name,
         logo: body.logo,
