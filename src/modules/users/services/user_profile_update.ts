@@ -112,6 +112,7 @@ async function user_profile_update(fastify_instance: FastifyInstance, req: Fasti
             photo: image_path || data.photo,
             gender: body.gender || data.gender,
             blood_group: body.blood_group || data.blood_group,
+            class_id: body.class_id || data.class_id,
             password: hashedPassword || data.password,
             slug: slug || data.slug,
             is_verified: body.is_verified !== undefined ? body.is_verified : data.is_verified,
