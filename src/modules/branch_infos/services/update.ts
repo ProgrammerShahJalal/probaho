@@ -69,7 +69,7 @@ async function update(
         primary_contact: body.primary_contact || data.primary_contact,
         email: body.email || data.email,
         map: body.map || data.map,
-        lat: body.lat || data.lat,
+        lat: body.lat || data.lat,  
         lng: body.lng || data.lng,
         infos: body.infos || data.infos,
     };
