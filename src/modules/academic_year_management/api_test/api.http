@@ -1,4 +1,4 @@
-@hostname = http://127.0.0.1:5011/api/v1/branch-infos
+@hostname = http://127.0.0.1:5011/api/v1/academic-year
 
 # all
 ###

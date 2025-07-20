@@ -77,7 +77,7 @@ async function all(
         select_fields = query_param.select_fields.replace(/\s/g, '').split(',');
         select_fields = [...select_fields, 'id', 'status'];
     } else {
-        select_fields = ['id', 'title', 'serial', 'status'];
+        select_fields = ['id', 'title', 'start_month', 'end_month', 'is_locked', 'status'];
     }
 
     let query: FindAndCountOptions = {
@@ -122,7 +122,6 @@ async function all(
             [Op.or]: [
                 { id: { [Op.like]: `%${search_key}%` } },
                 { title: { [Op.like]: `%${search_key}%` } },
-                { serial: { [Op.like]: `%${search_key}%` } },
             ],
         };
     }

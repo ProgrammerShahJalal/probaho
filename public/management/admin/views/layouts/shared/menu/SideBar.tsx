@@ -35,13 +35,17 @@ const SideBar: React.FC<Props> = (props: Props) => {
                 <MenuSingle to="/" icon="icon-dashboard" label="Dashboard" />
 
                 {/* Users  */}
-                <MenuDropDown group_title="User Management" icon="icon-user">
+                <MenuDropDown group_title="User" icon="icon-user">
                     <MenuDropDownItem label="All Users" to="/auth/users" />
                     {/* <MenuDropDownItem label="User Roles" to="/user-roles" /> */}
                     <MenuDropDownItem
                         label="User Login Histories"
                         to="/user-login-histories"
                     />
+                </MenuDropDown>
+                {/* Academic Management */}
+                <MenuDropDown group_title="Academic" icon="icon-user">
+                    <MenuDropDownItem label="Academic Year" to="/academic-year" />
                 </MenuDropDown>
 
                 <li>
