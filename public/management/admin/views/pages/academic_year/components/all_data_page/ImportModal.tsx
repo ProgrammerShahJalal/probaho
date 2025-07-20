@@ -16,7 +16,7 @@ const ImportModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) => {
     const [responseData, setResponseData] = useState<any>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const routePrefix = setup.api_prefix; // Should be 'auth'
+    const routePrefix = setup.api_prefix;
 
     useEffect(() => {
         // Reset state when modal is closed or opened
@@ -132,7 +132,7 @@ const ImportModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) => {
             setStatusMessage('Upload failed due to a network error or server issue.');
         };
 
-        xhr.open('POST', `/${routePrefix}/import`, true);
+        xhr.open('POST', `${routePrefix}/import`, true);
         // Potentially add headers if needed, e.g., for authorization
         // xhr.setRequestHeader('Authorization', 'Bearer YOUR_TOKEN_HERE');
         xhr.send(formData);
