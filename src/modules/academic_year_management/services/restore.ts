@@ -76,7 +76,7 @@ async function restore(
             error.uid = uid;
         } else {
             // It's good practice to specify a message for the generic server error
-            throw new custom_error('Server error while restoring blog post', 500, error.message, uid);
+            throw new custom_error('Server error while restoring the data', 500, error.message, uid);
         }
         throw error;
     }
