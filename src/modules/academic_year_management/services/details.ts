@@ -26,6 +26,7 @@ async function details(
             where: {
                 id: params.id,
             },
+            paranoid: false, // Add this line
         });
 
         if (data) {

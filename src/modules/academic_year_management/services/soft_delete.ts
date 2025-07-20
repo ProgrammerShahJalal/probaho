@@ -33,7 +33,7 @@ async function soft_delete(
 
     /** initializations */
     let models = Models.get();
-    
+
     let body = req.body as { [key: string]: any };
 
     try {
@@ -44,28 +44,26 @@ async function soft_delete(
         });
 
         if (data) {
-            // await data.update({
-            //     status: 0,
-            // });
-            data.status = 'deactive';
             await data.save();
-            return response(200, 'data deactivated', data);
+
+            await data.destroy(); // ✅ Triggers Sequelize to set deleted_at
+            return response(200, 'data soft deleted', data);
         } else {
-            throw new custom_error(
-                'data not found',
-                404,
-                'operation not possible',
-            );
-        }
-    } catch (error: any) {
-        let uid = await error_trace(models, error, req.url, req.body);
-        if (error instanceof custom_error) {
-            error.uid = uid;
-        } else {
-            throw new custom_error('server error', 500, error.message, uid);
-        }
-        throw error;
+        throw new custom_error(
+            'data not found',
+            404,
+            'operation not possible',
+        );
     }
+} catch (error: any) {
+    let uid = await error_trace(models, error, req.url, req.body);
+    if (error instanceof custom_error) {
+        error.uid = uid;
+    } else {
+        throw new custom_error('server error', 500, error.message, uid);
+    }
+    throw error;
+}
 }
 
 export default soft_delete;
