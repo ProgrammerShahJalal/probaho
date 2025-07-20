@@ -73,6 +73,11 @@ const Edit: React.FC<Props> = (props: Props) => {
                                 />
 
                                 <div>
+                                    {state.item.is_locked && (
+                                        <div className="alert alert-warning">
+                                            This academic year is locked and cannot be edited.
+                                        </div>
+                                    )}
                                     <h5 className="mb-4">Input Data</h5>
                                     <div className="form_auto_fit">
                                         {[
@@ -88,6 +93,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                         name={i}
                                                         value={getValueForEdit(state, i) ? String(getValueForEdit(state, i)).slice(0, 10) : ''}
                                                         handler={(data) => dispatch(storeSlice.actions.set_item({ ...state.item, [i]: data.value }))}
+                                                        disabled={state.item.is_locked}
                                                     />
                                                 ) : (
                                                     i === 'is_locked' ? (
@@ -103,9 +109,10 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                                 { value: '0', text: 'No' },
                                                                 { value: '1', text: 'Yes' },
                                                             ]}
+                                                            disabled={state.item.is_locked}
                                                         />
                                                     ) : (
-                                                        <Input name={i} value={getValueForEdit(state, i)} />
+                                                        <Input name={i} value={getValueForEdit(state, i)} disabled={state.item.is_locked} />
                                                     )
                                                 )}
                                             </div>
@@ -114,7 +121,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                     <div className="form-group form-vertical">
                                         <label></label>
                                         <div className="form_elements">
-                                            <button className="btn btn-outline-info">
+                                            <button className="btn btn-outline-info" disabled={state.item.is_locked}>
                                                 submit
                                             </button>
                                         </div>

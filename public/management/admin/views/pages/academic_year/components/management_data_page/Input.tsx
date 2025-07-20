@@ -11,6 +11,7 @@ export interface Props {
     required?: boolean;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void; // Added onKeyDown prop
+    disabled?: boolean;
 }
 
 const Input: React.FC<Props> = ({
@@ -23,6 +24,7 @@ const Input: React.FC<Props> = ({
     setter,
     onChange,
     onKeyDown, // Destructure onKeyDown
+    disabled,
     ...props
 }: Props) => {
     const [showPassword, setShowPassword] = useState(false);
@@ -61,6 +63,7 @@ const Input: React.FC<Props> = ({
                     defaultValue={value ? value : ''}
                     onChange={onChange ? onChange : handleChange}
                     onKeyDown={onKeyDown} // Pass onKeyDown to the input element
+                    disabled={disabled}
                     style={{
                         width: '100%',
                         paddingRight: isPassword ? '40px' : undefined,
