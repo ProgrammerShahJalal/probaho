@@ -93,7 +93,12 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                     i === 'is_locked' ? (
                                                         <Select
                                                             name={i}
-                                                            value={getValueForEdit(state, i)}
+                                                            value={
+                                                                // Convert boolean to string for Select component
+                                                                getValueForEdit(state, i) === true || getValueForEdit(state, i) === 1 || getValueForEdit(state, i) === '1'
+                                                                    ? '1'
+                                                                    : '0'
+                                                            }
                                                             values={[
                                                                 { value: '0', text: 'No' },
                                                                 { value: '1', text: 'Yes' },
@@ -107,13 +112,13 @@ const Edit: React.FC<Props> = (props: Props) => {
                                         ))}
                                     </div>
                                     <div className="form-group form-vertical">
-                                            <label></label>
-                                            <div className="form_elements">
-                                                <button className="btn btn-outline-info">
-                                                    submit
-                                                </button>
-                                            </div>
+                                        <label></label>
+                                        <div className="form_elements">
+                                            <button className="btn btn-outline-info">
+                                                submit
+                                            </button>
                                         </div>
+                                    </div>
                                 </div>
                             </form>
                         </div>
