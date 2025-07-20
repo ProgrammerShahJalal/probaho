@@ -208,6 +208,7 @@ const Create: React.FC<Props> = (props: Props) => {
                                     {[
                                         'name',
                                         'role_serial',
+                                        'class_id',
                                         'email',
                                         'gender',
                                         'phone_number',

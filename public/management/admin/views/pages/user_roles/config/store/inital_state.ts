@@ -20,7 +20,7 @@ export const initialState = {
     filter_criteria: {} as anyObject,
     all_data_count: 0, // total data in database
     page: 1,
-    paginate: 10,
+    paginate: 20,
     search_key: ``,
     orderByCol: 'id',
     orderByAsc: false,

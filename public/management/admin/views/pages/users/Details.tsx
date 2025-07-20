@@ -66,6 +66,8 @@ const Details: React.FC<Props> = (props: Props) => {
                                         'name',
                                         'email',
                                         'phone_number',
+                                        'blood_group',
+                                        'gender',
                                         'is_verified',
                                         'is_approved',
                                         'is_blocked',
@@ -120,7 +122,7 @@ const Details: React.FC<Props> = (props: Props) => {
                                                     >
                                                         <h6 className="mb-1">{info.title}</h6>
                                                         {info.type === 'file' ? (
-                                                            <div className="mt-2" style={{ maxWidth: '50%', margin: 'auto' }}>
+                                                            <div className="mt-2" style={{ maxWidth: '60%', margin: 'auto' }}>
                                                                 {/\.(jpe?g|png|gif|webp)$/i.test(info.description) ? (
                                                                     <img
                                                                         src={`/${info.description}`}
@@ -213,7 +215,7 @@ const Details: React.FC<Props> = (props: Props) => {
                                                                         )}`}
                                                                 </small>
                                                             </div>
-                                                            <div className="mt-2" style={{ maxWidth: '50%', margin: 'auto' }}>
+                                                            <div className="mt-2" style={{ maxWidth: '60%', margin: 'auto' }}>
                                                                 {isImage ? (
                                                                     <img
                                                                         src={filePath}
