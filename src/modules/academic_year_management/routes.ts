@@ -16,7 +16,7 @@ module.exports = function (fastify: FastifyInstance, opts: {}, done: () => void)
         .post(`${prefix}/trash`, controllerInstance.trash)
         .post(`${prefix}/restore`, controllerInstance.restore)
         .post(`${prefix}/destroy`, controllerInstance.destroy)
-        .post(`${prefix}/import`, controllerInstance.import)
+        .post(`${prefix}/import`, controllerInstance.import_academic_years)
         .get(`${prefix}/:id`, controllerInstance.find)
         ;
 

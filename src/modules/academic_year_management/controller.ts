@@ -12,11 +12,12 @@ import { responseObject } from '../../common_types/object';
 import update from './services/update';
 import restore from './services/restore';
 import destroy from './services/destroy';
-import data_import from './services/import';
+import data_import from './services/import_academic_years';
 import { handleServiceError } from '../../common/utils/controller_utils';
 import trash from './services/trash';
 import inactive from './services/inactive';
 import active from './services/active';
+import import_academic_years from './services/import_academic_years';
 
 
 export default function (fastify: FastifyInstance) {
@@ -111,14 +112,38 @@ export default function (fastify: FastifyInstance) {
             }
         },
 
-        import: async function (req: FastifyRequest, res: FastifyReply) {
-            try {
-                let data = await data_import(fastify, req);
-                return res.code(data.status).send(data);
-            } catch (error: any) {
-                return handleServiceError(error, res);
-            }
-        },
+        import_academic_years: async function (req: FastifyRequest, res: FastifyReply) {
+                    try {
+                        // The file should be available in req.body due to `attachFieldsToBody: 'keyValues'`
+                        // and the custom onFile handler in app.ts.
+                        // The request log indicates the frontend is sending the file with the field name 'file'.
+                        const filePart = (req.body as any)?.file;
+        
+                        if (!filePart || !filePart.data || !filePart.name) {
+                             return res.code(400).send({
+                                status: 400,
+                                message: 'No file uploaded or file is corrupted. Ensure the file is sent under the field name "file".',
+                                data: null,
+                            });
+                        }
+                        
+                        // Pass the file part (which includes data, name, ext) to the service
+                        // The service expects the raw file buffer/string, so we adjust how it's passed or handled.
+                        // For now, we pass the 'filePart' which the service expects to have a 'data' property (Buffer)
+                        // and 'name' property.
+                        // We also need to modify the service to correctly access this.
+                        // Let's create a simplified request object for the service, or modify the service.
+                        // For now, the service expects `(req as any).file` to be the file object.
+                        // We will adapt this by attaching the file to a temporary property on req.
+                        (req as any).filePayload = filePart;
+        
+        
+                        let data: responseObject = await import_academic_years(fastify, req);
+                        return res.code(data.status).send(data);
+                    } catch (error: any) {
+                        return handleServiceError(error, res);
+                    }
+                },
 
         // export: async function (req: FastifyRequest, res: FastifyReply) {},
     };
