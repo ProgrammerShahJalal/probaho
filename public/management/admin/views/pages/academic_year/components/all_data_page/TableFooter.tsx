@@ -7,7 +7,7 @@ import { RootState, useAppDispatch } from '../../../../../store';
 import ExportSelected from './ExportSelected';
 import ExportAll from './ExportAll';
 import AllDeactivatedData from './AllDeactivatedData';
-import ImportUsersModal from './ImportUsersModal';
+import ImportModal from './ImportModal';
 import storeSlice from '../../config/store';
 import { all } from '../../config/store/async_actions/all';
 import ActionDropdown from './ActionDropdown';
@@ -93,7 +93,7 @@ const Footer: React.FC<Props> = (props: Props) => {
                     </ul>
                 </div>
             </div>
-            <ImportUsersModal isOpen={isImportModalOpen} onClose={() => setIsImportModalOpen(false)} />
+            <ImportModal isOpen={isImportModalOpen} onClose={() => setIsImportModalOpen(false)} />
         </>
     );
 };

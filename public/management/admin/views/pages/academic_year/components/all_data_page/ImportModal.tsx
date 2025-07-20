@@ -7,7 +7,7 @@ interface ImportUsersModalProps {
     onClose: () => void;
 }
 
-const ImportUsersModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) => {
+const ImportModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [uploadProgress, setUploadProgress] = useState<number>(0);
     const [statusMessage, setStatusMessage] = useState<string>('');
@@ -57,25 +57,16 @@ const ImportUsersModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) 
 
     const handleDownloadDemo = () => {
         const columns = [
-            'role_serial',
-            'name',
-            'email',
-            'phone_number',
-            'photo',
-            'password',
-            'branch_id',
-            'class_id',
-            'is_verified',
-            'is_approved',
-            'is_blocked',
-            'join_date',
-            'base_salary',
+            'title',
+            'start_month',
+            'end_month',
+            'is_locked',
             'status',
         ];
         // Create one empty row to show the structure
         const emptyRow = columns.map(() => ''); 
 
-        new CsvBuilder('demo_users_import_template.csv')
+        new CsvBuilder('demo_academic_years_import_template.csv')
             .setColumns(columns)
             .addRows([emptyRow]) // Add the single empty row
             .exportFile();
@@ -152,7 +143,7 @@ const ImportUsersModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) 
             <div className="modal-dialog modal-dialog-centered" role="document" onClick={e => e.stopPropagation()}>
                 <div className="modal-content" style={{ background: '#23272f', color: '#fff', borderRadius: 10, boxShadow: '0 8px 32px rgba(0,0,0,0.25)' }}>
                     <div className="modal-header">
-                        <h5 className="modal-title" style={{ fontSize: '1.1rem' }}>Import Users</h5>
+                        <h5 className="modal-title" style={{ fontSize: '1.1rem' }}>Import Academic Year</h5>
                         <button type="button" className="btn-close" aria-label="Close" style={{ filter: 'invert(32%) sepia(98%) saturate(7492%) hue-rotate(353deg) brightness(97%) contrast(104%)' }} onClick={onClose}></button>
                     </div>
                     <div className="modal-body">
@@ -209,4 +200,4 @@ const ImportUsersModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) 
     );
 };
 
-export default ImportUsersModal;
+export default ImportModal;
