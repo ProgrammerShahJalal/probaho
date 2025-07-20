@@ -17,7 +17,7 @@ export const initialState = {
     /* data filters */
     role: 'all',
     select_fields:
-        'id,title,start_month,end_month,is_locked,status',
+        'id,title,start_month,end_month,is_locked,status,',
     filter_criteria: {} as anyObject,
     all_data_count: 0, // total data in database
     page: 1,

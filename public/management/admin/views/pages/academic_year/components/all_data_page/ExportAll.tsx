@@ -18,23 +18,18 @@ const ExportAll: React.FC<Props> = (props: Props) => {
     const confirm_export = () => {
         const columns = [
             'id',
-            'uid',
-            'role_serial',
-            'name',
-            'email',
-            'phone_number',
-            'photo',
-            'is_verified',
-            'is_approved',
-            'is_blocked',
+            'title',
+            'start_month',
+            'end_month',
+            'is_locked',
             'status',
         ];
         const rows: string[][] = [];
 
-        const users = (state.all as any)?.data;
+        const data = (state.all as any)?.data;
 
-        if (users && Array.isArray(users)) {
-            users.forEach((data: anyObject) => {
+        if (data && Array.isArray(data)) {
+            data.forEach((data: anyObject) => {
                 const row: Array<string> = [];
                 columns.forEach((key: string) => {
                     // Handle potential undefined or null values by converting them to empty strings
@@ -59,8 +54,8 @@ const ExportAll: React.FC<Props> = (props: Props) => {
     }
 
     // Conditionally render the button only if there's data to export
-    const users_to_export = (state.all as any)?.data;
-    if (!users_to_export || users_to_export.length === 0) {
+    const data_to_export = (state.all as any)?.data;
+    if (!data_to_export || data_to_export.length === 0) {
         return null; // Or some disabled state if preferred
     }
 

@@ -16,7 +16,14 @@ const ExportSelected: React.FC<Props> = (props: Props) => {
     );
 
     const confirm_export = () => {
-        const columns = ['id', 'uid', 'role_serial', 'first_name', 'last_name', 'email', 'phone_number', 'photo', 'is_verified', 'is_blocked'];
+        const columns = [
+            'id',
+            'title',
+            'start_month',
+            'end_month',
+            'is_locked',
+            'status',
+        ];
         const rows: string[][] = [];
 
         state.selected.forEach((data: anyObject) => {
