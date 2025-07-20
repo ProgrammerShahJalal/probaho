@@ -1,0 +1,87 @@
+@hostname = http://127.0.0.1:5011/api/v1/branch-infos
+
+# all
+###
+GET {{hostname}}?orderByCol=id&orderByAsc=true&show_active_data=true&paginate=10&select_fields=   HTTP/1.1
+
+# get
+###
+GET {{hostname}}/2 HTTP/1.1
+
+# store
+###
+POST  {{hostname}}/store HTTP/1.1
+content-type: application/json
+
+{
+  "branch_code": "PCC-CTG-01",
+  "name": "Probaho Coaching Center",
+  "logo": "https://i.ibb.co/MkkDyjVY/probaho-logo.png",
+  "address": "197, Lalchand Road, Chawkbazar, Chittagong, Bangladesh",
+  "primary_contact": "01814476465",
+  "email": "probaho.chawkbazar@gmail.com",
+  "map": "https://www.google.com/maps/place/22%C2%B021'26.8%22N+91%C2%B050'18.9%22E/@22.35743,91.83859,16z/data=!4m4!3m3!8m2!3d22.35743!4d91.83859?hl=en-US&entry=ttu&g_ep=EgoyMDI1MDcwOS4wIKXMDSoASAFQAw%3D%3D",
+  "lat": 22.35743,
+  "lng": 91.83859,
+  "infos": [
+    {
+      "title": "Coaching Type",
+      "value": "Science & Commerce"
+    },
+    {
+      "title": "Established",
+      "value": "2008"
+    },
+    {
+      "title": "Total Students",
+      "value": "12000+"
+    },
+    {
+      "title": "Class Schedule",
+      "value": "Saturday to Thursday, 10:00 AM - 7:00 PM"
+    },
+    {
+      "title": "Special Programs",
+      "value": "Model Tests, Weekly Exams, Guardian Meetings"
+    }
+  ]
+}
+
+
+
+# update
+###
+POST {{hostname}}/update HTTP/1.1 
+content-type: application/json
+
+{
+    "id": 2,
+    "title": "blog tags 2 upated"
+}
+
+# soft delete
+###
+POST  {{hostname}}/soft-delete HTTP/1.1
+content-type: application/json
+
+{
+    "id": 1
+}
+
+# restore
+###
+POST  {{hostname}}/restore HTTP/1.1
+content-type: application/json
+
+{
+    "id": 1
+}
+
+# destroy
+###
+POST  {{hostname}}/destroy?d=0 HTTP/1.1
+content-type: application/json
+
+{
+    "id": 1
+}

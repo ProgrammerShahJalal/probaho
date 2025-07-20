@@ -110,15 +110,12 @@ async function user_profile_update(fastify_instance: FastifyInstance, req: Fasti
             role_serial: role_serial_to_save,
             phone_number: body.phone_number || data.phone_number,
             photo: image_path || data.photo,
-            gender: body.gender || data.gender,
-            blood_group: body.blood_group || data.blood_group,
-            class_id: body.class_id || data.class_id,
             password: hashedPassword || data.password,
             slug: slug || data.slug,
             is_verified: body.is_verified !== undefined ? body.is_verified : data.is_verified,
             is_blocked: body.is_blocked !== undefined ? body.is_blocked : data.is_blocked,
             is_approved: body.is_approved !== undefined ? body.is_approved : data.is_approved,
-            // user_infos: body.user_infos || data.user_infos,
+            user_infos: body.user_infos || data.user_infos,
             // user_documents: body.user_documents || data.user_documents, // Will be handled separately
             join_date: body.join_date ? moment(body.join_date, 'YYYY-MM-DD').toDate() : data.join_date,
             base_salary: body.base_salary || data.base_salary,
@@ -159,43 +156,6 @@ async function user_profile_update(fastify_instance: FastifyInstance, req: Fasti
             }
         }
         data.user_documents = finalUserDocumentsString;
-            await data.save();
-
-        // Handle user infos
-        let finalUserInfosString = data.user_infos; // Default to existing if no new data
-        if (body.user_infos && typeof body.user_infos === 'string') {
-            try {
-                let userInfosArray = JSON.parse(body.user_infos);
-                const processedUserInfos = [];
-
-                for (let i = 0; i < userInfosArray.length; i++) {
-                    const doc = userInfosArray[i];
-                    // Corrected fileFieldKey to match frontend FormData key: info_files[index]
-                    const fileFieldKey = `info_files[${i}]`; 
-                    
-                    // Ensure the body property exists and has the expected file structure
-                    if (body[fileFieldKey] && typeof body[fileFieldKey] === 'object' && body[fileFieldKey].name && body[fileFieldKey].data) {
-                        const fileData = body[fileFieldKey];
-                        const infoFileName = `${Date.now()}_${i}_${fileData.name.replace(/\s+/g, '_')}`;
-                        const infoPath = `uploads/user_infos/${infoFileName}`;
-                        
-                        await (fastify_instance as any).upload(fileData, infoPath);
-                        doc.description = infoPath; // Update with the actual path
-                        doc.fileName = fileData.name; // Store original file name
-                    } else if (typeof doc.description === 'string') {
-                        // If it's a string, it's an existing file path, keep it as is
-                        // doc.description = doc.description; // No change needed
-                    }
-                    processedUserInfos.push(doc);
-                }
-                finalUserInfosString = JSON.stringify(processedUserInfos);
-            } catch (e) {
-                console.error('Error processing user informations:', e);
-                // Decide if to throw error or use default/existing data
-                // For now, retains existing or default if parsing/processing fails
-            }
-        }
-        data.user_infos = finalUserInfosString;
             await data.save();
 
 

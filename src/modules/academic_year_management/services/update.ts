@@ -58,21 +58,14 @@ async function update(
 
     /** store data into database */
     try {
-        let data = await models.BranchInfosModel.findByPk(body.id);
+        let data = await models.AcademicYearModel.findByPk(body.id);
         if (data) {
             let inputs: InferCreationAttributes<typeof user_model> = {
-        user_id: data.user_id,
-        branch_code: body.branch_code || data.branch_code,
-        name: body.name || data.name,
-        logo: body.logo || data.logo,
-        address: body.address || data.address,
-        primary_contact: body.primary_contact || data.primary_contact,
-        email: body.email || data.email,
-        map: body.map || data.map,
-        lat: body.lat || data.lat,  
-        lng: body.lng || data.lng,
-        infos: body.infos || data.infos,
-    };
+                title: body.title || data.title,
+                start_month: body.start_month || data.start_month,
+                end_month: body.end_month || data.end_month,
+                is_locked: body.is_locked || data.is_locked,
+            };
             data.update(inputs);
             await data.save();
             return response(201, 'data updated', { data });
