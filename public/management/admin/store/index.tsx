@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import commonStore from './slices/common_slice';
 import profileReducer from './slices/profileSlice';
 import academic_year from '../views/pages/academic_year/config/store';
+import academic_batch_id_rules from '../views/pages/academic_batch_id_rules/config/store';
 import all_users from '../views/pages/users/config/store';
 import users from '../views/pages/users/config/store';
 import user_roles from '../views/pages/user_roles/config/store';
@@ -15,6 +16,7 @@ const store = configureStore({
         common_store: commonStore.reducer,
         profile: profileReducer, 
         academic_year: academic_year.reducer,
+        academic_batch_id_rules: academic_batch_id_rules.reducer,
         all_users: all_users.reducer,
         users: users.reducer,
         user_roles: user_roles.reducer,
