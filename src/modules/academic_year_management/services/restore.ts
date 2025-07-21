@@ -34,35 +34,49 @@ async function restore(
     /** initializations */
     // let models = await db();
     let models = Models.get();
-    let body = req.body as { [key: string]: any };
+    let body = req.body as { [key: string]: any }; // Existing code uses 'body'
 
     try {
+        // Find the data, including soft-deleted ones
         let data = await models[modelName].findOne({
             where: {
-                id: body.id,
+                id: body.id, // Using 'body.id' as per existing code
             },
+            paranoid: false, // Important: find even if soft-deleted
         });
 
         if (data) {
-            // await data.update({
-            //     status: 'active',
-            // });
-            data.status = 'active';
-            await data.save();
-            return response(205, 'data restored', data);
+            // Check if the data was actually soft-deleted
+            if (data.getDataValue('deleted_at') === null) {
+                throw new custom_error(
+                    'Data is not in trash',
+                    400,
+                    'This data has not been trashed.',
+                );
+            }
+
+            await data.restore(); // Clears deleted_at
+
+            // After restoring, update status
+            await data.update({
+                status: 'active',
+            });
+
+            return response(200, 'Data restored successfully', data);
         } else {
             throw new custom_error(
-                'data not found',
+                'Data not found',
                 404,
-                'operation not possible',
+                'Operation not possible: Record not found',
             );
         }
     } catch (error: any) {
-        let uid = await error_trace(models, error, req.url, req.body);
+        let uid = await error_trace(models, error, req.url, body); // Using 'body' as per existing code
         if (error instanceof custom_error) {
             error.uid = uid;
         } else {
-            throw new custom_error('server error', 500, error.message, uid);
+            // It's good practice to specify a message for the generic server error
+            throw new custom_error('Server error while restoring the data', 500, error.message, uid);
         }
         throw error;
     }

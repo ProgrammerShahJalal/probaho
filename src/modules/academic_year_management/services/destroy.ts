@@ -44,10 +44,11 @@ async function destroy(
             where: {
                 id: body.id,
             },
+            paranoid: false, // Ensure we can find soft-deleted records
         });
 
         if (data) {
-            await data.destroy();
+            await data.destroy( {force: true }); // Permanently delete the record
             return response(200, 'data permanently deleted', {});
         } else {
             throw new custom_error(

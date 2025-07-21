@@ -147,27 +147,6 @@ const Edit: React.FC<Props> = (props: Props) => {
         setDocuments(documents.filter(doc => doc.key !== keyToRemove));
     };
 
-    // function get_value(key) {
-    //     try {
-    //         let value = state.item[key] ?? state.item?.info?.[key];
-    //         if (key === 'role_serial') {
-    //             if (typeof value === 'string') {
-    //                 try {
-    //                     const parsed = JSON.parse(value);
-    //                     if (Array.isArray(parsed)) return parsed;
-    //                 } catch {
-    //                 }
-    //             }
-    //             if (Array.isArray(value)) return value;
-    //             if (typeof value === 'number') return [value];
-    //             return [];
-    //         }
-    //         return value ?? '';
-    //     } catch (error) {
-    //         return '';
-    //     }
-    // }
-
     const handleNumberKeyDown = (e) => {
         if (e.key === 'e' || e.key === 'E' || e.key === '+' || e.key === '-') {
             e.preventDefault();

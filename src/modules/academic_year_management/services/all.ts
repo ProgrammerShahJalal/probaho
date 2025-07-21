@@ -65,6 +65,7 @@ async function all(
     let orderByCol = query_param.orderByCol || 'id';
     let orderByAsc = query_param.orderByAsc || 'true';
     let show_active_data = query_param.show_active_data || 'true';
+    let show_trash_data = query_param.show_trash_data === 'true' ? true : false;
     let paginate = query_param.paginate ? parseInt(query_param.paginate) : undefined;
     let select_fields: string[] = [];
     let exclude_fields: string[] = ['password'];
@@ -75,9 +76,9 @@ async function all(
 
     if (query_param.select_fields) {
         select_fields = query_param.select_fields.replace(/\s/g, '').split(',');
-        select_fields = [...select_fields, 'id', 'status'];
+        select_fields = [...select_fields, 'id', 'status', 'created_at', 'updated_at', 'deleted_at'];
     } else {
-        select_fields = ['id', 'title', 'serial', 'status'];
+        select_fields = ['id', 'title', 'start_month', 'end_month', 'is_locked', 'status', 'created_at', 'updated_at', 'deleted_at'];
     }
 
     let query: FindAndCountOptions = {
@@ -88,6 +89,21 @@ async function all(
     };
 
     query.attributes = select_fields;
+    (query as any).paranoid = true; // Enable soft deletion by default
+    // Base conditions for soft deletion and status
+    if (show_trash_data) {
+        // Only show deleted items, do not filter by status
+        query.where = {
+            deleted_at: { [Op.ne]: null },
+        };
+        (query as any).paranoid = false;
+    } else {
+        // Only show non-deleted items and filter by status
+        query.where = {
+            deleted_at: null,
+            status: show_active_data == 'true' ? 'active' : 'deactive',
+        };
+    }
 
     // Add date range filtering if both start and end dates are provided
     if (start_date && end_date) {
@@ -122,7 +138,6 @@ async function all(
             [Op.or]: [
                 { id: { [Op.like]: `%${search_key}%` } },
                 { title: { [Op.like]: `%${search_key}%` } },
-                { serial: { [Op.like]: `%${search_key}%` } },
             ],
         };
     }

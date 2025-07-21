@@ -6,17 +6,23 @@ module.exports = function (fastify: FastifyInstance, opts: {}, done: () => void)
     let prefix: string = '/academic-year';
     const controllerInstance = controller(fastify);
 
-    fastify
-        .get(`${prefix}`, controllerInstance.all)
-        .post(`${prefix}/store`, controllerInstance.store)
-        .post(`${prefix}/update`, controllerInstance.update)
-        .post(`${prefix}/soft-delete`, controllerInstance.soft_delete)
-        .post(`${prefix}/restore`, controllerInstance.restore)
-        .post(`${prefix}/destroy`, controllerInstance.destroy)
-        .post(`${prefix}/import`, controllerInstance.import)
-        .get(`${prefix}/:id`, controllerInstance.find)
-        ;
-
+    fastify.register(
+        async (route, opts) => {
+            route
+                .get(`/`, controllerInstance.all)
+                .post(`/store`, controllerInstance.store)
+                .post(`/update`, controllerInstance.update)
+                .post(`/soft-delete`, controllerInstance.soft_delete)
+                .post(`/inactive`, controllerInstance.inactive)
+                .post(`/active`, controllerInstance.active)
+                .post(`/trash`, controllerInstance.trash)
+                .post(`/restore`, controllerInstance.restore)
+                .post(`/destroy`, controllerInstance.destroy)
+                .post(`/import`, controllerInstance.import_academic_years)
+                .get(`/:id`, controllerInstance.find);
+        },
+        { prefix },
+    );
 
     done();
 };

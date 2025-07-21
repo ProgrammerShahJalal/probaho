@@ -26,6 +26,7 @@ class DataModel extends Model<Infer, InferCreation> {
     declare status?: status;
     declare created_at?: CreationOptional<Date>;
     declare updated_at?: CreationOptional<Date>;
+    declare deleted_at?: CreationOptional<Date>;
 }
 
 function init(sequelize: Sequelize) {
@@ -66,12 +67,17 @@ function init(sequelize: Sequelize) {
                 allowNull: false,
                 defaultValue: DataTypes.NOW,
             },
+            deleted_at: {
+                type: DataTypes.DATE,
+                allowNull: true,
+            },
         },
         {
             tableName: tableName,
             modelName: modelName,
             sequelize, // Passing the `sequelize` instance is required
             underscored: true,
+            paranoid: true,
         },
     );
 
