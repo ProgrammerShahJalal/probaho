@@ -28,13 +28,18 @@ async function validate(req: Request) {
 
     for (let index = 0; index < fields.length; index++) {
         const field = fields[index];
-        await body(field)
+        let validation = body(field)
             .not()
             .isEmpty()
             .withMessage(
                 `the <b>${field.replaceAll('_', ' ')}</b> field is required`,
             )
-            .run(req);
+            
+        if (['branch_user_id', 'branch_id', 'academic_year_id'].includes(field)) {
+            validation.isArray().withMessage(`the <b>${field.replaceAll('_', ' ')}</b> field must be an array`,)
+        }
+
+        await validation.run(req);
     }
 
 
@@ -61,7 +66,7 @@ async function store(
 
     let inputs: InferCreationAttributes<typeof data> = {
         branch_user_id: body.branch_user_id,
-        branch_id: body.branch_id || 1, // Default to branch_id 1 if not provided
+        branch_id: body.branch_id || [1], // Default to branch_id 1 if not provided
         academic_year_id: body.academic_year_id,
         title: body.title,
         description: body.description,

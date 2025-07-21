@@ -19,9 +19,9 @@ type status = 'active' | 'deactive';
 class DataModel extends Model<Infer, InferCreation> {
     declare id?: CreationOptional<number>;
 
-    declare branch_user_id: number;
-    declare branch_id: number;
-    declare academic_year_id: number;
+    declare branch_user_id: number[];
+    declare branch_id: number[];
+    declare academic_year_id: number[];
     declare title: string;
     declare description?: string;
     declare value: string;
@@ -41,15 +41,15 @@ function init(sequelize: Sequelize) {
                 primaryKey: true,
             },
             branch_user_id: {
-                type: DataTypes.INTEGER.UNSIGNED,
+                type: DataTypes.JSON,
                 allowNull: false,
             },
             branch_id: {
-                type: DataTypes.INTEGER.UNSIGNED,
+                type: DataTypes.JSON,
                 allowNull: false,
             },
             academic_year_id: {
-                type: DataTypes.INTEGER.UNSIGNED,
+                type: DataTypes.JSON,
                 allowNull: false,
             },
             title: {
