@@ -65,6 +65,8 @@ const Create: React.FC<Props> = (props: Props) => {
                                         >
                                             {
                                                 i === 'branch_user_id' ? (
+                                                    <>
+                                                    <label>Branch User</label>
                                                     <UsersDropDown
                                                         name={i}
                                                         multiple={false}
@@ -72,7 +74,10 @@ const Create: React.FC<Props> = (props: Props) => {
                                                             console.log(result)
                                                         }
                                                     />
+                                                    </>
                                                 ) : i === 'academic_year_id' ? (
+                                                    <>
+                                                    <label>Academic Year</label>
                                                     <AcademicYearsDropDown
                                                         name={i}
                                                         multiple={false}
@@ -80,6 +85,7 @@ const Create: React.FC<Props> = (props: Props) => {
                                                             console.log(result)
                                                         }
                                                     />
+                                                    </>
                                                 ) : (
 
                                                     <Input name={i} />

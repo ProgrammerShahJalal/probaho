@@ -21,7 +21,6 @@ async function validate(req: Request) {
     let field = '';
     let fields = [
         'branch_user_id',
-        'branch_id',
         'academic_year_id',
         'title',
         'value',
@@ -62,7 +61,7 @@ async function store(
 
     let inputs: InferCreationAttributes<typeof data> = {
         branch_user_id: body.branch_user_id,
-        branch_id: body.branch_id,
+        branch_id: body.branch_id || 1, // Default to branch_id 1 if not provided
         academic_year_id: body.academic_year_id,
         title: body.title,
         description: body.description,

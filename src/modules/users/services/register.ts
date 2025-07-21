@@ -236,7 +236,7 @@ async function register(
         // Create user
         let newUser = await models.UserModel.create({
             uid: uid,
-            branch_id: body.branch_id,
+            branch_id: body.branch_id || 1, // Default to branch_id 1 if not provided
             class_id: body.class_id,
             role_serial: role_serial_to_save, // Use the processed array
             is_approved: body.is_approved,
