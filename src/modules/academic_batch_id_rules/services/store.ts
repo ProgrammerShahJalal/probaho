@@ -34,10 +34,6 @@ async function validate(req: Request) {
             .withMessage(
                 `the <b>${field.replaceAll('_', ' ')}</b> field is required`,
             )
-            
-        if (['branch_user_id', 'branch_id', 'academic_year_id'].includes(field)) {
-            validation.isArray().withMessage(`the <b>${field.replaceAll('_', ' ')}</b> field must be an array`,)
-        }
 
         await validation.run(req);
     }
@@ -65,9 +61,17 @@ async function store(
     
 
     let inputs: InferCreationAttributes<typeof data> = {
-        branch_user_id: body.branch_user_id,
-        branch_id: body.branch_id || [1], // Default to branch_id 1 if not provided
-        academic_year_id: body.academic_year_id,
+        branch_user_id:
+            typeof body.branch_user_id === 'string'
+                ? JSON.parse(body.branch_user_id)
+                : body.branch_user_id,
+        branch_id: body.branch_id === 'string'
+                ? JSON.parse(body.branch_id)
+                : body.branch_id || [1], // Default to branch_id 1 if not provided
+        academic_year_id:
+            typeof body.academic_year_id === 'string'
+                ? JSON.parse(body.academic_year_id)
+                : body.academic_year_id,
         title: body.title,
         description: body.description,
         value: body.value,

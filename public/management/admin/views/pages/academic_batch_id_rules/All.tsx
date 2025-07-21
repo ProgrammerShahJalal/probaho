@@ -71,11 +71,11 @@ const All: React.FC<Props> = () => {
                                             col_name="branch_user_id"
                                             sort
                                         />
-                                        <TableHeading
+                                        {/* <TableHeading
                                             label="Branch ID"
                                             col_name="branch_id"
                                             sort
-                                        />
+                                        /> */}
                                         <TableHeading
                                             label="Academic Year ID"
                                             col_name="academic_year_id"
@@ -118,7 +118,7 @@ const All: React.FC<Props> = () => {
                                                 </td>
                                                 <td>{i.id}</td>
                                                 <td>{i.branch_user_id}</td>
-                                                <td>{i.branch_id}</td>
+                                                {/* <td>{i.branch_id}</td> */}
                                                 <td>{i.academic_year_id}</td>
                                                 <td>{i.title}</td>
                                                 <td>{i.description}</td>
