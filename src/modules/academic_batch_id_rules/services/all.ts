@@ -138,6 +138,8 @@ async function all(
             [Op.or]: [
                 { id: { [Op.like]: `%${search_key}%` } },
                 { title: { [Op.like]: `%${search_key}%` } },
+                { description: { [Op.like]: `%${search_key}%` } },
+                { value: { [Op.like]: `%${search_key}%` } },
                 // Add these lines to search by associated or related table attributes
                 { '$users.name$': { [Op.like]: `%${search_key}%` } },
                 { '$branches.name$': { [Op.like]: `%${search_key}%` } },
