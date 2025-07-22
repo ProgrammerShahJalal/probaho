@@ -15,7 +15,6 @@ type InferCreation = InferCreationAttributes<DataModel>;
 
 type status = 'active' | 'deactive';
 
-
 class DataModel extends Model<Infer, InferCreation> {
     declare id?: CreationOptional<number>;
 
@@ -32,6 +31,40 @@ class DataModel extends Model<Infer, InferCreation> {
     declare deleted_at?: CreationOptional<Date>;
 }
 
+// Helper function for JSON array fields
+function jsonArrayField() {
+    return {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        get(this: any): any[] {
+            const raw = this.getDataValue(this.name);
+            if (typeof raw === 'string') {
+                try {
+                    const parsed = JSON.parse(raw);
+                    return Array.isArray(parsed) ? parsed : [];
+                } catch {
+                    return [];
+                }
+            }
+            return Array.isArray(raw) ? raw : [];
+        },
+        set(this: any, val: number[] | string) {
+            if (Array.isArray(val)) {
+                this.setDataValue(this.name, JSON.stringify(val));
+            } else if (typeof val === 'string') {
+                try {
+                    const parsed = JSON.parse(val);
+                    this.setDataValue(this.name, Array.isArray(parsed) ? val : '[]');
+                } catch {
+                    this.setDataValue(this.name, '[]');
+                }
+            } else {
+                this.setDataValue(this.name, '[]');
+            }
+        }
+    };
+}
+
 function init(sequelize: Sequelize) {
     DataModel.init(
         {
@@ -41,15 +74,15 @@ function init(sequelize: Sequelize) {
                 primaryKey: true,
             },
             branch_user_id: {
-                type: DataTypes.JSON,
+                ...jsonArrayField(),
                 allowNull: false,
             },
             branch_id: {
-                type: DataTypes.JSON,
+                ...jsonArrayField(),
                 allowNull: false,
             },
             academic_year_id: {
-                type: DataTypes.JSON,
+                ...jsonArrayField(),
                 allowNull: false,
             },
             title: {
@@ -64,7 +97,6 @@ function init(sequelize: Sequelize) {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            
             status: {
                 type: DataTypes.ENUM('active', 'deactive'),
                 defaultValue: 'active'
@@ -87,7 +119,7 @@ function init(sequelize: Sequelize) {
         {
             tableName: tableName,
             modelName: modelName,
-            sequelize, // Passing the `sequelize` instance is required
+            sequelize,
             underscored: true,
             paranoid: true,
         },
