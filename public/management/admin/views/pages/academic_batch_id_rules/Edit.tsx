@@ -10,14 +10,10 @@ import { Link, useParams } from 'react-router-dom';
 import storeSlice from './config/store';
 import { update } from './config/store/async_actions/update';
 import Input from './components/management_data_page/Input';
-// import InputImage from './components/management_data_page/InputImage'; // InputImage is used for user photo
-import InputImage from './components/management_data_page/InputImage';
-import InputFile from './components/management_data_page/InputFile'; // Import the new InputFile component
-import UserRolesDropDown from '../user_roles/components/dropdown/DropDown';
-import DateEl from '../../components/DateEl';
-import TextEditor from './components/management_data_page/TextEditor';
+import UsersDropDown from '../users/components/dropdown/DropDown';
+import AcademicYearsDropDown from '../academic_year/components/dropdown/DropDown';
 import { getValueForEdit } from '../utils/getValue';
-import Select from './components/management_data_page/Select';
+
 
 export interface Props { }
 interface Document {
@@ -81,40 +77,69 @@ const Edit: React.FC<Props> = (props: Props) => {
                                     <h5 className="mb-4">Input Data</h5>
                                     <div className="form_auto_fit">
                                         {[
+                                            'branch_user_id',
+                                            'academic_year_id',
                                             'title',
-                                            'start_month',
-                                            'end_month',
-                                            'is_locked',
+                                            'description',
+                                            'value',
                                         ].map((i) => (
                                             <div key={i} className="form-group form-vertical">
-                                                {i === 'start_month' || i === 'end_month' ? (
-                                                    <DateEl
-                                                        label={i}
+                                                {
+                                                i === 'branch_user_id' ? (
+                                                    <>
+                                                    <label>Branch User</label>
+                                                    <UsersDropDown
                                                         name={i}
-                                                        value={getValueForEdit(state, i) ? String(getValueForEdit(state, i)).slice(0, 10) : ''}
-                                                        handler={(data) => dispatch(storeSlice.actions.set_item({ ...state.item, [i]: data.value }))}
-                                                        disabled={state.item.is_locked}
-                                                    />
-                                                ) : (
-                                                    i === 'is_locked' ? (
-                                                        <Select
-                                                            name={i}
-                                                            value={
-                                                                // Convert boolean to string for Select component
-                                                                getValueForEdit(state, i) === true || getValueForEdit(state, i) === 1 || getValueForEdit(state, i) === '1'
-                                                                    ? '1'
-                                                                    : '0'
+                                                        multiple={false}
+                                                        get_selected_data={(result) =>
+                                                            console.log(result)
+                                                        }
+                                                        default_value={
+                                                                getValueForEdit(state,
+                                                                    i,
+                                                                )
+                                                                    ? [
+                                                                        {
+                                                                            id: getValueForEdit(state,
+                                                                                i,
+                                                                            ),
+                                                                        },
+                                                                    ]
+                                                                    : []
                                                             }
-                                                            values={[
-                                                                { value: '0', text: 'No' },
-                                                                { value: '1', text: 'Yes' },
-                                                            ]}
-                                                            disabled={state.item.is_locked}
-                                                        />
-                                                    ) : (
-                                                        <Input name={i} value={getValueForEdit(state, i)} disabled={state.item.is_locked} />
-                                                    )
-                                                )}
+                                                    />
+                                                    </>
+                                                ) : i === 'academic_year_id' ? (
+                                                    <>
+                                                    <label>Academic Year</label>
+                                                    <AcademicYearsDropDown
+                                                        name={i}
+                                                        multiple={false}
+                                                        get_selected_data={(result) =>
+                                                            console.log(result)
+                                                        }
+                                                        default_value={
+                                                                getValueForEdit(state,
+                                                                    i,
+                                                                )
+                                                                    ? [
+                                                                        {
+                                                                            id: getValueForEdit(state,
+                                                                                i,
+                                                                            ),
+                                                                        },
+                                                                    ]
+                                                                    : []
+                                                            }
+                                                    />
+                                                    </>
+                                                ) : (
+
+                                                    <Input name={i} value={getValueForEdit(state, i)} />
+                                                )
+
+
+                                            }
                                             </div>
                                         ))}
                                     </div>
