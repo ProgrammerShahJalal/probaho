@@ -6,6 +6,7 @@ import error_trace from '../../../common/errors/error_trace';
 import custom_error from '../../../common/errors/custom_error';
 import { modelName } from '../models/model';
 import Models from '../../../database/models';
+import { Op } from 'sequelize';
 // async function details(
 //     fastify_instance: FastifyInstance,
 //     req: FastifyRequest,
@@ -30,6 +31,49 @@ async function details(
         });
 
         if (data) {
+            // Fetch associated data
+        const userModel = models.UserModel;
+        const branchInfoModel = models.BranchInfosModel;
+        const academicYearModel = models.AcademicYearModel;
+
+        // If 'data' is a single object, not an array, process it directly
+        const rules = Array.isArray(data) ? data : [data];
+        for (let i = 0; i < rules.length; i++) {
+            const rule = rules[i];
+
+            // Fetch user names
+            const users = await userModel.findAll({
+                where: {
+                    id: {
+                        [Op.in]: rule.branch_user_id,
+                    },
+                },
+                attributes: ['id', 'name'],
+            });
+            rule.dataValues.users = users;
+
+            // Fetch branch names
+            const branches = await branchInfoModel.findAll({
+                where: {
+                    id: {
+                        [Op.in]: rule.branch_id,
+                    },
+                },
+                attributes: ['id', 'name'],
+            });
+            rule.dataValues.branches = branches;
+
+            // Fetch academic year titles
+            const academicYears = await academicYearModel.findAll({
+                where: {
+                    id: {
+                        [Op.in]: rule.academic_year_id,
+                    },
+                },
+                attributes: ['id', 'title'],
+            });
+            rule.dataValues.academic_years = academicYears;
+        }
             return response(200, 'data found', data);
         } else {
             throw new custom_error('not found', 404, 'data not found');

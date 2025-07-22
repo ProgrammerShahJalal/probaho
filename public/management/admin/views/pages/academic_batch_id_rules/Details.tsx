@@ -26,6 +26,45 @@ const Details: React.FC<Props> = (props: Props) => {
         dispatch(details({ id: params.id }) as any);
     }, []);
 
+    const renderFieldValue = (fieldName: string) => {
+        switch (fieldName) {
+            case 'branch_user_id':
+                return (
+                    <>
+                        {state.item[fieldName]?.map((id: number, index: number) => (
+                            <span key={id}>
+                                {id} - {state.item.users?.find((u: any) => u.id === id)?.name || 'Unknown User'}
+                                {index < state.item[fieldName].length - 1 && ', '}
+                            </span>
+                        ))}
+                    </>
+                );
+            case 'academic_year_id':
+                return (
+                    <>
+                        {state.item[fieldName]?.map((id: number, index: number) => (
+                            <span key={id}>
+                                {id} - {state.item.academic_years?.find((ay: any) => ay.id === id)?.title || 'Unknown Year'}
+                                {index < state.item[fieldName].length - 1 && ', '}
+                            </span>
+                        ))}
+                    </>
+                );
+            case 'branch_id':
+                return (
+                    <>
+                        {state.item[fieldName]?.map((id: number, index: number) => (
+                            <span key={id}>
+                                {id} - {state.item.branches?.find((b: any) => b.id === id)?.name || 'Unknown Branch'}
+                                {index < state.item[fieldName].length - 1 && ', '}
+                            </span>
+                        ))}
+                    </>
+                );
+            default:
+                return state.item[fieldName];
+        }
+    };
 
     return (
         <>
@@ -39,8 +78,8 @@ const Details: React.FC<Props> = (props: Props) => {
                                 <tbody>
                                     {[
                                         'branch_user_id',
-                                        'branch_id',
                                         'academic_year_id',
+                                        'branch_id',
                                         'title',
                                         'description',
                                         'value',
@@ -49,17 +88,8 @@ const Details: React.FC<Props> = (props: Props) => {
                                             <td>{i.replaceAll('_', ' ')}</td>
                                             <td>:</td>
                                             <td>
-                                                {['is_locked'].includes(i)
-                                                    ? getValue(state, i) === '1'
-                                                        ? 'Yes'
-                                                        : 'No'
-                                                    : i === 'start_month'  && getValue(state, i)
-                                                    ? moment.utc(getValue(state, i)).local().format('DD MMMM YYYY')
-                                                    : i === 'end_month' && getValue(state, i)
-                                                    ? moment.utc(getValue(state, i)).local().format('DD MMMM YYYY')
-                                                    : getValue(state, i)
-                                                    ? getValue(state, i)
-                                                    : 'N/A'}
+                                                {renderFieldValue(i)}
+                                                <br />
                                             </td>
                                         </tr>
                                     ))}

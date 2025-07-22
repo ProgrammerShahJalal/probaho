@@ -86,6 +86,23 @@ async function all(
         where: {
             status: show_active_data == 'true' ? 'active' : 'deactive',
         },
+        include: [
+            {
+                model: models.UserModel,
+                as: 'users',
+                attributes: ['id', 'name'],
+            },
+            {
+                model: models.BranchInfosModel,
+                as: 'branches',
+                attributes: ['id', 'name'],
+            },
+            {
+                model: models.AcademicYearModel,
+                as: 'academic_years',
+                attributes: ['id', 'title'],
+            },
+        ]
     };
 
     query.attributes = select_fields;
@@ -138,6 +155,10 @@ async function all(
             [Op.or]: [
                 { id: { [Op.like]: `%${search_key}%` } },
                 { title: { [Op.like]: `%${search_key}%` } },
+                // Add these lines to search by associated or related table attributes
+                { '$users.name$': { [Op.like]: `%${search_key}%` } },
+                { '$branches.name$': { [Op.like]: `%${search_key}%` } },
+                { '$academic_years.title$': { [Op.like]: `%${search_key}%` } },
             ],
         };
     }

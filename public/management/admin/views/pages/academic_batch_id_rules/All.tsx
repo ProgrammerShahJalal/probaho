@@ -67,7 +67,7 @@ const All: React.FC<Props> = () => {
                                             sort
                                         />
                                         <TableHeading
-                                            label="Branch User ID"
+                                            label="Branch User"
                                             col_name="branch_user_id"
                                             sort
                                         />
@@ -77,7 +77,7 @@ const All: React.FC<Props> = () => {
                                             sort
                                         /> */}
                                         <TableHeading
-                                            label="Academic Year ID"
+                                            label="Academic Year"
                                             col_name="academic_year_id"
                                             sort
                                         />
@@ -117,9 +117,9 @@ const All: React.FC<Props> = () => {
                                                     <SelectItem item={i} />
                                                 </td>
                                                 <td>{i.id}</td>
-                                                <td>{i.branch_user_id}</td>
+                                                <td>{i.branch_user_id ? i.users?.map((u)=> u.name): i.branch_user_id}</td>
                                                 {/* <td>{i.branch_id}</td> */}
-                                                <td>{i.academic_year_id}</td>
+                                                <td>{i.academic_year_id ? i.academic_years?.map((ay)=> ay.title): i.academic_year_id}</td>
                                                 <td>{i.title}</td>
                                                 <td>{i.description}</td>
                                                 <td>{i.value}</td>
