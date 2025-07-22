@@ -86,23 +86,6 @@ async function all(
         where: {
             status: show_active_data == 'true' ? 'active' : 'deactive',
         },
-        include: [
-            {
-                model: models.UserModel,
-                as: 'users',
-                attributes: ['id', 'name'],
-            },
-            {
-                model: models.BranchInfosModel,
-                as: 'branches',
-                attributes: ['id', 'name'],
-            },
-            {
-                model: models.AcademicYearModel,
-                as: 'academic_years',
-                attributes: ['id', 'title'],
-            },
-        ]
     };
 
     query.attributes = select_fields;
@@ -150,22 +133,136 @@ async function all(
     }
 
     if (search_key) {
+        const user_ids = await models.UserModel.findAll({
+            where: { name: { [Op.like]: `%${search_key}%` } },
+            attributes: ['id'],
+        }).then((users: any) => users.map((user: any) => user.id));
+
+        const branch_ids = await models.BranchInfosModel.findAll({
+            where: { name: { [Op.like]: `%${search_key}%` } },
+            attributes: ['id'],
+        }).then((branches: any) => branches.map((branch: any) => branch.id));
+
+        const academic_year_ids = await models.AcademicYearModel.findAll({
+            where: { title: { [Op.like]: `%${search_key}%` } },
+            attributes: ['id'],
+        }).then((years: any) => years.map((year: any) => year.id));
+
+        // Build the search conditions
+        const search_conditions: any[] = [
+            { id: { [Op.like]: `%${search_key}%` } },
+            { title: { [Op.like]: `%${search_key}%` } },
+            { description: { [Op.like]: `%${search_key}%` } },
+            { value: { [Op.like]: `%${search_key}%` } },
+        ];
+
+        const addJsonSearchConditions = (field: string, ids: number[]) => {
+            if (ids.length > 0) {
+                ids.forEach(id => {
+                    // Add conditions to match the ID exactly within the JSON array string
+                    search_conditions.push({ [field]: { [Op.like]: `[${id}]` } }); // e.g., [1]
+                    search_conditions.push({ [field]: { [Op.like]: `[${id},%` } }); // e.g., [1,2,3]
+                    search_conditions.push({ [field]: { [Op.like]: `%,${id},%` } }); // e.g., [0,1,2]
+                    search_conditions.push({ [field]: { [Op.like]: `%,${id}]` } }); // e.g., [0,1]
+                });
+            }
+        };
+
+        addJsonSearchConditions('branch_user_id', user_ids);
+        addJsonSearchConditions('branch_id', branch_ids);
+        addJsonSearchConditions('academic_year_id', academic_year_ids);
+
         query.where = {
             ...query.where,
-            [Op.or]: [
-                { id: { [Op.like]: `%${search_key}%` } },
-                { title: { [Op.like]: `%${search_key}%` } },
-                // Add these lines to search by associated or related table attributes
-                { '$users.name$': { [Op.like]: `%${search_key}%` } },
-                { '$branches.name$': { [Op.like]: `%${search_key}%` } },
-                { '$academic_years.title$': { [Op.like]: `%${search_key}%` } },
-            ],
+            [Op.or]: search_conditions,
         };
     }
 
     try {
         let data: any;
+
+        interface AfterFindHookOptions {
+            // Define options if needed
+        }
+
+        interface AcademicYear {
+            id: number;
+            title: string;
+        }
+
+        interface Branch {
+            id: number;
+            name: string;
+        }
+
+        interface User {
+            id: number;
+            name: string;
+        }
+
+        const afterFindHook = async (results: any[], options: AfterFindHookOptions) => {
+            if (!results.length) {
+                return;
+            }
         
+            // Collect all unique IDs
+            const user_ids = new Set<number>();
+            const branch_ids = new Set<number>();
+            const academic_year_ids = new Set<number>();
+        
+            results.forEach((item) => {
+                if (item.branch_user_id) {
+                    item.branch_user_id.forEach((id: number) => user_ids.add(id));
+                }
+                if (item.branch_id) {
+                    item.branch_id.forEach((id: number) => branch_ids.add(id));
+                }
+                if (item.academic_year_id) {
+                    item.academic_year_id.forEach((id: number) => academic_year_ids.add(id));
+                }
+            });
+        
+            // Fetch all related data in bulk
+            const [users, branches, academic_years] = await Promise.all([
+                models.UserModel.findAll({
+                    where: { id: { [Op.in]: [...user_ids] } },
+                    attributes: ['id', 'name'],
+                }) as Promise<User[]>,
+                models.BranchInfosModel.findAll({
+                    where: { id: { [Op.in]: [...branch_ids] } },
+                    attributes: ['id', 'name'],
+                }) as Promise<Branch[]>,
+                models.AcademicYearModel.findAll({
+                    where: { id: { [Op.in]: [...academic_year_ids] } },
+                    attributes: ['id', 'title'],
+                }) as Promise<AcademicYear[]>,
+            ]);
+        
+            // Create maps for quick lookups
+            const user_map = new Map(users.map((user) => [user.id, user]));
+            const branch_map = new Map(branches.map((branch) => [branch.id, branch]));
+            const academic_year_map = new Map(academic_years.map((year) => [year.id, year]));
+        
+            // Attach related data to results
+            for (const item of results) {
+                if (item.branch_user_id) {
+                    item.dataValues.users = item.branch_user_id
+                        .map((id: number) => user_map.get(id))
+                        .filter(Boolean);
+                }
+                if (item.branch_id) {
+                    item.dataValues.branches = item.branch_id
+                        .map((id: number) => branch_map.get(id))
+                        .filter(Boolean);
+                }
+                if (item.academic_year_id) {
+                    item.dataValues.academic_years = item.academic_year_id
+                        .map((id: number) => academic_year_map.get(id))
+                        .filter(Boolean);
+                }
+            }
+        };
+
         if (paginate) {
             // Use pagination when paginate parameter is provided
             data = await (fastify_instance as anyObject).paginate(
@@ -174,9 +271,11 @@ async function all(
                 paginate,
                 query,
             );
+            await afterFindHook(data.data, {});
         } else {
             // Fetch all data when paginate is not provided
             const result = await UserRolesModel.findAndCountAll(query);
+            await afterFindHook(result.rows, {});
             data = {
                 data: result.rows,
                 total: result.count,
