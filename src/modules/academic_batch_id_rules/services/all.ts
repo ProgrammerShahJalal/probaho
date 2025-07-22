@@ -86,23 +86,6 @@ async function all(
         where: {
             status: show_active_data == 'true' ? 'active' : 'deactive',
         },
-        include: [
-            {
-                model: models.UserModel,
-                as: 'users',
-                attributes: ['id', 'name'],
-            },
-            {
-                model: models.BranchInfosModel,
-                as: 'branches',
-                attributes: ['id', 'name'],
-            },
-            {
-                model: models.AcademicYearModel,
-                as: 'academic_years',
-                attributes: ['id', 'title'],
-            },
-        ]
     };
 
     query.attributes = select_fields;
@@ -165,7 +148,66 @@ async function all(
 
     try {
         let data: any;
-        
+
+        interface AfterFindHookOptions {
+            // Define options if needed
+        }
+
+        interface AcademicYear {
+            id: number;
+            title: string;
+        }
+
+        interface Branch {
+            id: number;
+            name: string;
+        }
+
+        interface User {
+            id: number;
+            name: string;
+        }
+
+        const afterFindHook = async (results: any[], options: AfterFindHookOptions) => {
+            for (const item of results) {
+            if (item.branch_user_id) {
+                const users: User[] = await models.UserModel.findAll({
+                where: {
+                    id: {
+                    [Op.in]: item.branch_user_id,
+                    },
+                },
+                attributes: ['id', 'name'],
+                }) as User[];
+                item.dataValues.users = users;
+            }
+
+            if (item.branch_id) {
+                const branches: Branch[] = await models.BranchInfosModel.findAll({
+                where: {
+                    id: {
+                    [Op.in]: item.branch_id,
+                    },
+                },
+                attributes: ['id', 'name'],
+                }) as Branch[];
+                item.dataValues.branches = branches;
+            }
+
+            if (item.academic_year_id) {
+                const academic_years: AcademicYear[] = await models.AcademicYearModel.findAll({
+                where: {
+                    id: {
+                    [Op.in]: item.academic_year_id,
+                    },
+                },
+                attributes: ['id', 'title'],
+                }) as AcademicYear[];
+                item.dataValues.academic_years = academic_years;
+            }
+            }
+        };
+
         if (paginate) {
             // Use pagination when paginate parameter is provided
             data = await (fastify_instance as anyObject).paginate(
@@ -174,9 +216,11 @@ async function all(
                 paginate,
                 query,
             );
+            await afterFindHook(data.data, {});
         } else {
             // Fetch all data when paginate is not provided
             const result = await UserRolesModel.findAndCountAll(query);
+            await afterFindHook(result.rows, {});
             data = {
                 data: result.rows,
                 total: result.count,
