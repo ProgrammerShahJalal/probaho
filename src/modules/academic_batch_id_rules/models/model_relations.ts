@@ -6,42 +6,36 @@ export function init() {
 
         // Direct relationships with foreign keys
 
-    // AcademicBatchIdRule -> User relationship (using JSON array field)
+    // AcademicBatchIdRule -> User relationship
     models.AcademicBatchIdRuleModel.belongsTo(models.UserModel, {
         foreignKey: 'branch_user_id',
-        as: 'user',
-        constraints: false // Since it's a JSON field, not a regular foreign key
+        as: 'users'
     });
     
     models.UserModel.hasMany(models.AcademicBatchIdRuleModel, {
         foreignKey: 'branch_user_id',
-        as: 'batch_rules',
-        constraints: false
+        as: 'batch_rules'
     });
 
-    // AcademicBatchIdRule -> BranchInfos relationship (using JSON array field)
+    // AcademicBatchIdRule -> BranchInfos relationship
     models.AcademicBatchIdRuleModel.belongsTo(models.BranchInfosModel, {
         foreignKey: 'branch_id',
-        as: 'branch',
-        constraints: false
+        as: 'branches'
     });
     
     models.BranchInfosModel.hasMany(models.AcademicBatchIdRuleModel, {
         foreignKey: 'branch_id',
-        as: 'batch_rules',
-        constraints: false
+        as: 'batch_rules'
     });
 
-    // AcademicBatchIdRule -> AcademicYear relationship (using JSON array field)
+    // AcademicBatchIdRule -> AcademicYear relationship
     models.AcademicBatchIdRuleModel.belongsTo(models.AcademicYearModel, {
         foreignKey: 'academic_year_id',
-        as: 'academic_year',
-        constraints: false
+        as: 'academic_years'
     });
     
     models.AcademicYearModel.hasMany(models.AcademicBatchIdRuleModel, {
         foreignKey: 'academic_year_id',
-        as: 'batch_rules',
-        constraints: false
+        as: 'batch_rules'
     });
 }
