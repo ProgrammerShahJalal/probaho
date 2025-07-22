@@ -133,21 +133,6 @@ async function all(
     }
 
     if (search_key) {
-        /**
-         * ----------------------------------------------------------------
-         * Search query optimization
-         * ----------------------------------------------------------------
-         *
-         * The following search logic is optimized to handle queries on fields
-         * that store IDs in JSON arrays.
-         *
-         *
-         * It first fetches the IDs of related entities (users, branches, academic years)
-         * based on the search key. Then, it constructs a query that accurately
-         * searches for these IDs within the JSON strings, avoiding the performance
-         * and accuracy issues of a simple LIKE search.
-         */
-        // Find user IDs, branch IDs, and academic year IDs based on the search key
         const user_ids = await models.UserModel.findAll({
             where: { name: { [Op.like]: `%${search_key}%` } },
             attributes: ['id'],
@@ -196,11 +181,6 @@ async function all(
     try {
         let data: any;
 
-        /**
-         * ----------------------------------------------------------------
-         * Optimizations to fix N+1 query problems
-         * ----------------------------------------------------------------
-         */
         interface AfterFindHookOptions {
             // Define options if needed
         }
