@@ -18,9 +18,9 @@ type status = 'active' | 'deactive';
 class DataModel extends Model<Infer, InferCreation> {
     declare id?: CreationOptional<number>;
 
-    declare branch_user_id: number[];
-    declare branch_id: number[];
-    declare academic_year_id: number[];
+    declare branch_user_id: number[] | string; // Store as JSON array of numbers
+    declare branch_id: number[] | string;
+    declare academic_year_id: number[] | string;
     declare title: string;
     declare description?: string;
     declare value: string;
@@ -31,39 +31,6 @@ class DataModel extends Model<Infer, InferCreation> {
     declare deleted_at?: CreationOptional<Date>;
 }
 
-// Helper function for JSON array fields
-function jsonArrayField() {
-    return {
-        type: DataTypes.TEXT,
-        allowNull: false,
-        get(this: any): any[] {
-            const raw = this.getDataValue(this.name);
-            if (typeof raw === 'string') {
-                try {
-                    const parsed = JSON.parse(raw);
-                    return Array.isArray(parsed) ? parsed : [];
-                } catch {
-                    return [];
-                }
-            }
-            return Array.isArray(raw) ? raw : [];
-        },
-        set(this: any, val: number[] | string) {
-            if (Array.isArray(val)) {
-                this.setDataValue(this.name, JSON.stringify(val));
-            } else if (typeof val === 'string') {
-                try {
-                    const parsed = JSON.parse(val);
-                    this.setDataValue(this.name, Array.isArray(parsed) ? val : '[]');
-                } catch {
-                    this.setDataValue(this.name, '[]');
-                }
-            } else {
-                this.setDataValue(this.name, '[]');
-            }
-        }
-    };
-}
 
 function init(sequelize: Sequelize) {
     DataModel.init(
@@ -74,16 +41,73 @@ function init(sequelize: Sequelize) {
                 primaryKey: true,
             },
             branch_user_id: {
-                ...jsonArrayField(),
+                // Store as TEXT for JSON array of numbers (e.g., "[1,2,3]")
+                type: DataTypes.TEXT,
                 allowNull: false,
+                get() {
+                    const raw = this.getDataValue('branch_user_id');
+                    if (typeof raw === 'string') {
+                        try {
+                            return JSON.parse(raw);
+                        } catch {
+                            return raw;
+                        }
+                    }
+                    return raw;
+                },
+                set(val: number[] | string) {
+                    if (Array.isArray(val)) {
+                        this.setDataValue('branch_user_id', JSON.stringify(val));
+                    } else {
+                        this.setDataValue('branch_user_id', val);
+                    }
+                },
             },
             branch_id: {
-                ...jsonArrayField(),
+            // Store as TEXT for JSON array of numbers (e.g., "[1,2,3]")
+                type: DataTypes.TEXT,
                 allowNull: false,
+                get() {
+                    const raw = this.getDataValue('branch_id');
+                    if (typeof raw === 'string') {
+                        try {
+                            return JSON.parse(raw);
+                        } catch {
+                            return raw;
+                        }
+                    }
+                    return raw;
+                },
+                set(val: number[] | string) {
+                    if (Array.isArray(val)) {
+                        this.setDataValue('branch_id', JSON.stringify(val));
+                    } else {
+                        this.setDataValue('branch_id', val);
+                    }
+                },
             },
             academic_year_id: {
-                ...jsonArrayField(),
+            // Store as TEXT for JSON array of numbers (e.g., "[1,2,3]")
+                type: DataTypes.TEXT,
                 allowNull: false,
+                get() {
+                    const raw = this.getDataValue('academic_year_id');
+                    if (typeof raw === 'string') {
+                        try {
+                            return JSON.parse(raw);
+                        } catch {
+                            return raw;
+                        }
+                    }
+                    return raw;
+                },
+                set(val: number[] | string) {
+                    if (Array.isArray(val)) {
+                        this.setDataValue('academic_year_id', JSON.stringify(val));
+                    } else {
+                        this.setDataValue('academic_year_id', val);
+                    }
+                },
             },
             title: {
                 type: DataTypes.STRING,

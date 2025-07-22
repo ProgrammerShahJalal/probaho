@@ -64,14 +64,15 @@ async function store(
         branch_user_id:
             typeof body.branch_user_id === 'string'
                 ? JSON.parse(body.branch_user_id)
-                : body.branch_user_id,
-        branch_id: body.branch_id === 'string'
+                : body.branch_user_id || [],
+        branch_id:
+            typeof body.branch_id === 'string'
                 ? JSON.parse(body.branch_id)
-                : body.branch_id || [1], // Default to branch_id 1 if not provided
+                : body.branch_id || [1],
         academic_year_id:
             typeof body.academic_year_id === 'string'
                 ? JSON.parse(body.academic_year_id)
-                : body.academic_year_id,
+                : body.academic_year_id || [],
         title: body.title,
         description: body.description,
         value: body.value,
