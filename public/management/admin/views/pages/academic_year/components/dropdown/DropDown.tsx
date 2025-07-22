@@ -24,6 +24,11 @@ const DropDown: React.FC<Props> = ({ name, get_selected_data, multiple, default_
     );
     const dispatch = useAppDispatch();
     useEffect(() => {
+        dispatch(
+            storeSlice.actions.set_select_fields(
+                'id,title,start_month,end_month,is_locked,status',
+            ),
+        );
         dispatch(storeSlice.actions.set_only_latest_data(true));
         dispatch(all({}));
     }, []);
@@ -112,7 +117,7 @@ const DropDown: React.FC<Props> = ({ name, get_selected_data, multiple, default_
                                                     />
                                                 </div>
                                                 <div className="label">
-                                                    {i.first_name } {i.last_name}
+                                                    {i.title }
                                                 </div>
                                             </label>
                                         </li>

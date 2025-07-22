@@ -6,6 +6,7 @@ import * as UserRolesModel from "../modules/user_roles/models/model";
 import * as UserLoginHistoriesModel from "../modules/user_login_histories/models/model";
 
 import * as AcademicYearModel from "../modules/academic_year_management/models/model";
+import * as AcademicBatchIdRuleModel from "../modules/academic_batch_id_rules/models/model";
 import { Sequelize } from "sequelize";
 
 
@@ -19,6 +20,7 @@ export type model_types = {
     UserLoginHistoriesModel: typeof UserLoginHistoriesModel.DataModel;
 
     AcademicYearModel: typeof AcademicYearModel.DataModel;
+    AcademicBatchIdRuleModel: typeof AcademicBatchIdRuleModel.DataModel;
 
 }
 

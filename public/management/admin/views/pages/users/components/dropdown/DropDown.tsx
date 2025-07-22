@@ -112,7 +112,7 @@ const DropDown: React.FC<Props> = ({ name, get_selected_data, multiple, default_
                                                     />
                                                 </div>
                                                 <div className="label">
-                                                    {i.first_name } {i.last_name}
+                                                    {i.name }
                                                 </div>
                                             </label>
                                         </li>
