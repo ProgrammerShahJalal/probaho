@@ -1,4 +1,4 @@
-import { FindAndCountOptions } from 'sequelize';
+import { FindAndCountOptions, Op } from 'sequelize';
 import db from '../models/db';
 import { FastifyInstance, FastifyRequest } from 'fastify';
 import response from '../../../helpers/response';
@@ -57,10 +57,10 @@ async function all(
     if (!validate_result.isEmpty()) {
         return response(422, 'validation error', validate_result.array());
     }
+
     /** initializations */
     let models = Models.get();
     let query_param = req.query as any;
-    const { Op } = require('sequelize');
     let search_key = query_param.search_key;
     let orderByCol = query_param.orderByCol || 'id';
     let orderByAsc = query_param.orderByAsc || 'true';
@@ -68,52 +68,83 @@ async function all(
     let show_trash_data = query_param.show_trash_data === 'true' ? true : false;
     let paginate = query_param.paginate ? parseInt(query_param.paginate) : undefined;
     let select_fields: string[] = [];
-    let exclude_fields: string[] = ['password'];
 
     // Add date range parameters
     let start_date = query_param.start_date;
     let end_date = query_param.end_date;
 
+    // Handle select fields
     if (query_param.select_fields) {
         select_fields = query_param.select_fields.replace(/\s/g, '').split(',');
-        select_fields = [...select_fields, 'id', 'status', 'created_at', 'updated_at', 'deleted_at'];
+        // Always include essential fields for proper functioning
+        select_fields = [...new Set([...select_fields, 'id', 'status', 'created_at', 'updated_at', 'deleted_at'])];
     } else {
-        select_fields = ['id', 'title', 'start_month', 'end_month', 'is_locked', 'status', 'created_at', 'updated_at', 'deleted_at'];
+        // Default fields
+        select_fields = [
+            'id', 
+            'title', 
+            'description', 
+            'value',
+            'start_month', 
+            'end_month', 
+            'is_locked', 
+            'status', 
+            'created_at', 
+            'updated_at', 
+            'deleted_at'
+        ];
     }
 
+    // Build the main query
     let query: FindAndCountOptions = {
         order: [[orderByCol, orderByAsc == 'true' ? 'ASC' : 'DESC']],
-        where: {
-            status: show_active_data == 'true' ? 'active' : 'deactive',
-        },
+        attributes: [
+            ...select_fields,
+            'branch_user_id',
+            'branch_id',
+            'academic_year_id'
+        ],
         include: [
             {
                 model: models.UserModel,
-                as: 'users',
+                as: 'user',
                 attributes: ['id', 'name'],
+                required: false,
+                where: search_key ? {
+                    name: { [Op.like]: `%${search_key}%` }
+                } : undefined
             },
             {
                 model: models.BranchInfosModel,
-                as: 'branches',
+                as: 'branch',
                 attributes: ['id', 'name'],
+                required: false,
+                where: search_key ? {
+                    name: { [Op.like]: `%${search_key}%` }
+                } : undefined
             },
             {
                 model: models.AcademicYearModel,
-                as: 'academic_years',
+                as: 'academic_year',
                 attributes: ['id', 'title'],
-            },
+                required: false,
+                where: search_key ? {
+                    title: { [Op.like]: `%${search_key}%` }
+                } : undefined
+            }
         ]
     };
 
-    query.attributes = select_fields;
+    // Handle soft deletion and paranoid settings
     (query as any).paranoid = true; // Enable soft deletion by default
+
     // Base conditions for soft deletion and status
     if (show_trash_data) {
         // Only show deleted items, do not filter by status
         query.where = {
             deleted_at: { [Op.ne]: null },
         };
-        (query as any).paranoid = false;
+        (query as any).paranoid = false; // Disable paranoid to see deleted records
     } else {
         // Only show non-deleted items and filter by status
         query.where = {
@@ -122,7 +153,7 @@ async function all(
         };
     }
 
-    // Add date range filtering if both start and end dates are provided
+    // Add date range filtering
     if (start_date && end_date) {
         query.where = {
             ...query.where,
@@ -131,7 +162,6 @@ async function all(
             }
         };
     } 
-    // Optional: handle cases where only one date is provided
     else if (start_date) {
         query.where = {
             ...query.where,
@@ -149,16 +179,24 @@ async function all(
         };
     }
 
+    // Add search functionality across main and related tables
     if (search_key) {
         query.where = {
             ...query.where,
             [Op.or]: [
+                // Search in main table fields
                 { id: { [Op.like]: `%${search_key}%` } },
                 { title: { [Op.like]: `%${search_key}%` } },
-                // Add these lines to search by associated or related table attributes
-                { '$users.name$': { [Op.like]: `%${search_key}%` } },
-                { '$branches.name$': { [Op.like]: `%${search_key}%` } },
-                { '$academic_years.title$': { [Op.like]: `%${search_key}%` } },
+                { description: { [Op.like]: `%${search_key}%` } },
+                { value: { [Op.like]: `%${search_key}%` } },
+                // Search in JSON array fields
+                { branch_user_id: { [Op.like]: `%${search_key}%` } },
+                { branch_id: { [Op.like]: `%${search_key}%` } },
+                { academic_year_id: { [Op.like]: `%${search_key}%` } },
+                // Search in related table fields using Sequelize's nested syntax
+                { '$user.name$': { [Op.like]: `%${search_key}%` } },
+                { '$branch.name$': { [Op.like]: `%${search_key}%` } },
+                { '$academic_year.title$': { [Op.like]: `%${search_key}%` } },
             ],
         };
     }
@@ -177,8 +215,40 @@ async function all(
         } else {
             // Fetch all data when paginate is not provided
             const result = await UserRolesModel.findAndCountAll(query);
+            
+            // Process the results to include related data
+            const processedRows = await Promise.all(result.rows.map(async (row: any) => {
+                const rowData = row.toJSON();
+                
+                // Handle User data based on branch_user_id array
+                if (rowData.branch_user_id && Array.isArray(rowData.branch_user_id)) {
+                    rowData.users = await models.UserModel.findAll({
+                        where: { id: rowData.branch_user_id },
+                        attributes: ['id', 'name']
+                    });
+                }
+                
+                // Handle Branch data based on branch_id array
+                if (rowData.branch_id && Array.isArray(rowData.branch_id)) {
+                    rowData.branches = await models.BranchInfosModel.findAll({
+                        where: { id: rowData.branch_id },
+                        attributes: ['id', 'name']
+                    });
+                }
+                
+                // Handle Academic Year data based on academic_year_id array
+                if (rowData.academic_year_id && Array.isArray(rowData.academic_year_id)) {
+                    rowData.academic_years = await models.AcademicYearModel.findAll({
+                        where: { id: rowData.academic_year_id },
+                        attributes: ['id', 'title']
+                    });
+                }
+                
+                return rowData;
+            }));
+            
             data = {
-                data: result.rows,
+                data: processedRows,
                 total: result.count,
                 page: 1,
                 limit: result.count,
