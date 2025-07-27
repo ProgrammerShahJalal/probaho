@@ -45,51 +45,72 @@ const Create: React.FC<Props> = (props: Props) => {
                         >
                             <div>
                                 <h5 className="mb-4">Basic Informations</h5>
-                                <div className="form_auto_fit">
-                                    {[
-                                        'branch_user_id',
-                                        'academic_year_id',
-                                        'title',
-                                        'description',
-                                        'value',
-                                    ].map((i) => (
-                                        <div
-                                            key={i}
-                                            className="form-group form-vertical"
-                                        >
-                                            {
-                                                i === 'branch_user_id' ? (
-                                                    <>
-                                                    <label>Branch User</label>
-                                                    <UsersDropDown
-                                                        name={i}
-                                                        multiple={false}
-                                                        get_selected_data={(result) =>
-                                                            console.log(result)
-                                                        }
-                                                    />
-                                                    </>
-                                                ) : i === 'academic_year_id' ? (
-                                                    <>
-                                                    <label>Academic Year</label>
-                                                    <AcademicYearsDropDown
-                                                        name={i}
-                                                        multiple={false}
-                                                        get_selected_data={(result) =>
-                                                            console.log(result)
-                                                        }
-                                                    />
-                                                    </>
-                                                ) : (
-
-                                                    <Input name={i} />
-                                                )
-
-
-                                            }
-
+                                
+                                {/* Row 1: Branch User and Academic Year */}
+                                <div className="row mb-3">
+                                    <div className="col-md-4">
+                                        <div className="form-group form-vertical">
+                                            <label>Branch User</label>
+                                            <UsersDropDown
+                                                name="branch_user_id"
+                                                multiple={false}
+                                                get_selected_data={(result) =>
+                                                    console.log(result)
+                                                }
+                                            />
                                         </div>
-                                    ))}
+                                    </div>
+                                    <div className="col-md-4">
+                                        <div className="form-group form-vertical">
+                                            <label>Academic Year</label>
+                                            <AcademicYearsDropDown
+                                                name="academic_year_id"
+                                                multiple={false}
+                                                get_selected_data={(result) =>
+                                                    console.log(result)
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Row 2: Title */}
+                                <div className="row mb-3">
+                                    <div className="col-12">
+                                        <div className="form-group form-vertical">
+                                            <Input name="title" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Row 3: Description */}
+                                <div className="row mb-3">
+                                    <div className="col-12">
+                                        <div className="form-group form-vertical">
+                                            <label>Description</label>
+                                            <textarea
+                                                name="description"
+                                                className="form-control"
+                                                rows={4}
+                                                placeholder="Enter description..."
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Row 4: Value */}
+                                <div className="row mb-3">
+                                    <div className="col-12">
+                                        <div className="form-group form-vertical">
+                                            <label>Value</label>
+                                            <textarea
+                                                name="value"
+                                                className="form-control"
+                                                rows={3}
+                                                placeholder="Enter value..."
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
