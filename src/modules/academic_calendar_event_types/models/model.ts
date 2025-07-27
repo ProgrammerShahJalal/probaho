@@ -7,8 +7,8 @@ import {
     CreationOptional,
 } from 'sequelize';
 
-const tableName = 'academic_batch_id_rules';
-const modelName = 'AcademicBatchIdRuleModel';
+const tableName = 'academic_calendar_event_types';
+const modelName = 'AcademicCalendarEventTypesModel';
 
 type Infer = InferAttributes<DataModel>;
 type InferCreation = InferCreationAttributes<DataModel>;
@@ -22,8 +22,7 @@ class DataModel extends Model<Infer, InferCreation> {
     declare branch_id: number[] | string;
     declare academic_year_id: number[] | string;
     declare title: string;
-    declare description?: string;
-    declare value: string;
+    declare description: string;
     
     declare status?: status;
     declare created_at?: CreationOptional<Date>;
@@ -112,14 +111,10 @@ function init(sequelize: Sequelize) {
             title: {
                 type: DataTypes.STRING,
                 allowNull: false,
-            },
+            }, 
             description: {
                 type: DataTypes.TEXT,
                 allowNull: true,
-            },
-            value: {
-                type: DataTypes.STRING,
-                allowNull: false,
             },
             status: {
                 type: DataTypes.ENUM('active', 'deactive'),
