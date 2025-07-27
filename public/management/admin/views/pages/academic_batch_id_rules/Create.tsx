@@ -44,7 +44,6 @@ const Create: React.FC<Props> = (props: Props) => {
                             className="mx-auto pt-3"
                         >
                             <div>
-                                <h5 className="mb-4">Basic Informations</h5>
                                 
                                 {/* Row 1: Branch User and Academic Year */}
                                 <div className="row mb-3">

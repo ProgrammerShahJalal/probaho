@@ -74,7 +74,6 @@ const Edit: React.FC<Props> = (props: Props) => {
                                             This academic year is locked and cannot be edited.
                                         </div>
                                     )}
-                                    <h5 className="mb-4">Input Data</h5>
                                     
                                     {/* Row 1: Branch User and Academic Year */}
                                     <div className="row mb-3">
