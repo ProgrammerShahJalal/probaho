@@ -49,7 +49,7 @@ const All: React.FC<Props> = () => {
         <div className="page_content">
             <div className="explore_window fixed_size">
                 {/* Changed title to be static */}
-                <Header title={'All Academic Batch ID Rules'} />
+                <Header title={'All Academic Calendar Event Types'} />
 
                 <div className="content_body">
                     <div className="data_list">
