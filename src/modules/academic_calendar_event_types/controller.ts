@@ -16,7 +16,8 @@ import { handleServiceError } from '../../common/utils/controller_utils';
 import trash from './services/trash';
 import inactive from './services/inactive';
 import active from './services/active';
-import import_academic_batch_id_rules from './services/import_academic_batch_id_rules';
+import import_academic_batch_id_rules from './services/import_academic_calendar_event_types';
+import import_academic_calendar_event_types from './services/import_academic_calendar_event_types';
 
 
 export default function (fastify: FastifyInstance) {
@@ -111,7 +112,7 @@ export default function (fastify: FastifyInstance) {
             }
         },
 
-        import_academic_batch_id_rules: async function (req: FastifyRequest, res: FastifyReply) {
+        import_academic_calendar_event_types: async function (req: FastifyRequest, res: FastifyReply) {
                     try {
                         // The file should be available in req.body due to `attachFieldsToBody: 'keyValues'`
                         // and the custom onFile handler in app.ts.
@@ -137,7 +138,7 @@ export default function (fastify: FastifyInstance) {
                         (req as any).filePayload = filePart;
         
         
-                        let data: responseObject = await import_academic_batch_id_rules(fastify, req);
+                        let data: responseObject = await import_academic_calendar_event_types(fastify, req);
                         return res.code(data.status).send(data);
                     } catch (error: any) {
                         return handleServiceError(error, res);

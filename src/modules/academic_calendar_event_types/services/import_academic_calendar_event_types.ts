@@ -6,14 +6,15 @@ import { responseObject } from '../../../common_types/object';
 import Models from '../../../database/models';
 
 interface ImportData {
+    branch_user_id: number[] | string;
+    branch_id?: number[] | string; // Allow single or multiple branches
+    academic_year_id: number[] | string;
     title: string;
-    start_month: string;
-    end_month: string;
-    is_locked?: '0' | '1';
+    description?: string;
     status?: 'active' | 'deactive'; 
 }
 
-export default async function import_academic_batch_id_rules(
+export default async function import_academic_calendar_event_types(
     fastify: FastifyInstance,
     req: FastifyRequest,
 ): Promise<responseObject> {
@@ -61,15 +62,16 @@ export default async function import_academic_batch_id_rules(
 
                         try {
                             // --- 1. Basic Validation ---
-                            if (!row.start_month || !row.end_month || !row.title || !row.is_locked || !row.status) {
-                                throw new Error(`Missing required fields (start_month, end_month, title, is_locked, status).`);
+                            if (!row.branch_user_id || !row.academic_year_id || !row.title || !row.description || !row.status) {
+                                throw new Error(`Missing required fields (branch_user_id, academic_year_id, title, description, status).`);
                             }
 
-                            await models.AcademicYearModel.create({
-                                start_month: row.start_month,
-                                end_month: row.end_month,
+                            await models.AcademicCalendarEventTypesModel.create({
+                                branch_user_id: row.branch_user_id,
+                                branch_id: row.branch_id || [1], // Default to branch 1 if not provided
+                                academic_year_id: row.academic_year_id,
                                 title: row.title,
-                                is_locked: row.is_locked === '1', // Convert '1' to true, '0' to false
+                                description: row.description,
                                 status: row.status,
                             });
                             successfulImports++;
@@ -101,11 +103,11 @@ export default async function import_academic_batch_id_rules(
         });
 
     } catch (error: any) {
-        console.error('Error in import_academic_years service:', error);
+        console.error('Error in import_academic_calendar_event_types service:', error);
         // This catches errors from Papa.parse if it rejects, or other synchronous errors
         return {
             status: error.status || 500,
-            message: error.message || 'An unexpected error occurred during academic year import.',
+            message: error.message || 'An unexpected error occurred during academic calendar event types import.',
             data: error.data || null,
         };
     }

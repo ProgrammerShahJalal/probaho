@@ -11,7 +11,7 @@ interface ImportData {
     academic_year_id: number[] | string;
     title: string;
     description?: string;
-    value?: string;
+    value: string;
     status?: 'active' | 'deactive'; 
 }
 
@@ -63,8 +63,8 @@ export default async function import_academic_batch_id_rules(
 
                         try {
                             // --- 1. Basic Validation ---
-                            if (!row.branch_user_id || !row.academic_year_id || !row.title || !row.description || !row.value || !row.status) {
-                                throw new Error(`Missing required fields (start_month, end_month, title, is_locked, status).`);
+                            if (!row.branch_user_id || !row.academic_year_id || !row.title || !row.description || !row.status) {
+                                throw new Error(`Missing required fields (branch_user_id, academic_year_id, title, description, status).`);
                             }
 
                             await models.AcademicBatchIdRuleModel.create({

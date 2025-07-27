@@ -18,10 +18,11 @@ const ExportAll: React.FC<Props> = (props: Props) => {
     const confirm_export = () => {
         const columns = [
             'id',
+            'branch_user_id',
+            'branch_id',
+            'academic_year_id',
             'title',
-            'start_month',
-            'end_month',
-            'is_locked',
+            'description',
             'status',
         ];
         const rows: string[][] = [];

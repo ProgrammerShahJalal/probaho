@@ -18,7 +18,7 @@ module.exports = function (fastify: FastifyInstance, opts: {}, done: () => void)
                 .post(`/trash`, controllerInstance.trash)
                 .post(`/restore`, controllerInstance.restore)
                 .post(`/destroy`, controllerInstance.destroy)
-                .post(`/import`, controllerInstance.import_academic_batch_id_rules)
+                .post(`/import`, controllerInstance.import_academic_calendar_event_types)
                 .get(`/:id`, controllerInstance.find);
         },
         { prefix },

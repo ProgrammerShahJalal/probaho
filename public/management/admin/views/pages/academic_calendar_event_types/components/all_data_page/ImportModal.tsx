@@ -57,16 +57,17 @@ const ImportModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) => {
 
     const handleDownloadDemo = () => {
         const columns = [
+            'branch_user_id',
+            'branch_id', //optional
+            'academic_year_id',
             'title',
-            'start_month',
-            'end_month',
-            'is_locked',
+            'description',
             'status',
         ];
         // Create one empty row to show the structure
         const emptyRow = columns.map(() => ''); 
 
-        new CsvBuilder('demo_academic_years_import_template.csv')
+        new CsvBuilder('demo_academic_calendar_event_types_import_template.csv')
             .setColumns(columns)
             .addRows([emptyRow]) // Add the single empty row
             .exportFile();
