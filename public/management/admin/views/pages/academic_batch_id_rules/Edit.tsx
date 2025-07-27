@@ -85,61 +85,69 @@ const Edit: React.FC<Props> = (props: Props) => {
                                         ].map((i) => (
                                             <div key={i} className="form-group form-vertical">
                                                 {
-                                                i === 'branch_user_id' ? (
-                                                    <>
-                                                    <label>Branch User</label>
-                                                    <UsersDropDown
-                                                        name={i}
-                                                        multiple={false}
-                                                        get_selected_data={(result) =>
-                                                            console.log(result)
-                                                        }
-                                                        default_value={
-                                                                getValueForEdit(state,
-                                                                    i,
-                                                                )
-                                                                    ? [
-                                                                        {
-                                                                            id: getValueForEdit(state,
-                                                                                i,
-                                                                            ),
-                                                                        },
-                                                                    ]
-                                                                    : []
-                                                            }
-                                                    />
-                                                    </>
-                                                ) : i === 'academic_year_id' ? (
-                                                    <>
-                                                    <label>Academic Year</label>
-                                                    <AcademicYearsDropDown
-                                                        name={i}
-                                                        multiple={false}
-                                                        get_selected_data={(result) =>
-                                                            console.log(result)
-                                                        }
-                                                        default_value={
-                                                                getValueForEdit(state,
-                                                                    i,
-                                                                )
-                                                                    ? [
-                                                                        {
-                                                                            id: getValueForEdit(state,
-                                                                                i,
-                                                                            ),
-                                                                        },
-                                                                    ]
-                                                                    : []
-                                                            }
-                                                    />
-                                                    </>
-                                                ) : (
+                                                    i === 'branch_user_id' ? (
+                                                        <>
+                                                            <label>Branch User</label>
+                                                            <UsersDropDown
+                                                                name={i}
+                                                                multiple={false}
+                                                                default_value={
+                                                                    getValueForEdit(state,
+                                                                        i,
+                                                                    )
+                                                                        ? [
+                                                                            {
+                                                                                id: getValueForEdit(state,
+                                                                                    i,
+                                                                                ),
+                                                                            },
+                                                                        ]
+                                                                        : []
+                                                                }
+                                                                get_selected_data={(
+                                                                    data,
+                                                                ) =>
+                                                                    console.log(
+                                                                        data,
+                                                                    )
+                                                                }
+                                                            />
+                                                        </>
+                                                    ) : i === 'academic_year_id' ? (
+                                                        <>
+                                                            <label>Academic Year</label>
+                                                            <AcademicYearsDropDown
+                                                                name={i}
+                                                                multiple={false}
+                                                                default_value={
+                                                                    getValueForEdit(state,
+                                                                        i,
+                                                                    )
+                                                                        ? [
+                                                                            {
+                                                                                id: getValueForEdit(state,
+                                                                                    i,
+                                                                                ),
+                                                                            },
+                                                                        ]
+                                                                        : []
+                                                                }
+                                                                get_selected_data={(
+                                                                    data,
+                                                                ) =>
+                                                                    console.log(
+                                                                        data,
+                                                                    )
+                                                                }
+                                                            />
+                                                        </>
+                                                    ) : (
 
-                                                    <Input name={i} value={getValueForEdit(state, i)} />
-                                                )
+                                                        <Input name={i} value={getValueForEdit(state, i)} />
+                                                    )
 
 
-                                            }
+                                                }
                                             </div>
                                         ))}
                                     </div>
