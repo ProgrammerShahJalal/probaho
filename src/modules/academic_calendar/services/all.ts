@@ -148,6 +148,11 @@ async function all(
             attributes: ['id'],
         }).then((years: any) => years.map((year: any) => year.id));
 
+        const academic_calendar_event_types_ids = await models.AcademicCalendarEventTypesModel.findAll({
+            where: { title: { [Op.like]: `%${search_key}%` } },
+            attributes: ['id'],
+        }).then((event_types: any) => event_types.map((event_type: any) => event_type.id));
+
         // Build the search conditions
         const search_conditions: any[] = [
             { id: { [Op.like]: `%${search_key}%` } },
@@ -171,6 +176,7 @@ async function all(
         addJsonSearchConditions('branch_user_id', user_ids);
         addJsonSearchConditions('branch_id', branch_ids);
         addJsonSearchConditions('academic_year_id', academic_year_ids);
+        addJsonSearchConditions('academic_calendar_event_types_id', academic_calendar_event_types_ids);
 
         query.where = {
             ...query.where,
@@ -199,6 +205,10 @@ async function all(
             id: number;
             name: string;
         }
+        interface AcademicCalendarEventType {
+            id: number;
+            title: string;
+        }
 
         const afterFindHook = async (results: any[], options: AfterFindHookOptions) => {
             if (!results.length) {
@@ -209,6 +219,7 @@ async function all(
             const user_ids = new Set<number>();
             const branch_ids = new Set<number>();
             const academic_year_ids = new Set<number>();
+            const academic_calendar_event_types_ids = new Set<number>();
         
             results.forEach((item) => {
                 if (item.branch_user_id) {
@@ -220,10 +231,13 @@ async function all(
                 if (item.academic_year_id) {
                     item.academic_year_id.forEach((id: number) => academic_year_ids.add(id));
                 }
+                if (item.academic_calendar_event_types_id) {
+                    item.academic_calendar_event_types_id.forEach((id: number) => academic_calendar_event_types_ids.add(id));
+                }
             });
         
             // Fetch all related data in bulk
-            const [users, branches, academic_years] = await Promise.all([
+            const [users, branches, academic_years, academic_calendar_event_types] = await Promise.all([
                 models.UserModel.findAll({
                     where: { id: { [Op.in]: [...user_ids] } },
                     attributes: ['id', 'name'],
@@ -236,12 +250,17 @@ async function all(
                     where: { id: { [Op.in]: [...academic_year_ids] } },
                     attributes: ['id', 'title'],
                 }) as Promise<AcademicYear[]>,
+                models.AcademicCalendarEventTypesModel.findAll({
+                    where: { id: { [Op.in]: [...academic_calendar_event_types_ids] } },
+                    attributes: ['id', 'title'],
+                }) as Promise<AcademicCalendarEventType[]>,
             ]);
         
             // Create maps for quick lookups
             const user_map = new Map(users.map((user) => [user.id, user]));
             const branch_map = new Map(branches.map((branch) => [branch.id, branch]));
             const academic_year_map = new Map(academic_years.map((year) => [year.id, year]));
+            const academic_calendar_event_types_map = new Map(academic_calendar_event_types.map((event_type) => [event_type.id, event_type]));
         
             // Attach related data to results
             for (const item of results) {
@@ -258,6 +277,11 @@ async function all(
                 if (item.academic_year_id) {
                     item.dataValues.academic_years = item.academic_year_id
                         .map((id: number) => academic_year_map.get(id))
+                        .filter(Boolean);
+                }
+                if (item.academic_calendar_event_types_id) {
+                    item.dataValues.academic_calendar_event_types = item.academic_calendar_event_types_id
+                        .map((id: number) => academic_calendar_event_types_map.get(id))
                         .filter(Boolean);
                 }
             }

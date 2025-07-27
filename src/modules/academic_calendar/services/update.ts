@@ -58,14 +58,18 @@ async function update(
 
     /** store data into database */
     try {
-        let data = await models.AcademicCalendarEventTypesModel.findByPk(body.id);
+        let data = await models.AcademicCalendarModel.findByPk(body.id);
         if (data) {
             let inputs: InferCreationAttributes<typeof user_model> = {
                 branch_user_id: body.branch_user_id || data.branch_user_id,
                 branch_id: body.branch_id || data.branch_id,
                 academic_year_id: body.academic_year_id || data.academic_year_id,
-                title: body.title || data.title,
+                academic_calendar_event_types_id:
+                    body.academic_calendar_event_types_id ||
+                    data.academic_calendar_event_types_id,
+                event_name: body.event_name || data.event_name,
                 description: body.description || data.description,
+                date: body.date ? moment(body.date).toDate() : data.date,
             };
             data.update(inputs);
             await data.save();
