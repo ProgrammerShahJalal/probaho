@@ -47,6 +47,10 @@ const SideBar: React.FC<Props> = (props: Props) => {
                 <MenuDropDown group_title="Academic" icon="icon-book">
                     <MenuDropDownItem label="Academic Year" to="/academic-year" />
                     <MenuDropDownItem label="Academic Batch ID Rules" to="/academic-batch-id-rules" />
+                    <MenuDropDownItem
+                        label="Academic Calendar Event Types"
+                        to="/academic-calendar-event-types"
+                    />
                 </MenuDropDown>
 
                 <li>

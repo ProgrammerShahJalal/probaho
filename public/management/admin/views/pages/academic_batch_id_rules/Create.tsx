@@ -5,18 +5,12 @@ import setup from './config/setup';
 import { RootState, useAppDispatch } from '../../../store';
 import { store } from './config/store/async_actions/store';
 import Input from './components/management_data_page/Input';
-import Select from './components/management_data_page/Select';
-import InputImage from './components/management_data_page/InputImage';
-import InputFile from './components/management_data_page/InputFile';
 import { anyObject } from '../../../common_types/object';
 import UsersDropDown from '../users/components/dropdown/DropDown';
 import AcademicYearsDropDown from '../academic_year/components/dropdown/DropDown';
 import { initialState } from './config/store/inital_state';
 import { useSelector } from 'react-redux';
-import { getValue } from '../utils/getValue';
-import DateEl from '../../components/DateEl';
-import TextEditor from './components/management_data_page/TextEditor';
-import BloodGroupSelector from './components/management_data_page/BloodGroupSelector';
+
 
 export interface Props { }
 
@@ -50,52 +44,72 @@ const Create: React.FC<Props> = (props: Props) => {
                             className="mx-auto pt-3"
                         >
                             <div>
-                                <h5 className="mb-4">Basic Informations</h5>
-                                <div className="form_auto_fit">
-                                    {[
-                                        'branch_user_id',
-                                        'academic_year_id',
-                                        'title',
-                                        'description',
-                                        'value',
-                                    ].map((i) => (
-                                        <div
-                                            key={i}
-                                            className="form-group form-vertical"
-                                        >
-                                            {
-                                                i === 'branch_user_id' ? (
-                                                    <>
-                                                    <label>Branch User</label>
-                                                    <UsersDropDown
-                                                        name={i}
-                                                        multiple={false}
-                                                        get_selected_data={(result) =>
-                                                            console.log(result)
-                                                        }
-                                                    />
-                                                    </>
-                                                ) : i === 'academic_year_id' ? (
-                                                    <>
-                                                    <label>Academic Year</label>
-                                                    <AcademicYearsDropDown
-                                                        name={i}
-                                                        multiple={false}
-                                                        get_selected_data={(result) =>
-                                                            console.log(result)
-                                                        }
-                                                    />
-                                                    </>
-                                                ) : (
-
-                                                    <Input name={i} />
-                                                )
-
-
-                                            }
-
+                                
+                                {/* Row 1: Branch User and Academic Year */}
+                                <div className="row mb-3">
+                                    <div className="col-md-4">
+                                        <div className="form-group form-vertical">
+                                            <label>Branch User</label>
+                                            <UsersDropDown
+                                                name="branch_user_id"
+                                                multiple={false}
+                                                get_selected_data={(result) =>
+                                                    console.log(result)
+                                                }
+                                            />
                                         </div>
-                                    ))}
+                                    </div>
+                                    <div className="col-md-4">
+                                        <div className="form-group form-vertical">
+                                            <label>Academic Year</label>
+                                            <AcademicYearsDropDown
+                                                name="academic_year_id"
+                                                multiple={false}
+                                                get_selected_data={(result) =>
+                                                    console.log(result)
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Row 2: Title */}
+                                <div className="row mb-3">
+                                    <div className="col-12">
+                                        <div className="form-group form-vertical">
+                                            <Input name="title" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Row 3: Description */}
+                                <div className="row mb-3">
+                                    <div className="col-12">
+                                        <div className="form-group form-vertical">
+                                            <label>Description</label>
+                                            <textarea
+                                                name="description"
+                                                className="form-control"
+                                                rows={4}
+                                                placeholder="Enter description..."
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Row 4: Value */}
+                                <div className="row mb-3">
+                                    <div className="col-12">
+                                        <div className="form-group form-vertical">
+                                            <label>Value</label>
+                                            <textarea
+                                                name="value"
+                                                className="form-control"
+                                                rows={3}
+                                                placeholder="Enter value..."
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 

@@ -10,14 +10,10 @@ import { Link, useParams } from 'react-router-dom';
 import storeSlice from './config/store';
 import { update } from './config/store/async_actions/update';
 import Input from './components/management_data_page/Input';
-// import InputImage from './components/management_data_page/InputImage'; // InputImage is used for user photo
-import InputImage from './components/management_data_page/InputImage';
-import InputFile from './components/management_data_page/InputFile'; // Import the new InputFile component
-import UserRolesDropDown from '../user_roles/components/dropdown/DropDown';
-import DateEl from '../../components/DateEl';
-import TextEditor from './components/management_data_page/TextEditor';
+import UsersDropDown from '../users/components/dropdown/DropDown';
+import AcademicYearsDropDown from '../academic_year/components/dropdown/DropDown';
 import { getValueForEdit } from '../utils/getValue';
-import Select from './components/management_data_page/Select';
+
 
 export interface Props { }
 interface Document {
@@ -78,45 +74,92 @@ const Edit: React.FC<Props> = (props: Props) => {
                                             This academic year is locked and cannot be edited.
                                         </div>
                                     )}
-                                    <h5 className="mb-4">Input Data</h5>
-                                    <div className="form_auto_fit">
-                                        {[
-                                            'title',
-                                            'start_month',
-                                            'end_month',
-                                            'is_locked',
-                                        ].map((i) => (
-                                            <div key={i} className="form-group form-vertical">
-                                                {i === 'start_month' || i === 'end_month' ? (
-                                                    <DateEl
-                                                        label={i}
-                                                        name={i}
-                                                        value={getValueForEdit(state, i) ? String(getValueForEdit(state, i)).slice(0, 10) : ''}
-                                                        handler={(data) => dispatch(storeSlice.actions.set_item({ ...state.item, [i]: data.value }))}
-                                                        disabled={state.item.is_locked}
-                                                    />
-                                                ) : (
-                                                    i === 'is_locked' ? (
-                                                        <Select
-                                                            name={i}
-                                                            value={
-                                                                // Convert boolean to string for Select component
-                                                                getValueForEdit(state, i) === true || getValueForEdit(state, i) === 1 || getValueForEdit(state, i) === '1'
-                                                                    ? '1'
-                                                                    : '0'
-                                                            }
-                                                            values={[
-                                                                { value: '0', text: 'No' },
-                                                                { value: '1', text: 'Yes' },
-                                                            ]}
-                                                            disabled={state.item.is_locked}
-                                                        />
-                                                    ) : (
-                                                        <Input name={i} value={getValueForEdit(state, i)} disabled={state.item.is_locked} />
-                                                    )
-                                                )}
+                                    
+                                    {/* Row 1: Branch User and Academic Year */}
+                                    <div className="row mb-3">
+                                        <div className="col-md-4">
+                                            <div className="form-group form-vertical">
+                                                <label>Branch User</label>
+                                                <UsersDropDown
+                                                    name="branch_user_id"
+                                                    multiple={false}
+                                                    default_value={
+                                                        getValueForEdit(state, 'branch_user_id')
+                                                            ? [
+                                                                {
+                                                                    id: getValueForEdit(state, 'branch_user_id'),
+                                                                },
+                                                            ]
+                                                            : []
+                                                    }
+                                                    get_selected_data={(data) =>
+                                                        console.log(data)
+                                                    }
+                                                />
                                             </div>
-                                        ))}
+                                        </div>
+                                        <div className="col-md-4">
+                                            <div className="form-group form-vertical">
+                                                <label>Academic Year</label>
+                                                <AcademicYearsDropDown
+                                                    name="academic_year_id"
+                                                    multiple={false}
+                                                    default_value={
+                                                        getValueForEdit(state, 'academic_year_id')
+                                                            ? [
+                                                                {
+                                                                    id: getValueForEdit(state, 'academic_year_id'),
+                                                                },
+                                                            ]
+                                                            : []
+                                                    }
+                                                    get_selected_data={(data) =>
+                                                        console.log(data)
+                                                    }
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Row 2: Title */}
+                                    <div className="row mb-3">
+                                        <div className="col-12">
+                                            <div className="form-group form-vertical">
+                                                <Input name="title" value={getValueForEdit(state, 'title')} />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Row 3: Description */}
+                                    <div className="row mb-3">
+                                        <div className="col-12">
+                                            <div className="form-group form-vertical">
+                                                <label>Description</label>
+                                                <textarea
+                                                    name="description"
+                                                    className="form-control"
+                                                    rows={4}
+                                                    defaultValue={getValueForEdit(state, 'description')}
+                                                    placeholder="Enter description..."
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Row 4: Value */}
+                                    <div className="row mb-3">
+                                        <div className="col-12">
+                                            <div className="form-group form-vertical">
+                                                <label>Value</label>
+                                                <textarea
+                                                    name="value"
+                                                    className="form-control"
+                                                    rows={3}
+                                                    defaultValue={getValueForEdit(state, 'value')}
+                                                    placeholder="Enter value..."
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
                                     <div className="form-group form-vertical">
                                         <label></label>
