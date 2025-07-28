@@ -16,6 +16,8 @@ import TableRowAction from './components/all_data_page/TableRowAction';
 import SelectItem from './components/all_data_page/SelectItem';
 import SelectAll from './components/all_data_page/SelectIAll';
 import TableHeading from './components/all_data_page/TableHeading';
+import { truncateText, getTruncatedCellProps } from '../../../helpers/textUtils';
+import '../../../views/components/styles/table-truncation.css';
 
 export interface Props { }
 
@@ -127,9 +129,9 @@ const History: React.FC<Props> = (props: Props) => {
                                                         <SelectItem item={i} />
                                                     </td>
                                                     {/* ID  */}
-                                                    <td>{i.id}</td>
+                                                    <td className="id-cell">{i.id}</td>
                                                     {/* UID  */}
-                                                    <td>{`100${i.id}`}</td>
+                                                    <td className="id-cell">{`100${i.id}`}</td>
                                                     {/* IMAGE  */}
                                                     <td>
                                                         <img
@@ -145,14 +147,19 @@ const History: React.FC<Props> = (props: Props) => {
                                                         />
                                                     </td>
                                                     {/* Name  */}
-                                                    <td>
+                                                    <td
+                                                        {...getTruncatedCellProps({
+                                                            text: i.name,
+                                                            columnType: 'name'
+                                                        })}
+                                                    >
                                                         <span
                                                             className="quick_view_trigger"
                                                             onClick={() =>
                                                                 quick_view(i)
                                                             }
                                                         >
-                                                            {i.name}
+                                                            {truncateText(i.name, 20)}
                                                         </span>
                                                     </td>
                                                     {/* Month  */}

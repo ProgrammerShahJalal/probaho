@@ -12,7 +12,9 @@ import { update } from './config/store/async_actions/update';
 import Input from './components/management_data_page/Input';
 import UsersDropDown from '../users/components/dropdown/DropDown';
 import AcademicYearsDropDown from '../academic_year/components/dropdown/DropDown';
+import AcademicCalendarEventTypesDropDown from '../academic_calendar_event_types/components/dropdown/DropDown';
 import { getValueForEdit } from '../utils/getValue';
+import DateEl from '../../components/DateEl';
 
 
 export interface Props { }
@@ -119,13 +121,44 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                 />
                                             </div>
                                         </div>
+                                        <div className="col-md-4">
+                                            <div className="form-group form-vertical">
+                                                <label>Academic Calendar Event Type</label>
+                                                <AcademicCalendarEventTypesDropDown
+                                                    name="academic_calendar_event_types_id"
+                                                    multiple={false}
+                                                    default_value={
+                                                        getValueForEdit(state, 'academic_calendar_event_types_id')
+                                                            ? [
+                                                                {
+                                                                    id: getValueForEdit(state, 'academic_calendar_event_types_id'),
+                                                                },
+                                                            ]
+                                                            : []
+                                                    }
+                                                    get_selected_data={(data) =>
+                                                        console.log(data)
+                                                    }
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
 
                                     {/* Row 2: Title */}
                                     <div className="row mb-3">
-                                        <div className="col-12">
+                                        <div className="col-8">
                                             <div className="form-group form-vertical">
-                                                <Input name="title" value={getValueForEdit(state, 'title')} />
+                                                <Input name="event_name" value={getValueForEdit(state, 'event_name')} />
+                                            </div>
+                                        </div>
+                                        <div className="col-4">
+                                            <div className="form-group form-vertical">
+                                                <DateEl
+                                                    label='Date'
+                                                    name={'date'}
+                                                    value={getValueForEdit(state, 'date')}
+                                                    handler={(data) => dispatch(storeSlice.actions.set_item({ ...state.item, ['date']: data.value }))}
+                                                />
                                             </div>
                                         </div>
                                     </div>

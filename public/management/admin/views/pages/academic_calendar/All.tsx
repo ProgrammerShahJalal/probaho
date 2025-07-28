@@ -18,6 +18,8 @@ import TableHeading from './components/all_data_page/TableHeading';
 import { useSearchParams } from 'react-router-dom';
 import useUserRoles from '../../../hooks/useUserRoles';
 import moment from 'moment/moment';
+import { truncateText, formatArrayForTable, getTruncatedCellProps } from '../../../helpers/textUtils';
+import '../../../views/components/styles/table-truncation.css';
 
 export interface Props { }
 
@@ -117,21 +119,41 @@ const All: React.FC<Props> = () => {
                                                 <td>
                                                     <SelectItem item={i} />
                                                 </td>
-                                                <td>{i.id}</td>
-                                                <td>{i.branch_user_id ? i.users?.map((u)=> u.name): i.branch_user_id}</td>
-                                                <td>{i.academic_year_id ? i.academic_years?.map((ay)=> ay.title): i.academic_year_id}</td>
-                                                <td>
-                                                    {i.academic_calendar_event_types_id
-                                                        ? i.academic_calendar_event_types?.map(
-                                                              (aet) =>
-                                                                  aet.title,
-                                                          )
-                                                        : i.academic_calendar_event_types_id}
-                                                </td>
-                                                <td>{i.event_name}</td>
-                                                <td>{i.description}</td>
-                                                <td>{moment(i.date).format('D MMMM YYYY')}</td>
-                                                <td>{i.status}</td>
+                                                <td className="id-cell">{i.id}</td>
+                                                <td
+                                                    {...getTruncatedCellProps({
+                                                        text: i.branch_user_id ? formatArrayForTable(i.users, 'name') : i.branch_user_id,
+                                                        columnType: 'name'
+                                                    })}
+                                                />
+                                                <td
+                                                    {...getTruncatedCellProps({
+                                                        text: i.academic_year_id ? formatArrayForTable(i.academic_years, 'title') : i.academic_year_id,
+                                                        columnType: 'title'
+                                                    })}
+                                                />
+                                                <td
+                                                    {...getTruncatedCellProps({
+                                                        text: i.academic_calendar_event_types_id
+                                                            ? formatArrayForTable(i.academic_calendar_event_types, 'title')
+                                                            : i.academic_calendar_event_types_id,
+                                                        columnType: 'title'
+                                                    })}
+                                                />
+                                                <td
+                                                    {...getTruncatedCellProps({
+                                                        text: i.event_name,
+                                                        columnType: 'event_name'
+                                                    })}
+                                                />
+                                                <td
+                                                    {...getTruncatedCellProps({
+                                                        text: i.description,
+                                                        columnType: 'description'
+                                                    })}
+                                                />
+                                                <td className="date-cell">{moment(i.date).format('D MMMM YYYY')}</td>
+                                                <td className="status-cell">{i.status}</td>
                                             </tr>
                                         ),
                                     )}
