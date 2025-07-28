@@ -23,6 +23,7 @@ const Create: React.FC<Props> = (props: Props) => {
         (state: RootState) => state[setup.module_name],
     );
     const [data, setData] = useState<anyObject>({});
+    const [focusedDropdown, setFocusedDropdown] = useState<anyObject>({});
     const dispatch = useAppDispatch();
 
     async function handle_submit(e) {
@@ -63,6 +64,9 @@ const Create: React.FC<Props> = (props: Props) => {
                                                                 get_selected_data={(result) =>
                                                                     console.log(result)
                                                                 }
+                                                                isFocused={focusedDropdown["branch_user_id"]}
+                                                                onFocus={() => setFocusedDropdown({ branch_user_id: true })}
+                                                                onBlur={() => setFocusedDropdown({ branch_user_id: false })}
                                                             />
                                                         </div>
                                                     </div>
@@ -75,6 +79,9 @@ const Create: React.FC<Props> = (props: Props) => {
                                                                 get_selected_data={(result) =>
                                                                     console.log(result)
                                                                 }
+                                                                isFocused={focusedDropdown["academic_year_id"]}
+                                                                onFocus={() => setFocusedDropdown({ academic_year_id: true })}
+                                                                onBlur={() => setFocusedDropdown({ academic_year_id: false })}
                                                             />
                                                         </div>
                                                     </div>
@@ -93,6 +100,11 @@ const Create: React.FC<Props> = (props: Props) => {
                                                                 get_selected_data={(result) =>
                                                                     console.log(result)
                                                                 }
+                                                                isFocused={
+                                                                    focusedDropdown["academic_calendar_event_types_id"]
+                                                                }
+                                                                onFocus={() => setFocusedDropdown({ academic_calendar_event_types_id: true })}
+                                                                onBlur={() => setFocusedDropdown({ academic_calendar_event_types_id: false })}
                                                             />
                                                         </div>
                                                     </div>

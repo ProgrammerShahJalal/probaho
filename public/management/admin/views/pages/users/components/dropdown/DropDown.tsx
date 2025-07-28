@@ -16,6 +16,9 @@ export interface Props {
     get_selected_data?: (anyObject) => void;
     multiple: true | false;
     default_value?: anyObject[] | [];
+    isFocused?: boolean;
+    onFocus?: () => void;
+    onBlur?: () => void;
 }
 
 const DropDown: React.FC<Props> = ({
@@ -23,6 +26,9 @@ const DropDown: React.FC<Props> = ({
     get_selected_data,
     multiple,
     default_value,
+    isFocused,
+    onFocus,
+    onBlur,
 }) => {
     const state: typeof initialState = useSelector(
         (state: RootState) => state[setup.module_name],
@@ -80,7 +86,7 @@ const DropDown: React.FC<Props> = ({
 
     return (
         <>
-            <div className="custom_drop_down" style={{zIndex: 1000}}>
+            <div className="custom_drop_down" style={{ zIndex: isFocused ? 1003 : 1002 }} onFocus={onFocus} onBlur={onBlur}>
                 <input
                     type="hidden"
                     ref={selected_items_input}
