@@ -20,7 +20,7 @@ const DropDownSelectedItem: React.FC<Props> = ({
                 selectedList.map((i, index) => {
                     return (
                         <div id={i.id} key={index} className="selected_item">
-                            <div className="label">{i.title}</div>
+                            <div className="label">{i.first_name} {i.last_name}</div>
                             <div
                                 onClick={() => remove_item(index)}
                                 className="remove"

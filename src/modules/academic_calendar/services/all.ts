@@ -78,7 +78,7 @@ async function all(
         select_fields = query_param.select_fields.replace(/\s/g, '').split(',');
         select_fields = [...select_fields, 'id', 'status', 'created_at', 'updated_at', 'deleted_at'];
     } else {
-        select_fields = ['id', 'title', 'start_month', 'end_month', 'is_locked', 'status', 'created_at', 'updated_at', 'deleted_at'];
+        select_fields = ['id', 'event_name', 'date', 'description', 'status', 'created_at', 'updated_at', 'deleted_at'];
     }
 
     let query: FindAndCountOptions = {
@@ -153,12 +153,10 @@ async function all(
             attributes: ['id'],
         }).then((event_types: any) => event_types.map((event_type: any) => event_type.id));
 
-        // Build the search conditions
         const search_conditions: any[] = [
             { id: { [Op.like]: `%${search_key}%` } },
-            { title: { [Op.like]: `%${search_key}%` } },
+            { event_name: { [Op.like]: `%${search_key}%` } }, // Fixed: was 'title', now 'event_name'
             { description: { [Op.like]: `%${search_key}%` } },
-            { value: { [Op.like]: `%${search_key}%` } },
         ];
 
         const addJsonSearchConditions = (field: string, ids: number[]) => {
