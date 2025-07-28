@@ -10,12 +10,7 @@ import { Link, useParams } from 'react-router-dom';
 import storeSlice from './config/store';
 import { update } from './config/store/async_actions/update';
 import Input from './components/management_data_page/Input';
-// import InputImage from './components/management_data_page/InputImage'; // InputImage is used for user photo
-import InputImage from './components/management_data_page/InputImage';
-import InputFile from './components/management_data_page/InputFile'; // Import the new InputFile component
-import UserRolesDropDown from '../user_roles/components/dropdown/DropDown';
 import DateEl from '../../components/DateEl';
-import TextEditor from './components/management_data_page/TextEditor';
 import { getValueForEdit } from '../utils/getValue';
 import Select from './components/management_data_page/Select';
 
@@ -65,6 +60,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                             <form
                                 onSubmit={(e) => handle_submit(e)}
                                 className="mx-auto pt-3"
+                                style={{ maxWidth: '800px', width: '100%' }}
                             >
                                 <input
                                     type="hidden"
@@ -78,49 +74,62 @@ const Edit: React.FC<Props> = (props: Props) => {
                                             This academic year is locked and cannot be edited.
                                         </div>
                                     )}
-                                    <h5 className="mb-4">Input Data</h5>
-                                    <div className="form_auto_fit">
-                                        {[
-                                            'title',
-                                            'start_month',
-                                            'end_month',
-                                            'is_locked',
-                                        ].map((i) => (
-                                            <div key={i} className="form-group form-vertical">
-                                                {i === 'start_month' || i === 'end_month' ? (
-                                                    <DateEl
-                                                        label={i}
-                                                        name={i}
-                                                        value={getValueForEdit(state, i) ? String(getValueForEdit(state, i)).slice(0, 10) : ''}
-                                                        handler={(data) => dispatch(storeSlice.actions.set_item({ ...state.item, [i]: data.value }))}
-                                                        disabled={state.item.is_locked}
-                                                    />
-                                                ) : (
-                                                    i === 'is_locked' ? (
-                                                        <Select
-                                                            name={i}
-                                                            value={
-                                                                // Convert boolean to string for Select component
-                                                                getValueForEdit(state, i) === true || getValueForEdit(state, i) === 1 || getValueForEdit(state, i) === '1'
-                                                                    ? '1'
-                                                                    : '0'
-                                                            }
-                                                            values={[
-                                                                { value: '0', text: 'No' },
-                                                                { value: '1', text: 'Yes' },
-                                                            ]}
-                                                            disabled={state.item.is_locked}
-                                                        />
-                                                    ) : (
-                                                        <Input name={i} value={getValueForEdit(state, i)} disabled={state.item.is_locked} />
-                                                    )
-                                                )}
+                                    
+                                    {/* First row: Title and Is Locked */}
+                                    <div className="row">
+                                        <div className="col-6">
+                                            <div className="form-group form-vertical">
+                                                <Input name="title" value={getValueForEdit(state, 'title')} disabled={state.item.is_locked} />
                                             </div>
-                                        ))}
+                                        </div>
+                                        <div className="col-6">
+                                            <div className="form-group form-vertical">
+                                                <Select
+                                                    name="is_locked"
+                                                    value={
+                                                        // Convert boolean to string for Select component
+                                                        getValueForEdit(state, 'is_locked') === true || getValueForEdit(state, 'is_locked') === 1 || getValueForEdit(state, 'is_locked') === '1'
+                                                            ? '1'
+                                                            : '0'
+                                                    }
+                                                    values={[
+                                                        { value: '0', text: 'No' },
+                                                        { value: '1', text: 'Yes' },
+                                                    ]}
+                                                    disabled={state.item.is_locked}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Second row: Start Month and End Month */}
+                                    <div className="row">
+                                        <div className="col-6">
+                                            <div className="form-group form-vertical">
+                                                <DateEl
+                                                    label="start_month"
+                                                    name="start_month"
+                                                    value={getValueForEdit(state, 'start_month') ? String(getValueForEdit(state, 'start_month')).slice(0, 10) : ''}
+                                                    handler={(data) => dispatch(storeSlice.actions.set_item({ ...state.item, start_month: data.value }))}
+                                                    disabled={state.item.is_locked}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-6">
+                                            <div className="form-group form-vertical">
+                                                <DateEl
+                                                    label="end_month"
+                                                    name="end_month"
+                                                    value={getValueForEdit(state, 'end_month') ? String(getValueForEdit(state, 'end_month')).slice(0, 10) : ''}
+                                                    handler={(data) => dispatch(storeSlice.actions.set_item({ ...state.item, end_month: data.value }))}
+                                                    disabled={state.item.is_locked}
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
                                     <div className="form-group form-vertical">
                                         <label></label>
-                                        <div className="form_elements">
+                                        <div className="form_elements mx-auto" style={{ maxWidth: '100px', width: '100%' }}>
                                             <button className="btn btn-outline-info" disabled={state.item.is_locked}>
                                                 submit
                                             </button>

@@ -60,7 +60,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                         <div className="content_body custom_scroll">
                             <form
                                 onSubmit={(e) => handle_submit(e)}
-                                className="mx-auto pt-3"
+                                className="mx-auto pt-3" style={{ maxWidth: '800px', width: '100%' }}
                             >
                                 <input
                                     type="hidden"
@@ -77,7 +77,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                     
                                     {/* Row 1: Branch User and Academic Year */}
                                     <div className="row mb-3">
-                                        <div className="col-md-4">
+                                        <div className="col-md-6">
                                             <div className="form-group form-vertical">
                                                 <label>Branch User</label>
                                                 <UsersDropDown
@@ -98,7 +98,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="col-md-4">
+                                        <div className="col-md-6">
                                             <div className="form-group form-vertical">
                                                 <label>Academic Year</label>
                                                 <AcademicYearsDropDown
@@ -148,7 +148,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                     
                                     <div className="form-group form-vertical">
                                         <label></label>
-                                        <div className="form_elements">
+                                        <div className="form_elements mx-auto" style={{ maxWidth: '100px', width: '100%' }}>
                                             <button className="btn btn-outline-info" disabled={state.item.is_locked}>
                                                 submit
                                             </button>

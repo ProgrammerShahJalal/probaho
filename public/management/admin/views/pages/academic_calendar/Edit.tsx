@@ -62,7 +62,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                         <div className="content_body custom_scroll">
                             <form
                                 onSubmit={(e) => handle_submit(e)}
-                                className="mx-auto pt-3"
+                                className="mx-auto pt-3" style={{ maxWidth: '800px', width: '100%' }}
                             >
                                 <input
                                     type="hidden"
@@ -79,7 +79,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                     
                                     {/* Row 1: Branch User and Academic Year */}
                                     <div className="row mb-3">
-                                        <div className="col-md-4">
+                                        <div className="col-md-6">
                                             <div className="form-group form-vertical">
                                                 <label>Branch User</label>
                                                 <UsersDropDown
@@ -100,7 +100,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="col-md-4">
+                                        <div className="col-md-6">
                                             <div className="form-group form-vertical">
                                                 <label>Academic Year</label>
                                                 <AcademicYearsDropDown
@@ -121,7 +121,11 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="col-md-4">
+                                    </div>
+
+                                    {/* Row 2: Title */}
+                                    <div className="row mb-3">
+                                        <div className="col-md-6">
                                             <div className="form-group form-vertical">
                                                 <label>Academic Calendar Event Type</label>
                                                 <AcademicCalendarEventTypesDropDown
@@ -142,16 +146,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                 />
                                             </div>
                                         </div>
-                                    </div>
-
-                                    {/* Row 2: Title */}
-                                    <div className="row mb-3">
-                                        <div className="col-8">
-                                            <div className="form-group form-vertical">
-                                                <Input name="event_name" value={getValueForEdit(state, 'event_name')} />
-                                            </div>
-                                        </div>
-                                        <div className="col-4">
+                                        <div className="col-6">
                                             <div className="form-group form-vertical">
                                                 <DateEl
                                                     label='Date'
@@ -159,6 +154,13 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                     value={getValueForEdit(state, 'date')}
                                                     handler={(data) => dispatch(storeSlice.actions.set_item({ ...state.item, ['date']: data.value }))}
                                                 />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="row mb-3">
+                                        <div className="col-12">
+                                            <div className="form-group form-vertical">
+                                                <Input name="event_name" value={getValueForEdit(state, 'event_name')} />
                                             </div>
                                         </div>
                                     </div>
@@ -181,7 +183,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                     
                                     <div className="form-group form-vertical">
                                         <label></label>
-                                        <div className="form_elements">
+                                        <div className="form_elements mx-auto" style={{ maxWidth: '100px', width: '100%' }}>
                                             <button className="btn btn-outline-info" disabled={state.item.is_locked}>
                                                 submit
                                             </button>
