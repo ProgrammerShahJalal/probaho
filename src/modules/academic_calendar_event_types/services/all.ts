@@ -10,7 +10,7 @@ import {
     responseObject,
     Request,
 } from '../../../common_types/object';
-import { DataModel as UserRolesModel } from '../models/model';
+import { DataModel } from '../models/model';
 import Models from '../../../database/models';
 
 /** validation rules */
@@ -267,14 +267,14 @@ async function all(
             // Use pagination when paginate parameter is provided
             data = await (fastify_instance as anyObject).paginate(
                 req,
-                UserRolesModel,
+                DataModel,
                 paginate,
                 query,
             );
             await afterFindHook(data.data, {});
         } else {
             // Fetch all data when paginate is not provided
-            const result = await UserRolesModel.findAndCountAll(query);
+            const result = await DataModel.findAndCountAll(query);
             await afterFindHook(result.rows, {});
             data = {
                 data: result.rows,

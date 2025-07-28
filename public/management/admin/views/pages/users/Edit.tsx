@@ -308,7 +308,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                     <DateEl
                                                         label="Join Date"
                                                         name={i}
-                                                        value={getValueForEdit(state, i) ? String(getValueForEdit(state, i)).slice(0, 10) : ''}
+                                                        value={getValueForEdit(state, i)}
                                                         handler={(data) => dispatch(storeSlice.actions.set_item({ ...state.item, [i]: data.value }))}
                                                     />
                                                 ) : i === 'blood_group' ? (

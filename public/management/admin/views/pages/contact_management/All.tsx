@@ -17,6 +17,8 @@ import SelectItem from './components/all_data_page/SelectItem';
 import SelectAll from './components/all_data_page/SelectIAll';
 import TableHeading from './components/all_data_page/TableHeading';
 import { useSearchParams } from 'react-router-dom';
+import { truncateText, getTruncatedCellProps } from '../../../helpers/textUtils';
+import '../../../views/components/styles/table-truncation.css';
 
 export interface Props { }
 
@@ -92,18 +94,28 @@ const All: React.FC<Props> = (props: Props) => {
                                                     <td>
                                                         <SelectItem item={i} />
                                                     </td>
-                                                    <td>{i.id}</td>
-                                                    <td>
+                                                    <td className="id-cell">{i.id}</td>
+                                                    <td
+                                                        {...getTruncatedCellProps({
+                                                            text: i.full_name,
+                                                            columnType: 'name'
+                                                        })}
+                                                    >
                                                         <span
                                                             className="quick_view_trigger"
                                                             onClick={() =>
                                                                 quick_view(i)
                                                             }
                                                         >
-                                                            {i.full_name}
+                                                            {truncateText(i.full_name, 20)}
                                                         </span>
                                                     </td>
-                                                    <td>{i.email}</td>
+                                                    <td
+                                                        {...getTruncatedCellProps({
+                                                            text: i.email,
+                                                            columnType: 'email'
+                                                        })}
+                                                    />
                                                 </tr>
                                             );
                                         },

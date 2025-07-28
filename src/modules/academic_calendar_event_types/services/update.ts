@@ -58,7 +58,7 @@ async function update(
 
     /** store data into database */
     try {
-        let data = await models.AcademicBatchIdRuleModel.findByPk(body.id);
+        let data = await models.AcademicCalendarEventTypesModel.findByPk(body.id);
         if (data) {
             let inputs: InferCreationAttributes<typeof user_model> = {
                 branch_user_id: body.branch_user_id || data.branch_user_id,

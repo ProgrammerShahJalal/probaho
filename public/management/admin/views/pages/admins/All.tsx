@@ -17,6 +17,8 @@ import SelectAll from './components/all_data_page/SelectIAll';
 import TableHeading from './components/all_data_page/TableHeading';
 import { useSearchParams } from 'react-router-dom';
 import useUserRoles from '../../../hooks/useUserRoles';
+import { truncateText, getTruncatedCellProps } from '../../../helpers/textUtils';
+import '../../../views/components/styles/table-truncation.css';
 
 export interface Props {}
 
@@ -140,10 +142,20 @@ const All: React.FC<Props> = () => {
                                                 <td>
                                                     <SelectItem item={i} />
                                                 </td>
-                                                <td>{i.id}</td>
-                                                <td>{i.uid || ''}</td>
-                                                <td>{formatRoleSerial(i.role_serial)}</td>
-                                                <td>{getRoleTitles(i.role_serial)}</td>
+                                                <td className="id-cell">{i.id}</td>
+                                                <td className="id-cell">{i.uid || ''}</td>
+                                                <td
+                                                    {...getTruncatedCellProps({
+                                                        text: formatRoleSerial(i.role_serial),
+                                                        columnType: 'default'
+                                                    })}
+                                                />
+                                                <td
+                                                    {...getTruncatedCellProps({
+                                                        text: getRoleTitles(i.role_serial),
+                                                        columnType: 'title'
+                                                    })}
+                                                />
                                                 <td>
                                                     <img
                                                         src={
@@ -162,18 +174,28 @@ const All: React.FC<Props> = () => {
                                                         }}
                                                     />
                                                 </td>
-                                                <td>
+                                                <td
+                                                    {...getTruncatedCellProps({
+                                                        text: i.name,
+                                                        columnType: 'name'
+                                                    })}
+                                                >
                                                     <span
                                                         className="quick_view_trigger"
                                                         onClick={() =>
                                                             quick_view(i)
                                                         }
                                                     >
-                                                        {i.name}
+                                                        {truncateText(i.name, 20)}
                                                     </span>
                                                 </td>
-                                                <td>{i.email}</td>
-                                                <td>{i.status}</td>
+                                                <td
+                                                    {...getTruncatedCellProps({
+                                                        text: i.email,
+                                                        columnType: 'email'
+                                                    })}
+                                                />
+                                                <td className="status-cell">{i.status}</td>
                                             </tr>
                                         ),
                                     )}
