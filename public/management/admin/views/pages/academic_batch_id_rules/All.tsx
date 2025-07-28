@@ -15,8 +15,9 @@ import TableRowAction from './components/all_data_page/TableRowAction';
 import SelectItem from './components/all_data_page/SelectItem';
 import SelectAll from './components/all_data_page/SelectIAll';
 import TableHeading from './components/all_data_page/TableHeading';
-import { useSearchParams } from 'react-router-dom';
-import useUserRoles from '../../../hooks/useUserRoles';
+import moment from 'moment/moment';
+import { formatArrayForTable, getTruncatedCellProps } from '../../../helpers/textUtils';
+import '../../../views/components/styles/table-truncation.css';
 
 export interface Props { }
 
@@ -49,7 +50,7 @@ const All: React.FC<Props> = () => {
         <div className="page_content">
             <div className="explore_window fixed_size">
                 {/* Changed title to be static */}
-                <Header title={'All Academic Batch ID Rules'} />
+                <Header title={'All Academic Calendars'} />
 
                 <div className="content_body">
                     <div className="data_list">
@@ -71,11 +72,6 @@ const All: React.FC<Props> = () => {
                                             col_name="branch_user_id"
                                             sort
                                         />
-                                        {/* <TableHeading
-                                            label="Branch ID"
-                                            col_name="branch_id"
-                                            sort
-                                        /> */}
                                         <TableHeading
                                             label="Academic Year"
                                             col_name="academic_year_id"
@@ -116,14 +112,43 @@ const All: React.FC<Props> = () => {
                                                 <td>
                                                     <SelectItem item={i} />
                                                 </td>
-                                                <td>{i.id}</td>
-                                                <td>{i.branch_user_id ? i.users?.map((u)=> u.name): i.branch_user_id}</td>
-                                                {/* <td>{i.branch_id}</td> */}
-                                                <td>{i.academic_year_id ? i.academic_years?.map((ay)=> ay.title): i.academic_year_id}</td>
-                                                <td>{i.title}</td>
-                                                <td>{i.description}</td>
-                                                <td>{i.value}</td>
-                                                <td>{i.status}</td>
+                                                <td className="id-cell">{i.id}</td>
+                                                <td
+                                                    {...getTruncatedCellProps({
+                                                        text: i.branch_user_id ? formatArrayForTable(i.users, 'name') : i.branch_user_id,
+                                                        columnType: 'name',
+                                                        maxLength: 16,
+                                                    })}
+                                                />
+                                                <td
+                                                    {...getTruncatedCellProps({
+                                                        text: i.academic_year_id ? formatArrayForTable(i.academic_years, 'title') : i.academic_year_id,
+                                                        columnType: 'title',
+                                                        maxLength: 20,
+                                                    })}
+                                                /> 
+                                                <td
+                                                    {...getTruncatedCellProps({
+                                                        text: i.title,
+                                                        columnType: 'title',
+                                                        maxLength: 20,
+                                                    })}
+                                                />
+                                                <td
+                                                    {...getTruncatedCellProps({
+                                                        text: i.description,
+                                                        columnType: 'description',
+                                                        maxLength: 20
+                                                    })}
+                                                />
+                                                <td
+                                                    {...getTruncatedCellProps({
+                                                        text: i.value,
+                                                        columnType: 'title',
+                                                        maxLength: 20,
+                                                    })}
+                                                />
+                                                <td className="status-cell">{i.status}</td>
                                             </tr>
                                         ),
                                     )}

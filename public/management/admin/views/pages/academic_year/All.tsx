@@ -17,6 +17,8 @@ import SelectAll from './components/all_data_page/SelectIAll';
 import TableHeading from './components/all_data_page/TableHeading';
 import { useSearchParams } from 'react-router-dom';
 import useUserRoles from '../../../hooks/useUserRoles';
+import moment from 'moment/moment';
+import { getTruncatedCellProps } from '../../../helpers/textUtils';
 
 export interface Props { }
 
@@ -108,11 +110,19 @@ const All: React.FC<Props> = () => {
                                                     <SelectItem item={i} />
                                                 </td>
                                                 <td>{i.id}</td>
-                                                <td>{i.title || ''}</td>
+                                                <td
+                                                    {...getTruncatedCellProps({
+                                                        text: i.title,
+                                                        columnType: 'title',
+                                                        maxLength: 20,
+                                                    })}
+                                                />
                                                 <td>
-                                                    {i.start_month || ''}
+                                                    {moment(i.start_month).format('D MMMM YYYY') || ''}
                                                 </td>
-                                                <td>{i.end_month || ''}</td>
+                                                <td>
+                                                    {moment(i.end_month).format('D MMMM YYYY') || ''}
+                                                </td>
                                                 <td>
                                                     {i.is_locked ? 'Yes' : 'No'}
                                                 </td>

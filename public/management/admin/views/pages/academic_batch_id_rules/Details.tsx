@@ -9,9 +9,9 @@ import { initialState } from './config/store/inital_state';
 import { Link, useParams } from 'react-router-dom';
 import storeSlice from './config/store';
 import moment from 'moment/moment';
-import { getValue } from '../utils/getValue';
+import { renderArrayField, renderLongTextField, useExpandedSections } from '../../../helpers/renderFields';
 
-export interface Props {}
+export interface Props { }
 
 const Details: React.FC<Props> = (props: Props) => {
     const state: typeof initialState = useSelector(
@@ -20,6 +20,7 @@ const Details: React.FC<Props> = (props: Props) => {
 
     const dispatch = useAppDispatch();
     const params = useParams();
+    const { expandedSections, toggleSection } = useExpandedSections();
 
     useEffect(() => {
         dispatch(storeSlice.actions.set_item({}));
@@ -29,72 +30,93 @@ const Details: React.FC<Props> = (props: Props) => {
     const renderFieldValue = (fieldName: string) => {
         switch (fieldName) {
             case 'branch_user_id':
-                return (
-                    <>
-                        {state.item[fieldName]?.map((id: number, index: number) => (
-                            <span key={id}>
-                                {id} - {state.item.users?.find((u: any) => u.id === id)?.name || 'Unknown User'}
-                                {index < state.item[fieldName].length - 1 && ', '}
-                            </span>
-                        ))}
-                    </>
+                return renderArrayField(
+                    fieldName,
+                    state.item[fieldName],
+                    state.item.users,
+                    'name',
+                    'Unknown User',
+                    expandedSections,
+                    toggleSection
                 );
             case 'academic_year_id':
-                return (
-                    <>
-                        {state.item[fieldName]?.map((id: number, index: number) => (
-                            <span key={id}>
-                                {id} - {state.item.academic_years?.find((ay: any) => ay.id === id)?.title || 'Unknown Year'}
-                                {index < state.item[fieldName].length - 1 && ', '}
-                            </span>
-                        ))}
-                    </>
+                return renderArrayField(
+                    fieldName,
+                    state.item[fieldName],
+                    state.item.academic_years,
+                    'title',
+                    'Unknown Year',
+                    expandedSections,
+                    toggleSection
                 );
             case 'branch_id':
-                return (
-                    <>
-                        {state.item[fieldName]?.map((id: number, index: number) => (
-                            <span key={id}>
-                                {id} - {state.item.branches?.find((b: any) => b.id === id)?.name || 'Unknown Branch'}
-                                {index < state.item[fieldName].length - 1 && ', '}
-                            </span>
-                        ))}
-                    </>
+                return renderArrayField(
+                    fieldName,
+                    state.item[fieldName],
+                    state.item.branches,
+                    'name',
+                    'Unknown Branch',
+                    expandedSections,
+                    toggleSection
                 );
+            case 'title':
+            case 'description':
+            case 'value':
+                return renderLongTextField(fieldName, state.item[fieldName], expandedSections, toggleSection);
             default:
-                return state.item[fieldName];
+                return state.item[fieldName] || <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>Not provided</span>;
         }
     };
 
+    const customStyles: React.CSSProperties = {
+        '--details-container-max-width': '100%',
+        '--details-container-overflow': 'hidden',
+    } as React.CSSProperties;
+
     return (
         <>
-            <div className="page_content">
+            <div className="page_content" style={customStyles}>
                 <div className="explore_window fixed_size">
                     <Header page_title={setup.details_page_title}></Header>
 
                     {Object.keys(state.item).length && (
                         <div className="content_body custom_scroll">
-                            <table className="table quick_modal_table table-hover">
-                                <tbody>
-                                    {[
-                                        'branch_user_id',
-                                        'academic_year_id',
-                                        'branch_id',
-                                        'title',
-                                        'description',
-                                        'value',
-                                    ].map((i) => (
-                                        <tr key={i}>
-                                            <td>{i.replaceAll('_', ' ')}</td>
-                                            <td>:</td>
-                                            <td>
-                                                {renderFieldValue(i)}
-                                                <br />
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                            <div style={{ maxWidth: '100%', overflow: 'hidden' }}>
+                                <table className="table quick_modal_table table-hover" style={{ width: '100%', tableLayout: 'fixed' }}>
+                                    <tbody>
+                                        {[
+                                            'branch_user_id',
+                                            'academic_year_id',
+                                            'branch_id',
+                                            'title',
+                                            'description',
+                                            'value',
+                                            'status',
+                                        ].map((fieldName) => (
+                                            <tr key={fieldName} style={{ borderBottom: '1px solid #f1f3f4' }}>
+                                                <td style={{
+
+                                                }}>
+                                                    {fieldName.replaceAll('_', ' ')}
+                                                </td>
+                                                <td style={{
+
+                                                }}>
+                                                    :
+                                                </td>
+                                                <td style={{
+                                                    verticalAlign: 'top',
+                                                    padding: '12px 8px',
+                                                    wordWrap: 'break-word',
+                                                    overflowWrap: 'break-word'
+                                                }}>
+                                                    {renderFieldValue(fieldName)}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     )}
 
@@ -118,3 +140,4 @@ const Details: React.FC<Props> = (props: Props) => {
 };
 
 export default Details;
+

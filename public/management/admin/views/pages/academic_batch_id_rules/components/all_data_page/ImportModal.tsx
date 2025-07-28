@@ -145,7 +145,7 @@ const ImportModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) => {
             <div className="modal-dialog modal-dialog-centered" role="document" onClick={e => e.stopPropagation()}>
                 <div className="modal-content" style={{ background: '#23272f', color: '#fff', borderRadius: 10, boxShadow: '0 8px 32px rgba(0,0,0,0.25)' }}>
                     <div className="modal-header">
-                        <h5 className="modal-title" style={{ fontSize: '1.1rem' }}>Import Academic Year</h5>
+                        <h5 className="modal-title" style={{ fontSize: '1.1rem' }}>Import Academic Batch ID Rules</h5>
                         <button type="button" className="btn-close" aria-label="Close" style={{ filter: 'invert(32%) sepia(98%) saturate(7492%) hue-rotate(353deg) brightness(97%) contrast(104%)' }} onClick={onClose}></button>
                     </div>
                     <div className="modal-body">

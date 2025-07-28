@@ -47,49 +47,54 @@ const Create: React.FC<Props> = (props: Props) => {
                         <form
                             onSubmit={(e) => handle_submit(e)}
                             className="mx-auto pt-3"
+                            style={{ maxWidth: '800px', width: '100%' }}
                         >
                             <div>
-                                <h5 className="mb-4">Basic Informations</h5>
-                                <div className="form_auto_fit">
-                                    {[
-                                        'title',
-                                        'start_month',
-                                        'end_month',
-                                    ].map((i) => (
-                                        <div
-                                            key={i}
-                                            className="form-group form-vertical"
-                                        >
-                                            {
-                                                i === 'start_month' ||
-                                                    i === 'end_month' ? (
-                                                    <DateEl
-                                                        label={i}
-                                                        name={i}
-                                                        value={data[i] || ''}
-                                                        handler={(d) =>
-                                                            setData((prev) => ({
-                                                                ...prev,
-                                                                [i]: d.value,
-                                                            }))
-                                                        }
-                                                    />
-                                                ) : (
-
-                                                    <Input name={i} />
-                                                )
-
-
-                                            }
-
+                                {/* <h5 className="mb-4">Basic Informations</h5> */}
+                                <div className="row">
+                                    <div className="col-12">
+                                        <div className="form-group form-vertical">
+                                            <Input name="title" />
                                         </div>
-                                    ))}
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-6">
+                                        <div className="form-group form-vertical">
+                                            <DateEl
+                                                label="start_month"
+                                                name="start_month"
+                                                value={data['start_month'] || ''}
+                                                handler={(d) =>
+                                                    setData((prev) => ({
+                                                        ...prev,
+                                                        start_month: d.value,
+                                                    }))
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-6">
+                                        <div className="form-group form-vertical">
+                                            <DateEl
+                                                label="end_month"
+                                                name="end_month"
+                                                value={data['end_month'] || ''}
+                                                handler={(d) =>
+                                                    setData((prev) => ({
+                                                        ...prev,
+                                                        end_month: d.value,
+                                                    }))
+                                                }
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
                             <div className="form-group form-vertical">
                                 <label></label>
-                                <div className="form_elements">
+                                <div className="form_elements mx-auto" style={{ maxWidth: '100px', width: '100%' }}>
                                     <button className="btn btn_1 btn-outline-info">
                                         submit
                                     </button>
