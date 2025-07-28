@@ -50,6 +50,17 @@ const Details: React.FC<Props> = (props: Props) => {
                         ))}
                     </>
                 );
+            case 'academic_calendar_event_types_id':
+                return (
+                    <>
+                        {state.item[fieldName]?.map((id: number, index: number) => (
+                            <span key={id}>
+                                {id} - {state.item.academic_calendar_event_types?.find((ay: any) => ay.id === id)?.title || 'Unknown Year'}
+                                {index < state.item[fieldName].length - 1 && ', '}
+                            </span>
+                        ))}
+                    </>
+                );
             case 'branch_id':
                 return (
                     <>
@@ -61,6 +72,8 @@ const Details: React.FC<Props> = (props: Props) => {
                         ))}
                     </>
                 );
+            case 'date':
+                return state.item[fieldName] ? moment(state.item[fieldName]).format('DD MMMM YYYY') : '';
             default:
                 return state.item[fieldName];
         }
@@ -80,8 +93,10 @@ const Details: React.FC<Props> = (props: Props) => {
                                         'branch_user_id',
                                         'academic_year_id',
                                         'branch_id',
-                                        'title',
+                                        'academic_calendar_event_types_id',
+                                        'event_name',
                                         'description',
+                                        'date',
                                         'status',
                                     ].map((i) => (
                                         <tr key={i}>

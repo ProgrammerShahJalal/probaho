@@ -38,47 +38,59 @@ async function details(
             const rule = rules[i];
 
             // Fetch user names
-            const users = await userModel.findAll({
-                where: {
-                    id: {
-                        [Op.in]: rule.branch_user_id,
+            let users: any[] = [];
+            if (rule.branch_user_id && Array.isArray(rule.branch_user_id) && rule.branch_user_id.length > 0) {
+                users = await userModel.findAll({
+                    where: {
+                        id: {
+                            [Op.in]: rule.branch_user_id,
+                        },
                     },
-                },
-                attributes: ['id', 'name'],
-            });
+                    attributes: ['id', 'name'],
+                });
+            }
             rule.dataValues.users = users;
 
             // Fetch branch names
-            const branches = await branchInfoModel.findAll({
-                where: {
-                    id: {
-                        [Op.in]: rule.branch_id,
+            let branches: any[] = [];
+            if (rule.branch_id && Array.isArray(rule.branch_id) && rule.branch_id.length > 0) {
+                branches = await branchInfoModel.findAll({
+                    where: {
+                        id: {
+                            [Op.in]: rule.branch_id,
+                        },
                     },
-                },
-                attributes: ['id', 'name'],
-            });
+                    attributes: ['id', 'name'],
+                });
+            }
             rule.dataValues.branches = branches;
 
             // Fetch academic year titles
-            const academicYears = await academicYearModel.findAll({
-                where: {
-                    id: {
-                        [Op.in]: rule.academic_year_id,
+            let academicYears: any[] = [];
+            if (rule.academic_year_id && Array.isArray(rule.academic_year_id) && rule.academic_year_id.length > 0) {
+                academicYears = await academicYearModel.findAll({
+                    where: {
+                        id: {
+                            [Op.in]: rule.academic_year_id,
+                        },
                     },
-                },
-                attributes: ['id', 'title'],
-            });
+                    attributes: ['id', 'title'],
+                });
+            }
             rule.dataValues.academic_years = academicYears;
 
             // Fetch academic calendar event types
-            const academicCalendarEventTypes = await academicCalendarEventTypesModel.findAll({
-                where: {
-                    id: {
-                        [Op.in]: rule.academic_calendar_event_type_id,
+            let academicCalendarEventTypes: any[] = [];
+            if (rule.academic_calendar_event_type_id && Array.isArray(rule.academic_calendar_event_type_id) && rule.academic_calendar_event_type_id.length > 0) {
+                academicCalendarEventTypes = await academicCalendarEventTypesModel.findAll({
+                    where: {
+                        id: {
+                            [Op.in]: rule.academic_calendar_event_type_id,
+                        },
                     },
-                },
-                attributes: ['id', 'title'],
-            });
+                    attributes: ['id', 'title'],
+                });
+            }
             rule.dataValues.academic_calendar_event_types = academicCalendarEventTypes;
         }
 
