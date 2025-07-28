@@ -85,15 +85,15 @@ const All: React.FC<Props> = () => {
                                             sort
                                         />
                                         <TableHeading
-                                            label="Title"
-                                            col_name="title"
+                                            label="Event Name"
+                                            col_name="event_name"
                                             sort
                                         />
-                                        <TableHeading
+                                        {/* <TableHeading
                                             label="Description"
                                             col_name="description"
                                             sort
-                                        />
+                                        /> */}
                                         <TableHeading
                                             label="Date"
                                             col_name="date"
@@ -123,35 +123,40 @@ const All: React.FC<Props> = () => {
                                                 <td
                                                     {...getTruncatedCellProps({
                                                         text: i.branch_user_id ? formatArrayForTable(i.users, 'name') : i.branch_user_id,
-                                                        columnType: 'name'
+                                                        columnType: 'name',
+                                                        maxLength: 16,
                                                     })}
                                                 />
                                                 <td
                                                     {...getTruncatedCellProps({
                                                         text: i.academic_year_id ? formatArrayForTable(i.academic_years, 'title') : i.academic_year_id,
-                                                        columnType: 'title'
+                                                        columnType: 'title',
+                                                        maxLength: 20,
                                                     })}
-                                                />
+                                                /> 
                                                 <td
                                                     {...getTruncatedCellProps({
                                                         text: i.academic_calendar_event_types_id
                                                             ? formatArrayForTable(i.academic_calendar_event_types, 'title')
                                                             : i.academic_calendar_event_types_id,
-                                                        columnType: 'title'
+                                                        columnType: 'title',
+                                                        maxLength: 20,
                                                     })}
                                                 />
                                                 <td
                                                     {...getTruncatedCellProps({
                                                         text: i.event_name,
-                                                        columnType: 'event_name'
+                                                        columnType: 'event_name',
+                                                        maxLength: 20,
                                                     })}
                                                 />
-                                                <td
+                                                {/* <td
                                                     {...getTruncatedCellProps({
                                                         text: i.description,
-                                                        columnType: 'description'
+                                                        columnType: 'description',
+                                                        maxLength: 16
                                                     })}
-                                                />
+                                                /> */}
                                                 <td className="date-cell">{moment(i.date).format('D MMMM YYYY')}</td>
                                                 <td className="status-cell">{i.status}</td>
                                             </tr>
