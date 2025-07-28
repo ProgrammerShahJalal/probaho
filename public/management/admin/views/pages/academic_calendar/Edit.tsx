@@ -60,137 +60,149 @@ const Edit: React.FC<Props> = (props: Props) => {
 
                     {Object.keys(state.item).length && (
                         <div className="content_body custom_scroll">
-                            <form
-                                onSubmit={(e) => handle_submit(e)}
-                                className="mx-auto pt-3" style={{ maxWidth: '800px', width: '100%' }}
-                            >
+                            <div className="container-fluid">
+                                <div className="row justify-content-center">
+                                    <div className="col-12 col-xl-10 col-xxl-8">
+                                        <form
+                                            onSubmit={(e) => handle_submit(e)}
+                                            className="px-3 pt-3"
+                                        >
                                 <input
                                     type="hidden"
                                     name="id"
                                     defaultValue={getValueForEdit(state, `id`)}
                                 />
 
-                                <div>
+                                <div className="row g-3">
                                     {state.item.is_locked && (
-                                        <div className="alert alert-warning">
-                                            This academic year is locked and cannot be edited.
+                                        <div className="col-12">
+                                            <div className="alert alert-warning mb-3">
+                                                This academic year is locked and cannot be edited.
+                                            </div>
                                         </div>
                                     )}
                                     
                                     {/* Row 1: Branch User and Academic Year */}
-                                    <div className="row mb-3">
-                                        <div className="col-md-6">
-                                            <div className="form-group form-vertical">
-                                                <label>Branch User</label>
-                                                <UsersDropDown
-                                                    name="branch_user_id"
-                                                    multiple={false}
-                                                    default_value={
-                                                        getValueForEdit(state, 'branch_user_id')
-                                                            ? [
-                                                                {
-                                                                    id: getValueForEdit(state, 'branch_user_id'),
-                                                                },
-                                                            ]
-                                                            : []
-                                                    }
-                                                    get_selected_data={(data) =>
-                                                        console.log(data)
-                                                    }
-                                                />
+                                    <div className="col-12">
+                                        <div className="row g-3">
+                                            <div className="col-12 col-md-6 col-lg-4">
+                                                <div className="form-group form-vertical">
+                                                    <label className="form-label">Branch User</label>
+                                                    <UsersDropDown
+                                                        name="branch_user_id"
+                                                        multiple={false}
+                                                        default_value={
+                                                            getValueForEdit(state, 'branch_user_id')
+                                                                ? [
+                                                                    {
+                                                                        id: getValueForEdit(state, 'branch_user_id'),
+                                                                    },
+                                                                ]
+                                                                : []
+                                                        }
+                                                        get_selected_data={(data) =>
+                                                            console.log(data)
+                                                        }
+                                                    />
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <div className="form-group form-vertical">
-                                                <label>Academic Year</label>
-                                                <AcademicYearsDropDown
-                                                    name="academic_year_id"
-                                                    multiple={false}
-                                                    default_value={
-                                                        getValueForEdit(state, 'academic_year_id')
-                                                            ? [
-                                                                {
-                                                                    id: getValueForEdit(state, 'academic_year_id'),
-                                                                },
-                                                            ]
-                                                            : []
-                                                    }
-                                                    get_selected_data={(data) =>
-                                                        console.log(data)
-                                                    }
-                                                />
+                                            <div className="col-12 col-md-6 col-lg-4">
+                                                <div className="form-group form-vertical">
+                                                    <label className="form-label">Academic Year</label>
+                                                    <AcademicYearsDropDown
+                                                        name="academic_year_id"
+                                                        multiple={false}
+                                                        default_value={
+                                                            getValueForEdit(state, 'academic_year_id')
+                                                                ? [
+                                                                    {
+                                                                        id: getValueForEdit(state, 'academic_year_id'),
+                                                                    },
+                                                                ]
+                                                                : []
+                                                        }
+                                                        get_selected_data={(data) =>
+                                                            console.log(data)
+                                                        }
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-12 col-lg-4">
+                                                <div className="form-group form-vertical">
+                                                    <label className="form-label">Academic Calendar Event Type</label>
+                                                    <AcademicCalendarEventTypesDropDown
+                                                        name="academic_calendar_event_types_id"
+                                                        multiple={false}
+                                                        default_value={
+                                                            getValueForEdit(state, 'academic_calendar_event_types_id')
+                                                                ? [
+                                                                    {
+                                                                        id: getValueForEdit(state, 'academic_calendar_event_types_id'),
+                                                                    },
+                                                                ]
+                                                                : []
+                                                        }
+                                                        get_selected_data={(data) =>
+                                                            console.log(data)
+                                                        }
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    {/* Row 2: Title */}
-                                    <div className="row mb-3">
-                                        <div className="col-md-6">
-                                            <div className="form-group form-vertical">
-                                                <label>Academic Calendar Event Type</label>
-                                                <AcademicCalendarEventTypesDropDown
-                                                    name="academic_calendar_event_types_id"
-                                                    multiple={false}
-                                                    default_value={
-                                                        getValueForEdit(state, 'academic_calendar_event_types_id')
-                                                            ? [
-                                                                {
-                                                                    id: getValueForEdit(state, 'academic_calendar_event_types_id'),
-                                                                },
-                                                            ]
-                                                            : []
-                                                    }
-                                                    get_selected_data={(data) =>
-                                                        console.log(data)
-                                                    }
-                                                />
+                                    <div className="col-12">
+                                        <div className="row g-3">
+                                            <div className="col-12 col-md-8">
+                                                <div className="form-group form-vertical">
+                                                    <Input name="event_name" value={getValueForEdit(state, 'event_name')} />
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="col-6">
-                                            <div className="form-group form-vertical">
-                                                <DateEl
-                                                    label='Date'
-                                                    name={'date'}
-                                                    value={getValueForEdit(state, 'date')}
-                                                    handler={(data) => dispatch(storeSlice.actions.set_item({ ...state.item, ['date']: data.value }))}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="row mb-3">
-                                        <div className="col-12">
-                                            <div className="form-group form-vertical">
-                                                <Input name="event_name" value={getValueForEdit(state, 'event_name')} />
+                                            <div className="col-12 col-md-4">
+                                                <div className="form-group form-vertical">
+                                                    <DateEl
+                                                        label='Date'
+                                                        name={'date'}
+                                                        value={getValueForEdit(state, 'date')}
+                                                        handler={(data) => dispatch(storeSlice.actions.set_item({ ...state.item, ['date']: data.value }))}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
 
                                     {/* Row 3: Description */}
-                                    <div className="row mb-3">
-                                        <div className="col-12">
-                                            <div className="form-group form-vertical">
-                                                <label>Description</label>
-                                                <textarea
-                                                    name="description"
-                                                    className="form-control"
-                                                    rows={4}
-                                                    defaultValue={getValueForEdit(state, 'description')}
-                                                    placeholder="Enter description..."
-                                                />
-                                            </div>
+                                    <div className="col-12">
+                                        <div className="form-group form-vertical">
+                                            <label className="form-label">Description</label>
+                                            <textarea
+                                                name="description"
+                                                className="form-control"
+                                                rows={4}
+                                                defaultValue={getValueForEdit(state, 'description')}
+                                                placeholder="Enter description..."
+                                            />
                                         </div>
                                     </div>
                                     
-                                    <div className="form-group form-vertical">
-                                        <label></label>
-                                        <div className="form_elements mx-auto" style={{ maxWidth: '100px', width: '100%' }}>
-                                            <button className="btn btn-outline-info" disabled={state.item.is_locked}>
-                                                submit
-                                            </button>
+                                    <div className="col-12">
+                                        <div className="form-group form-vertical">
+                                            <div className="d-flex justify-content-center">
+                                                <button 
+                                                    className="btn btn-outline-info px-4 py-2" 
+                                                    disabled={state.item.is_locked}
+                                                    type="submit"
+                                                >
+                                                    Submit
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </form>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                     )}
