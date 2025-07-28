@@ -8,6 +8,7 @@ import academic_batch_id_rules from '../views/pages/academic_batch_id_rules/conf
 import academic_calendar_event_types from '../views/pages/academic_calendar_event_types/config/routes';
 import academic_rules_types from '../views/pages/academic_rules_types/config/routes';
 import academic_calendar from '../views/pages/academic_calendar/config/routes';
+import academic_rules from '../views/pages/academic_rules/config/routes';
 
 import users from '../views/pages/users/config/routes';
 import user_roles from '../views/pages/user_roles/config/routes';
@@ -32,6 +33,7 @@ const router: RouteTypes[] = [
             academic_calendar_event_types,
             academic_rules_types,
             academic_calendar,
+            academic_rules,
             users,
             user_roles,
             user_login_histories,

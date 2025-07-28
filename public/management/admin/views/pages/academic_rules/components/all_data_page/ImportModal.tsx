@@ -58,16 +58,18 @@ const ImportModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) => {
     const handleDownloadDemo = () => {
         const columns = [
             'branch_user_id',
-            'branch_id', //optional
+            'branch_id', // optional
             'academic_year_id',
-            'title',
+            'academic_calendar_event_types_id',
+            'event_name',
             'description',
+            'date',
             'status',
         ];
         // Create one empty row to show the structure
         const emptyRow = columns.map(() => ''); 
 
-        new CsvBuilder('demo_academic_rules_types_import_template.csv')
+        new CsvBuilder('demo_academic_calendar_import_template.csv')
             .setColumns(columns)
             .addRows([emptyRow]) // Add the single empty row
             .exportFile();
@@ -144,7 +146,7 @@ const ImportModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) => {
             <div className="modal-dialog modal-dialog-centered" role="document" onClick={e => e.stopPropagation()}>
                 <div className="modal-content" style={{ background: '#23272f', color: '#fff', borderRadius: 10, boxShadow: '0 8px 32px rgba(0,0,0,0.25)' }}>
                     <div className="modal-header">
-                        <h5 className="modal-title" style={{ fontSize: '1.1rem' }}>Import Academic Rules Types</h5>
+                        <h5 className="modal-title" style={{ fontSize: '1.1rem' }}>Import Academic Calendar</h5>
                         <button type="button" className="btn-close" aria-label="Close" style={{ filter: 'invert(32%) sepia(98%) saturate(7492%) hue-rotate(353deg) brightness(97%) contrast(104%)' }} onClick={onClose}></button>
                     </div>
                     <div className="modal-body">

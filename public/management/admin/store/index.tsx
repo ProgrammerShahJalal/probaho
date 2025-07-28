@@ -8,6 +8,7 @@ import academic_batch_id_rules from '../views/pages/academic_batch_id_rules/conf
 import academic_calendar_event_types from '../views/pages/academic_calendar_event_types/config/store';
 import academic_rules_types from '../views/pages/academic_rules_types/config/store';
 import academic_calendar from '../views/pages/academic_calendar/config/store';
+import academic_rules from '../views/pages/academic_rules/config/store';
 import all_users from '../views/pages/users/config/store';
 import users from '../views/pages/users/config/store';
 import user_roles from '../views/pages/user_roles/config/store';
@@ -23,6 +24,7 @@ const store = configureStore({
         academic_calendar_event_types: academic_calendar_event_types.reducer,
         academic_rules_types: academic_rules_types.reducer,
         academic_calendar: academic_calendar.reducer,
+        academic_rules: academic_rules.reducer,
         all_users: all_users.reducer,
         users: users.reducer,
         user_roles: user_roles.reducer,

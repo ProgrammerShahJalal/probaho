@@ -56,6 +56,7 @@ const SideBar: React.FC<Props> = (props: Props) => {
                         label="Academic Rules Types"
                         to="/academic-rules-types"
                     />
+                    <MenuDropDownItem label="Academic Rules" to="/academic-rules" />
                 </MenuDropDown>
 
                 <li>
