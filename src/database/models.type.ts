@@ -8,6 +8,7 @@ import * as UserLoginHistoriesModel from "../modules/user_login_histories/models
 import * as AcademicYearModel from "../modules/academic_year_management/models/model";
 import * as AcademicBatchIdRuleModel from "../modules/academic_batch_id_rules/models/model";
 import * as AcademicCalendarEventTypesModel from "../modules/academic_calendar_event_types/models/model";
+import * as AcademicRulesTypesModel from "../modules/academic_rules_types/models/model";
 import * as AcademicCalendarModel from "../modules/academic_calendar/models/model";
 
 
@@ -26,6 +27,7 @@ export type model_types = {
     AcademicYearModel: typeof AcademicYearModel.DataModel;
     AcademicBatchIdRuleModel: typeof AcademicBatchIdRuleModel.DataModel;
     AcademicCalendarEventTypesModel: typeof AcademicCalendarEventTypesModel.DataModel;
+    AcademicRulesTypesModel: typeof AcademicRulesTypesModel.DataModel;
     AcademicCalendarModel: typeof AcademicCalendarModel.DataModel;
 
 }

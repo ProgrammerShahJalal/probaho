@@ -52,6 +52,10 @@ const SideBar: React.FC<Props> = (props: Props) => {
                         to="/academic-calendar-event-types"
                     />
                     <MenuDropDownItem label="Academic Calendar" to="/academic-calendar" />
+                    <MenuDropDownItem
+                        label="Academic Rules Types"
+                        to="/academic-rules-types"
+                    />
                 </MenuDropDown>
 
                 <li>
