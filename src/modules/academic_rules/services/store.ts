@@ -82,15 +82,17 @@ async function store(
         title: body.title,
         date: body.date ? moment(body.date).toDate() : new Date(),
         description: body.description,
-        file: body.file ? (
-            typeof body.file === 'string' 
-                ? body.file // Simple filename string
-                : typeof body.file === 'object'
-                ? body.file // File metadata object
-                : JSON.parse(body.file) // Parse if it's a JSON string
-        ) : null,
+        file: body.file,
     };
 
+    // Handle file upload
+    if (body.file && typeof body.file === 'object' && body.file.name) {
+        const image_path = `uploads/academic_rules/${moment().format(
+            'YYYYMMDDHHmmss',
+        )}_${body.file.name}`;
+        await (fastify_instance as any).upload(body.file, image_path);
+        inputs.file = image_path;
+    }
 
     /** store data into database */
     try {

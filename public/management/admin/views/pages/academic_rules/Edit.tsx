@@ -12,10 +12,11 @@ import { update } from './config/store/async_actions/update';
 import Input from './components/management_data_page/Input';
 import UsersDropDown from '../users/components/dropdown/DropDown';
 import AcademicYearsDropDown from '../academic_year/components/dropdown/DropDown';
-import AcademicCalendarEventTypesDropDown from '../academic_calendar_event_types/components/dropdown/DropDown';
+import AcademicRulesTypesDropDown from '../academic_rules_types/components/dropdown/DropDown';
 import { getValueForEdit } from '../utils/getValue';
 import DateEl from '../../components/DateEl';
 import { anyObject } from '../../../common_types/object';
+import InputFile from './components/management_data_page/InputFile';
 
 
 export interface Props { }
@@ -138,18 +139,18 @@ const Edit: React.FC<Props> = (props: Props) => {
 
                                                 <div className="col-12">
                                                     <div className="row g-3">
-                                                        {/* Row 2: Academic Calendar Event Type and Date */}
+                                                        {/* Row 2: Academic Rules Type and Date */}
                                                         <div className="col-12 col-md-6 col-lg-6">
                                                             <div className="form-group form-vertical">
-                                                                <label className="form-label">Academic Calendar Event Type</label>
-                                                                <AcademicCalendarEventTypesDropDown
-                                                                    name="academic_calendar_event_types_id"
+                                                                <label className="form-label">Academic Rules Type</label>
+                                                                <AcademicRulesTypesDropDown
+                                                                    name="academic_rules_types_id"
                                                                     multiple={false}
                                                                     default_value={
-                                                                        getValueForEdit(state, 'academic_calendar_event_types_id')
+                                                                        getValueForEdit(state, 'academic_rules_types_id')
                                                                             ? [
                                                                                 {
-                                                                                    id: getValueForEdit(state, 'academic_calendar_event_types_id'),
+                                                                                    id: getValueForEdit(state, 'academic_rules_types_id'),
                                                                                 },
                                                                             ]
                                                                             : []
@@ -158,10 +159,10 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                                         console.log(data)
                                                                     }
                                                                     isFocused={
-                                                                        focusedDropdown["academic_calendar_event_types_id"]
+                                                                        focusedDropdown["academic_rules_types_id"]
                                                                     }
-                                                                    onFocus={() => setFocusedDropdown({ academic_calendar_event_types_id: true })}
-                                                                    onBlur={() => setFocusedDropdown({ academic_calendar_event_types_id: false })}
+                                                                    onFocus={() => setFocusedDropdown({ academic_rules_types_id: true })}
+                                                                    onBlur={() => setFocusedDropdown({ academic_rules_types_id: false })}
                                                                 />
                                                             </div>
                                                         </div>
@@ -177,10 +178,10 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {/* Row 3: Event Name */}
+                                                {/* Row 3: Title*/}
                                                 <div className="col-12">
                                                     <div className="form-group form-vertical">
-                                                        <Input name="event_name" value={getValueForEdit(state, 'event_name')} />
+                                                        <Input name="title" value={getValueForEdit(state, 'title')} />
                                                     </div>
                                                 </div>
 
@@ -195,6 +196,18 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                             defaultValue={getValueForEdit(state, 'description')}
                                                             placeholder="Enter description..."
                                                         />
+                                                    </div>
+                                                </div>
+                                                {/* Row 5: File Upload */}
+                                                <div className="col-12">
+                                                    <div className="form-group form-vertical">
+                                                        {/* <InputFile
+                                                            name="file"
+                                                            label="Upload File"
+                                                            default_file_name={typeof doc.file === 'string' && doc.file.includes('/') ? doc.file.split('/').pop() : doc.fileName}
+                                                            default_preview_url={typeof doc.file === 'string' ? doc.file : null}
+                                                            onChange={(file) => handleDocumentFileChange(index, file)}
+                                                        /> */}
                                                     </div>
                                                 </div>
 
