@@ -84,14 +84,19 @@ async function update(
                 title: body.title || data.title,
                 description: body.description || data.description,
                 date: body.date ? moment(body.date).toDate() : data.date,
-                file: body.file !== undefined ? (
-                    body.file === null 
-                        ? null // Explicitly setting to null to remove file
-                        : typeof body.file === 'string' 
-                        ? (body.file.startsWith('{') ? JSON.parse(body.file) : body.file) // Parse JSON string or keep as string
-                        : body.file // Keep object as-is
-                ) : data.file, // Keep existing file if not provided
+                file: data.file,
             };
+
+            if (body.file && typeof body.file === 'object' && body.file.name) {
+                const image_path = `uploads/academic_rules/${moment().format(
+                    'YYYYMMDDHHmmss',
+                )}_${body.file.name}`;
+                await (fastify_instance as any).upload(body.file, image_path);
+                inputs.file = image_path;
+            } else if (body.file === null) {
+                inputs.file = data.file; // Keep the existing file if no new file is provided
+            }
+
             data.update(inputs);
             await data.save();
             return response(201, 'data updated', { data });

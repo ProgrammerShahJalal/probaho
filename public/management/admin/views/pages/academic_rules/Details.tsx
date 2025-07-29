@@ -49,7 +49,7 @@ const Details: React.FC<Props> = (props: Props) => {
                     expandedSections,
                     toggleSection
                 );
-            case 'academic_calendar_event_types_id':
+            case 'academic_rules_types_id':
                 return renderArrayField(
                     fieldName,
                     state.item[fieldName],
@@ -69,7 +69,7 @@ const Details: React.FC<Props> = (props: Props) => {
                     expandedSections,
                     toggleSection
                 );
-            case 'event_name':
+            case 'title':
             case 'description':
                 return renderLongTextField(fieldName, state.item[fieldName], expandedSections, toggleSection);
             case 'date':
@@ -105,8 +105,8 @@ const Details: React.FC<Props> = (props: Props) => {
                                             'branch_user_id',
                                             'academic_year_id',
                                             'branch_id',
-                                            'academic_calendar_event_types_id',
-                                            'event_name',
+                                            'academic_rules_types_id',
+                                            'title',
                                             'description',
                                             'date',
                                             'status',
