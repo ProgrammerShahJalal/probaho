@@ -80,6 +80,12 @@ const Details: React.FC<Props> = (props: Props) => {
                 ) : (
                     <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>Not provided</span>
                 );
+            case 'file':
+                return state.item[fieldName] ? (
+                    <span style={{ color: 'white' }}>File available (see below)</span>
+                ) : (
+                    <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>No file provided</span>
+                );
             default:
                 return state.item[fieldName] || <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>Not provided</span>;
         }
@@ -109,7 +115,7 @@ const Details: React.FC<Props> = (props: Props) => {
                                             'title',
                                             'description',
                                             'date',
-                                            'status',
+                                            'file',
                                         ].map((fieldName) => (
                                             <tr key={fieldName} style={{ borderBottom: '1px solid #f1f3f4' }}>
                                                 <td style={{
@@ -135,6 +141,55 @@ const Details: React.FC<Props> = (props: Props) => {
                                     </tbody>
                                 </table>
                             </div>
+
+                            {/* Academic Rule File Section */}
+                            {state.item.file && (
+                                <div className="details_section mt-4">
+                                    <h5 className="details_section_title mb-3">Academic Rule File</h5>
+                                    <div className="mt-2" style={{ maxWidth: '70%', margin: 'auto' }}>
+                                        {/\.(jpe?g|png|gif|webp)$/i.test(state.item.file) ? (
+                                            <img
+                                                src={state.item.file.startsWith('http') 
+                                                    ? state.item.file 
+                                                    : `/${state.item.file}`}
+                                                alt="Academic Rule File"
+                                                style={{ 
+                                                    width: '100%', 
+                                                    height: 'auto', 
+                                                    border: '1px solid #ddd', 
+                                                    borderRadius: '4px', 
+                                                    padding: '5px' 
+                                                }}
+                                            />
+                                        ) : (
+                                            <iframe
+                                                src={state.item.file.startsWith('http') 
+                                                    ? state.item.file 
+                                                    : `/${state.item.file}`}
+                                                title="Academic Rule File"
+                                                style={{ 
+                                                    width: '100%', 
+                                                    height: '500px', 
+                                                    border: '1px solid #ddd', 
+                                                    borderRadius: '4px' 
+                                                }}
+                                            />
+                                        )}
+                                        <a
+                                            href={state.item.file.startsWith('http') 
+                                                ? state.item.file 
+                                                : `/${state.item.file}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="btn btn-sm btn-outline-primary mt-2"
+                                            style={{ display: 'block', textAlign: 'center' }}
+                                        >
+                                            View/Download
+                                        </a>
+                                    </div>
+                                </div>
+                            )}
+                            {/* End Academic Rule File Section */}
                         </div>
                     )}
 
