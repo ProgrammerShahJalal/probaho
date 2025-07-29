@@ -63,12 +63,18 @@ const ImportModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) => {
             'is_locked',
             'status',
         ];
-        // Create one empty row to show the structure
-        const emptyRow = columns.map(() => ''); 
+        // Create a sample row with dummy data
+        const sampleRow = [
+            '2025-2026 AY', // title (example academic year)
+            '2025-12-25', // start_month (example start month)
+            '2026-12-25', // end_month (example end month)
+            '0', // is_locked (0 for unlocked, 1 for locked)
+            'active', // status (active/deactive)
+        ];
 
         new CsvBuilder('demo_academic_years_import_template.csv')
             .setColumns(columns)
-            .addRows([emptyRow]) // Add the single empty row
+            .addRows([sampleRow]) // Add the sample row with dummy data
             .exportFile();
     };
 

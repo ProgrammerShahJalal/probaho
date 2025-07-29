@@ -72,12 +72,27 @@ const ImportUsersModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) 
             'base_salary',
             'status',
         ];
-        // Create one empty row to show the structure
-        const emptyRow = columns.map(() => ''); 
+        // Create one row with dummy data to show the structure
+        const sampleRow = [
+                '3', // role_serial
+                'Farabi', // name
+                'farabi@gmail.com', // email
+                '01775000065', // phone_number
+                'uploads/users/2025708184337_student.png', // photo
+                'password123', // password
+                '1', // branch_id
+                '1', // class_id
+                '1', // is_verified
+                '1', // is_approved
+                '0', // is_blocked
+                '2025-01-15', // join_date
+                '42000', // base_salary
+                'active', // status
+        ];
 
         new CsvBuilder('demo_users_import_template.csv')
             .setColumns(columns)
-            .addRows([emptyRow]) // Add the single empty row
+            .addRows([sampleRow]) // Add the sample row with dummy data
             .exportFile();
     };
 

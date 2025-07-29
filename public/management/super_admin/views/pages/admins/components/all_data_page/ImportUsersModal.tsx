@@ -72,12 +72,27 @@ const ImportUsersModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) 
             'base_salary',
             'status',
         ];
-        // Create one empty row to show the structure
-        const emptyRow = columns.map(() => ''); 
+        // Create sample rows with dummy data
+        const sampleRow = [
+                '1', // role_serial
+                'Farabi', // name
+                'farabi@gmail.com', // email
+                '01775000065', // phone_number
+                'uploads/users/2025708184337_admin.png', // photo
+                'password123', // password
+                '1', // branch_id
+                '1', // class_id
+                '1', // is_verified
+                '1', // is_approved
+                '0', // is_blocked
+                '2025-01-15', // join_date
+                '42000', // base_salary
+                'active', // status
+        ];
 
-        new CsvBuilder('demo_users_import_template.csv')
+        new CsvBuilder('demo_admins_import_template.csv')
             .setColumns(columns)
-            .addRows([emptyRow]) // Add the single empty row
+            .addRows([sampleRow])
             .exportFile();
     };
 
@@ -152,7 +167,7 @@ const ImportUsersModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) 
             <div className="modal-dialog modal-dialog-centered" role="document" onClick={e => e.stopPropagation()}>
                 <div className="modal-content" style={{ background: '#23272f', color: '#fff', borderRadius: 10, boxShadow: '0 8px 32px rgba(0,0,0,0.25)' }}>
                     <div className="modal-header">
-                        <h5 className="modal-title" style={{ fontSize: '1.1rem' }}>Import Users</h5>
+                        <h5 className="modal-title" style={{ fontSize: '1.1rem' }}>Import Admins</h5>
                         <button type="button" className="btn-close" aria-label="Close" style={{ filter: 'invert(32%) sepia(98%) saturate(7492%) hue-rotate(353deg) brightness(97%) contrast(104%)' }} onClick={onClose}></button>
                     </div>
                     <div className="modal-body">

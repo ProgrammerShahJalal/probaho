@@ -64,12 +64,19 @@ const ImportModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) => {
             'description',
             'status',
         ];
-        // Create one empty row to show the structure
-        const emptyRow = columns.map(() => ''); 
+        // Create a sample row with dummy data
+        const sampleRow = [
+            '23', // branch_user_id (example user ID)
+            '1', // branch_id (optional - example branch ID)
+            '4', // academic_year_id (example year)
+            'Examination', // title (example event type)
+            'Academic events related to examinations, tests, and assessments.', // description
+            'active', // status (active/deactive)
+        ];
 
         new CsvBuilder('demo_academic_calendar_event_types_import_template.csv')
             .setColumns(columns)
-            .addRows([emptyRow]) // Add the single empty row
+            .addRows([sampleRow]) // Add the sample row with dummy data
             .exportFile();
     };
 
