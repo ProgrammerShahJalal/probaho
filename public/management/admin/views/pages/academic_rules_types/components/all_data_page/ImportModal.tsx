@@ -64,12 +64,19 @@ const ImportModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) => {
             'description',
             'status',
         ];
-        // Create one empty row to show the structure
-        const emptyRow = columns.map(() => ''); 
+        // Create a sample row with dummy data
+        const sampleRow = [
+            '23', // branch_user_id (example user ID)
+            '1', // branch_id (optional - example branch ID)
+            '4', // academic_year_id (example year)
+            'Attendance Rules', // title (example rule title)
+            'Rules related to student presence in classes, minimum attendance percentages, and penalties for absences.', // description
+            'active', // status (active/deactive)
+        ];
 
         new CsvBuilder('demo_academic_rules_types_import_template.csv')
             .setColumns(columns)
-            .addRows([emptyRow]) // Add the single empty row
+            .addRows([sampleRow]) // Add the sample row with dummy data
             .exportFile();
     };
 

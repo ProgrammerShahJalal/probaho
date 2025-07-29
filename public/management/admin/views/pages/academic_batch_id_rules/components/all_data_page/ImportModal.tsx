@@ -65,12 +65,20 @@ const ImportModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) => {
             'value',
             'status',
         ];
-        // Create one empty row to show the structure
-        const emptyRow = columns.map(() => ''); 
+        // Create a sample row with dummy data
+        const sampleRow = [
+            '23', // branch_user_id (example user ID)
+            '1', // branch_id (optional - example branch ID)
+            '4', // academic_year_id (example year)
+            'Batch ID Format Rule', // title (example rule title)
+            'Rule defining the format for batch identification numbers in the academic system.', // description
+            'BATCH-{YEAR}-{DEPT}-{NUM}', // value (example format pattern)
+            'active', // status (active/deactive)
+        ];
 
         new CsvBuilder('demo_academic_batch_id_rules_import_template.csv')
             .setColumns(columns)
-            .addRows([emptyRow]) // Add the single empty row
+            .addRows([sampleRow]) // Add the sample row with dummy data
             .exportFile();
     };
 

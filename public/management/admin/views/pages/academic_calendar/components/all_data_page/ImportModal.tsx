@@ -66,12 +66,20 @@ const ImportModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) => {
             'date',
             'status',
         ];
-        // Create one empty row to show the structure
-        const emptyRow = columns.map(() => ''); 
-
+        // Create a sample row with dummy data
+        const sampleRow = [
+            '23', // branch_user_id (example user ID)
+            '1', // branch_id (optional - example branch ID)
+            '4', // academic_year_id (example year)
+            '2', // academic_calendar_event_types_id (example type ID)
+            'Convocation Ceremony', // event_name
+            'Formal graduation ceremony for students who have successfully completed their degree programs.', // description
+            '2025-08-15', // date (YYYY-MM-DD format)
+            'active', // status (active/deactive)
+        ];
         new CsvBuilder('demo_academic_calendar_import_template.csv')
             .setColumns(columns)
-            .addRows([emptyRow]) // Add the single empty row
+            .addRows([sampleRow]) // Add the sample row with dummy data
             .exportFile();
     };
 
