@@ -60,18 +60,30 @@ const ImportModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) => {
             'branch_user_id',
             'branch_id', // optional
             'academic_year_id',
-            'academic_calendar_event_types_id',
-            'event_name',
+            'academic_rules_types_id',
+            'title',
             'description',
             'date',
+            'file', // optional
             'status',
         ];
-        // Create one empty row to show the structure
-        const emptyRow = columns.map(() => ''); 
+        
+        // Create a sample row with dummy data
+        const sampleRow = [
+            '23', // branch_user_id (example user ID)
+            '1', // branch_id (optional - example branch ID)
+            '4', // academic_year_id (example year)
+            '2', // academic_rules_types_id (example rule type ID)
+            'Attendance Policy', // title (example rule title)
+            'Students must maintain 80% attendance to be eligible for exams', // description
+            '2025-08-15', // date (YYYY-MM-DD format)
+            'uploads/academic_rules/20250729121849_UPB_Leaflet.pdf', // file (optional - example filename)
+            'active', // status (active/deactive)
+        ];
 
-        new CsvBuilder('demo_academic_calendar_import_template.csv')
+        new CsvBuilder('demo_academic_rules_import_template.csv')
             .setColumns(columns)
-            .addRows([emptyRow]) // Add the single empty row
+            .addRows([sampleRow]) // Add the sample row with dummy data
             .exportFile();
     };
 
@@ -146,7 +158,7 @@ const ImportModal: React.FC<ImportUsersModalProps> = ({ isOpen, onClose }) => {
             <div className="modal-dialog modal-dialog-centered" role="document" onClick={e => e.stopPropagation()}>
                 <div className="modal-content" style={{ background: '#23272f', color: '#fff', borderRadius: 10, boxShadow: '0 8px 32px rgba(0,0,0,0.25)' }}>
                     <div className="modal-header">
-                        <h5 className="modal-title" style={{ fontSize: '1.1rem' }}>Import Academic Calendar</h5>
+                        <h5 className="modal-title" style={{ fontSize: '1.1rem' }}>Import Academic Rules</h5>
                         <button type="button" className="btn-close" aria-label="Close" style={{ filter: 'invert(32%) sepia(98%) saturate(7492%) hue-rotate(353deg) brightness(97%) contrast(104%)' }} onClick={onClose}></button>
                     </div>
                     <div className="modal-body">

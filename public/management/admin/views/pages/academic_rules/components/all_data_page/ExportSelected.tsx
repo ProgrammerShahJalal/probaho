@@ -21,10 +21,11 @@ const ExportSelected: React.FC<Props> = (props: Props) => {
             'branch_user_id',
             'branch_id',
             'academic_year_id',
-            'academic_calendar_event_types_id',
-            'event_name',
+            'academic_rules_types_id',
+            'title',
             'description',
             'date',
+            'file', // optional
             'status',
         ];
         const rows: string[][] = [];
