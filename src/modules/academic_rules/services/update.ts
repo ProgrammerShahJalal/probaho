@@ -93,9 +93,9 @@ async function update(
                 )}_${body.file.name}`;
                 await (fastify_instance as any).upload(body.file, image_path);
                 inputs.file = image_path;
-            } else if (body.file === null) {
-                inputs.file = data.file; // Keep the existing file if no new file is provided
             }
+            // If no new file is provided, keep the existing file
+            // Don't check for body.file === null because that would overwrite existing files
 
             data.update(inputs);
             await data.save();

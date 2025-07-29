@@ -51,9 +51,12 @@ const Edit: React.FC<Props> = (props: Props) => {
         e.preventDefault();
         const form = e.target as HTMLFormElement;
         let form_data = new FormData(form);
+        
+        // Append the file if a new file was selected
         if (file) {
             form_data.append('file', file);
         }
+        
         const response = await dispatch(update(form_data) as any);
     }
 
@@ -206,7 +209,7 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                 <div className="col-12">
                                                     <div className="form-group form-vertical">
                                                         <InputFile
-                                                            name="file"
+                                                            name=""
                                                             label="Upload File"
                                                             default_file_name={getValueForEdit(state, 'file')}
                                                             default_preview_url={getValueForEdit(state, 'file')}

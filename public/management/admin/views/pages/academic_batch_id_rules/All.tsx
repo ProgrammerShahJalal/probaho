@@ -50,7 +50,7 @@ const All: React.FC<Props> = () => {
         <div className="page_content">
             <div className="explore_window fixed_size">
                 {/* Changed title to be static */}
-                <Header title={'All Academic Calendars'} />
+                <Header title={'All Academic Batch ID Rules'} />
 
                 <div className="content_body">
                     <div className="data_list">
