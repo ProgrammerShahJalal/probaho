@@ -39,6 +39,7 @@ const Edit: React.FC<Props> = (props: Props) => {
     const params = useParams();
 
     const [focusedDropdown, setFocusedDropdown] = useState<anyObject>({});
+    const [file, setFile] = useState<File | null>(null);
 
     useEffect(() => {
         dispatch(storeSlice.actions.set_item({}));
@@ -50,6 +51,9 @@ const Edit: React.FC<Props> = (props: Props) => {
         e.preventDefault();
         const form = e.target as HTMLFormElement;
         let form_data = new FormData(form);
+        if (file) {
+            form_data.append('file', file);
+        }
         const response = await dispatch(update(form_data) as any);
     }
 
@@ -201,13 +205,13 @@ const Edit: React.FC<Props> = (props: Props) => {
                                                 {/* Row 5: File Upload */}
                                                 <div className="col-12">
                                                     <div className="form-group form-vertical">
-                                                        {/* <InputFile
+                                                        <InputFile
                                                             name="file"
                                                             label="Upload File"
-                                                            default_file_name={typeof doc.file === 'string' && doc.file.includes('/') ? doc.file.split('/').pop() : doc.fileName}
-                                                            default_preview_url={typeof doc.file === 'string' ? doc.file : null}
-                                                            onChange={(file) => handleDocumentFileChange(index, file)}
-                                                        /> */}
+                                                            default_file_name={getValueForEdit(state, 'file')}
+                                                            default_preview_url={getValueForEdit(state, 'file')}
+                                                            onChange={(file) => setFile(file)}
+                                                        />
                                                     </div>
                                                 </div>
 
