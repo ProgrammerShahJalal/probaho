@@ -2,15 +2,16 @@ import { FastifyInstance, FastifyRequest } from 'fastify';
 import Papa from 'papaparse';
 import { responseObject } from '../../../common_types/object';
 import Models from '../../../database/models';
+import { modelName } from '../models/model';
 
 interface ImportData {
     branch_user_id: number[] | string;
-    branch_id?: number[] | string; 
+    branch_id?: number[] | string;
     academic_year_id: number[] | string;
+    branch_class_building_id: number[] | string;
     title: string;
     code: string;
     capacity: number;
-    image?: string; // Optional image field
     status?: 'active' | 'deactive'; 
 }
 
@@ -54,8 +55,8 @@ export default async function importCSV(
 
                         try {
                             // --- 1. Basic Validation ---
-                            if (!row.branch_user_id || !row.academic_year_id || !row.title || !row.code || !row.capacity || !row.status) {
-                                throw new Error(`Missing required fields (branch_user_id, academic_year_id, title, code, capacity, status).`);
+                            if (!row.branch_user_id || !row.academic_year_id || !row.branch_class_building_id || !row.title || !row.code || !row.capacity || !row.status) {
+                                throw new Error(`Missing required fields (branch_user_id, academic_year_id, branch_class_building_id, title, code, capacity, status).`);
                             }
 
                             // --- 2. Data Type Validation ---
@@ -64,14 +65,14 @@ export default async function importCSV(
                                 throw new Error(`Invalid capacity: must be a positive integer.`);
                             }
 
-                            await models.BranchClassBuildingsModel.create({
+                            await models[modelName].create({
                                 branch_user_id: row.branch_user_id,
                                 branch_id: row.branch_id ? row.branch_id : [1], // Default to [1] if not provided
                                 academic_year_id: row.academic_year_id,
+                                branch_class_building_id: row.branch_class_building_id,
                                 title: row.title,
                                 code: row.code,
                                 capacity: capacity,
-                                image: row.image || undefined,
                                 status: row.status,
                             });
                             successfulImports++;
@@ -103,11 +104,11 @@ export default async function importCSV(
         });
 
     } catch (error: any) {
-        console.error('Error in import_branch_class_buildings service:', error);
+        console.error('Error in import_branch_class_rooms service:', error);
         // This catches errors from Papa.parse if it rejects, or other synchronous errors
         return {
             status: error.status || 500,
-            message: error.message || 'An unexpected error occurred during branch class buildings import.',
+            message: error.message || 'An unexpected error occurred during branch class rooms import.',
             data: error.data || null,
         };
     }

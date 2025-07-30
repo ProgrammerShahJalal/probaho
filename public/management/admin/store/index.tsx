@@ -11,6 +11,7 @@ import academic_calendar from '../views/pages/academic_calendar/config/store';
 import academic_rules from '../views/pages/academic_rules/config/store';
 
 import branch_class_buildings from '../views/pages/branch_class_buildings/config/store';
+import branch_class_rooms from '../views/pages/branch_class_rooms/config/store';
 
 import all_users from '../views/pages/users/config/store';
 import users from '../views/pages/users/config/store';
@@ -29,6 +30,7 @@ const store = configureStore({
         academic_calendar: academic_calendar.reducer,
         academic_rules: academic_rules.reducer,
         branch_class_buildings: branch_class_buildings.reducer,
+        branch_class_rooms: branch_class_rooms.reducer,
         all_users: all_users.reducer,
         users: users.reducer,
         user_roles: user_roles.reducer,
