@@ -133,7 +133,7 @@ const All: React.FC<Props> = () => {
                                                 />
                                                 <td
                                                     {...getTruncatedCellProps({
-                                                        text: i.branch_class_building_id ? formatArrayForTable(i.branch_class_building_id, 'title') : i.branch_class_building_id,
+                                                        text: i.branch_class_building_id ? formatArrayForTable(i.branch_class_buildings, 'title') : i.branch_class_building_id,
                                                         columnType: 'title',
                                                         maxLength: 20,
                                                     })}
