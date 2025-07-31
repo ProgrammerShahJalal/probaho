@@ -12,6 +12,10 @@ import * as AcademicRulesTypesModel from "../modules/academic_rules_types/models
 import * as AcademicCalendarModel from "../modules/academic_calendar/models/model";
 import * as AcademicRulesModel from "../modules/academic_rules/models/model";
 
+import * as BranchClassBuildingsModel from "../modules/branch_class_buildings/models/model";
+import * as BranchClassRoomsModel from "../modules/branch_class_rooms/models/model";
+import * as BranchClassesModel from "../modules/branch_classes/models/model";
+
 
 import { Sequelize } from "sequelize";
 
@@ -31,6 +35,10 @@ export type model_types = {
     AcademicRulesTypesModel: typeof AcademicRulesTypesModel.DataModel;
     AcademicCalendarModel: typeof AcademicCalendarModel.DataModel;
     AcademicRulesModel: typeof AcademicRulesModel.DataModel;
+    
+    BranchClassBuildingsModel: typeof BranchClassBuildingsModel.DataModel;
+    BranchClassRoomsModel: typeof BranchClassRoomsModel.DataModel;
+    BranchClassesModel: typeof BranchClassesModel.DataModel;
 
 }
 
