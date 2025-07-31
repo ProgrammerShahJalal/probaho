@@ -12,6 +12,7 @@ import academic_rules from '../views/pages/academic_rules/config/routes';
 
 import branch_class_buildings from '../views/pages/branch_class_buildings/config/routes';
 import branch_class_rooms from '../views/pages/branch_class_rooms/config/routes';
+import branch_classes from '../views/pages/branch_classes/config/routes';
 
 import users from '../views/pages/users/config/routes';
 import user_roles from '../views/pages/user_roles/config/routes';
@@ -39,6 +40,7 @@ const router: RouteTypes[] = [
             academic_rules,
             branch_class_buildings,
             branch_class_rooms,
+            branch_classes,
             users,
             user_roles,
             user_login_histories,

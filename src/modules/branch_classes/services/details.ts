@@ -61,12 +61,6 @@ async function details(
                     attributes: ['id', 'title'],
                     dataKey: 'academic_years'
                 },
-                {
-                    field: 'branch_class_building_id',
-                    model: models.BranchClassBuildingsModel,
-                    attributes: ['id', 'title'],
-                    dataKey: 'branch_class_buildings'
-                }
             ];
 
             // Fetch all related data concurrently
@@ -74,11 +68,11 @@ async function details(
                 fetchRelatedData(config.model, (data as any)[config.field], config.attributes)
             );
 
-            const [users, branches, academicYears, branchClassBuildings] = await Promise.all(relatedDataPromises);
+            const [users, branches, academicYears] = await Promise.all(relatedDataPromises);
 
             // Attach related data to the main data object
             relatedDataConfig.forEach((config, index) => {
-                const relatedData = [users, branches, academicYears, branchClassBuildings][index];
+                const relatedData = [users, branches, academicYears][index];
                 (data as any).dataValues[config.dataKey] = relatedData;
             });
 
